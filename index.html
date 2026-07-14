@@ -8,7 +8,7 @@
     <!-- PWA Altyapısı -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#020617">
     <link rel="manifest" href="manifest.json" id="pwaManifest">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -17,15 +17,15 @@
         :root {
             --primary-blue: #002870;
             --neon-blue: #00d2ff;
-            --book-shadow: 0 25px 65px rgba(0,0,0,0.75);
-            --glass-bg: rgba(3, 7, 18, 0.85);
+            --book-shadow: 0 30px 70px rgba(0,0,0,0.8);
+            --glass-bg: rgba(2, 6, 23, 0.88);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background: #030712;
+            background: #020617;
             display: flex;
             height: 100vh;
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -33,27 +33,29 @@
             color: #fff;
         }
 
-        /* PREMIUM AKIŞKAN ARKA PLAN (SIVI/DUMAN EFEKTİ) */
+        /* YENİ NESİL PREMIUM VE GÖRÜNÜR MESH GRADIENT ARKA PLAN */
         .premium-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
-            background: radial-gradient(circle at 20% 30%, #081d45 0%, #030712 70%);
+            background: #020617;
             overflow: hidden;
         }
         .premium-bg::before {
             content: "";
             position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 80% 80%, rgba(0, 40, 112, 0.4) 0%, transparent 50%),
-                        radial-gradient(circle at 20% 20%, rgba(0, 210, 255, 0.08) 0%, transparent 40%);
-            filter: blur(80px);
-            animation: fluidMotion 20s ease-in-out infinite alternate;
+            top: -20%; left: -20%; width: 140%; height: 140%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
+                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
+            filter: blur(60px);
+            animation: elegantBgMotion 25s ease-in-out infinite alternate;
         }
-        @keyframes fluidMotion {
-            0% { transform: rotate(0deg) translate(0, 0) scale(1); }
-            50% { transform: rotate(5deg) translate(-3%, 5%) scale(1.05); }
-            100% { transform: rotate(-5deg) translate(3%, -5%) scale(0.95); }
+        @keyframes elegantBgMotion {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(2%, -4%) scale(1.05); }
+            100% { transform: translate(-2%, 4%) scale(0.98); }
         }
         
         /* PULSE LOADING EKRANI */
@@ -99,23 +101,45 @@
             z-index: 2;
         }
 
-        /* SOL ÜST SABİT LOGO & HAMBURGER BAR */
-        .header-bar {
+        /* SOL ÜST - DİKEY SIRALI LOGO VE HAMBURGER */
+        .header-column {
             position: absolute;
             top: 20px;
             left: 20px;
             display: flex;
-            align-items: center;
-            gap: 15px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
             z-index: 1001;
         }
 
+        .brand-logo-btn {
+            background: #ffffff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .brand-logo-btn:hover {
+            transform: translateY(-2px);
+        }
+        .brand-logo-btn img {
+            height: 24px;
+            width: auto;
+        }
+
         .hamburger-btn {
-            width: 45px;
-            height: 45px;
-            background: rgba(0, 40, 112, 0.7);
+            width: 46px;
+            height: 46px;
+            background: rgba(0, 40, 112, 0.85);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -124,6 +148,7 @@
             gap: 5px;
             backdrop-filter: blur(15px);
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .hamburger-btn:hover {
             background: rgba(255,255,255,0.15);
@@ -137,24 +162,7 @@
             transition: 0.3s;
         }
 
-        .brand-logo-btn {
-            background: #ffffff;
-            padding: 8px 15px;
-            border-radius: 6px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-        }
-        .brand-logo-btn img {
-            height: 25px;
-            width: auto;
-        }
-
-        /* HAMBURGER SLIDE-OUT MENÜ (Masaüstü & Mobil Ortak) */
+        /* SIDEBAR MENÜ */
         .sidebar-nav {
             position: fixed;
             left: -340px;
@@ -165,7 +173,7 @@
             border-right: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
-            padding: 90px 24px 24px 24px; /* Logoların altına denk gelsin */
+            padding: 150px 24px 24px 24px; /* Dikey konumlanan logonun altında kalması için padding arttı */
             box-shadow: 25px 0 50px rgba(0,0,0,0.6);
             z-index: 1000;
             overflow-y: auto;
@@ -225,20 +233,17 @@
             align-items: center;
             gap: 8px;
         }
-
         .deck-btn:hover {
             background: rgba(255, 255, 255, 0.12);
             border-color: rgba(255, 255, 255, 0.2);
             transform: translateX(5px);
         }
-
         .deck-btn.active-deck {
             background: #ffffff;
             border-color: #ffffff;
             color: #002870; 
             box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
         }
-
         .deck-btn::before {
             content: "•";
             color: var(--neon-blue);
@@ -248,7 +253,7 @@
             color: #002870;
         }
 
-        /* WORKSPACE (GENİŞLETİLMİŞ TASARIM) */
+        /* WORKSPACE */
         .workspace {
             flex: 1;
             display: flex;
@@ -312,14 +317,12 @@
             opacity: 0;
             display: none;
         }
-        
         .page.active-page {
             display: block;
             opacity: 1;
             transform: rotateY(0deg) scale(1);
             z-index: 5;
         }
-
         .page.turn-next {
             display: block;
             opacity: 0;
@@ -343,7 +346,7 @@
             border-radius: 8px;
         }
 
-        /* GEÇİŞ HASSAS ALANLARI */
+        /* HER ZAMAN BELİRGİN YÖNLENDİRME OKLARI */
         .nav-overlay-zone {
             position: absolute;
             top: 0; height: 100%; width: 120px;
@@ -354,23 +357,28 @@
         .nav-overlay-zone.right-zone { right: 0; }
 
         .arrow-btn {
-            width: 50px; height: 50px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            width: 54px; height: 54px;
+            background: rgba(0, 40, 112, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 18px; cursor: pointer;
-            opacity: 0; transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            color: #fff; font-size: 20px; cursor: pointer;
+            opacity: 0.65; /* HER ZAMAN GÖRÜNÜR KILDIK */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(8px);
             user-select: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-        .nav-overlay-zone:hover .arrow-btn { opacity: 0.75; }
         .arrow-btn:hover {
-            opacity: 1 !important; transform: scale(1.1) !important;
-            background: #ffffff !important; color: #002870 !important;
+            opacity: 1; 
+            transform: scale(1.15);
+            background: #ffffff; 
+            color: #002870;
+            border-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(255,255,255,0.25);
         }
         
-        /* SLIDE ŞERİDİ (SAĞ TARAF) */
+        /* SAĞ SLIDE ŞERİDİ */
         .sidebar-thumbnails {
             width: 180px;
             background: rgba(0, 40, 112, 0.15);
@@ -387,7 +395,6 @@
             transition: all 0.5s ease;
             flex-shrink: 0;
         }
-
         .sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
         .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
 
@@ -407,7 +414,7 @@
             font-weight: bold; padding: 1px 5px; border-radius: 3px;
         }
         
-        /* KONTROL PANELİ VE SAĞ ALT SES KÖŞESİ */
+        /* KONTROL PANELİ */
         .bottom-bar-area {
             width: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 6px;
@@ -425,7 +432,7 @@
 
         .controls {
             display: flex; align-items: center; gap: 12px; 
-            background: rgba(0, 40, 112, 0.75); padding: 10px 24px; border-radius: 50px;
+            background: rgba(0, 40, 112, 0.8); padding: 10px 24px; border-radius: 50px;
             backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
@@ -446,37 +453,90 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* YENİ SAĞ ALT SES BUTONU */
+        /* YENİ NESİL iOS TARZI LIQUID SES SWITCH'İ */
         .sound-corner {
             position: absolute;
             right: 25px;
             top: 50%;
             transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 105;
         }
-        .sound-mini-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 40, 112, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
+
+        .ios-switch-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 40, 112, 0.7);
+            padding: 6px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        }
+
+        .switch-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.8);
+            user-select: none;
+        }
+
+        .ios-switch {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 24px;
+        }
+
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .ios-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
+            border-radius: 34px;
+        }
+
+        .ios-slider:before {
+            position: absolute;
+            content: "🔊";
+            font-size: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            font-size: 14px;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .sound-mini-btn:hover {
-            background: #ffffff;
-            color: #002870;
-            transform: scale(1.1);
+
+        input:checked + .ios-slider {
+            background-color: var(--neon-blue);
         }
-        .sound-mini-btn.muted {
-            background: rgba(220, 38, 38, 0.2);
-            border-color: rgba(220, 38, 38, 0.4);
-            color: #f87171;
+
+        input:checked + .ios-slider:before {
+            transform: translateX(18px);
+            content: "🔊";
+        }
+
+        input:not(:checked) + .ios-slider:before {
+            content: "🔇";
+            background-color: #f3f4f6;
         }
         
         .hint { 
@@ -509,59 +569,78 @@
             opacity: 1;
         }
 
-        /* MOBİL RESPONSIVE DETAYLARI VE MOBİL RENDER DÜZELTMELERİ */
+        /* MOBİL SÜRÜM - KESİN ÇÖZÜMLÜ CSS REVIZYONLARI */
         @media (max-width: 1024px) {
             .workspace {
-                height: 100%;
+                height: 100vh;
                 justify-content: flex-start;
-                padding-top: 80px;
+                padding-top: 140px; /* Üst dikey logoların altında kalması için */
                 gap: 5px;
             }
             .main-container {
                 flex-direction: column;
                 width: 100%;
                 gap: 5px;
-                height: calc(100% - 100px);
+                height: calc(100% - 150px);
             }
+            
+            /* Sahnemizi sıkıştırmayı önleyip %74 net yükseklik veriyoruz */
             .scene {
-                height: 75%; /* Dikeyde slayta daha fazla yer veriyoruz */
-                width: 100%;
+                height: 74% !important; 
+                width: 100% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
+            
+            /* Alt Slayt Şeridini Ekranın En Altına Alıp Küçülttük */
             .sidebar-thumbnails {
-                width: 100%;
-                height: 80px;
-                flex-direction: row;
-                padding: 4px 10px;
-                gap: 8px;
-                overflow-x: auto;
-                overflow-y: hidden;
+                width: 100% !important;
+                height: 60px !important; /* Dikey alanı daralttık */
+                flex-direction: row !important;
+                padding: 4px 10px !important;
+                gap: 8px !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                background: rgba(0, 40, 112, 0.3) !important;
+                margin-top:auto; /* En alta dayar */
             }
             .thumb-box {
-                width: 80px;
-                height: 60px;
+                width: 60px !important; /* Genişliği küçüldü */
+                height: 45px !important; /* Yüksekliği küçüldü */
             }
             .arrow-btn {
-                width: 40px; height: 40px;
-                opacity: 0.5;
+                width: 44px; height: 44px;
+                opacity: 0.7; /* Mobilde de her zaman görünür */
             }
             .nav-overlay-zone {
                 width: 50px;
             }
+            
+            /* Mobilde Ses Switch'ini aşağıya düzgünce hizaladık */
             .sound-corner {
-                position: static;
-                transform: none;
-                margin-top: 5px;
+                position: static !important;
+                transform: none !important;
+                margin-top: 8px;
+                display: flex;
+                justify-content: center;
+                width: 100%;
             }
             .controls-wrapper {
                 flex-direction: column;
-                gap: 8px;
+                gap: 5px;
+                width: 100%;
+            }
+            .header-column {
+                top: 15px;
+                left: 15px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- GÜNCELLENEN PREMIUM AKIŞKAN ARKA PLAN -->
+    <!-- YENİ NESİL PREMIUM GÖRÜNÜR MESH ARKA PLAN -->
     <div class="premium-bg"></div>
 
     <!-- LOADING EKRANI -->
@@ -569,15 +648,15 @@
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
 
-    <!-- SOL ÜST KÖŞE - ORTAK HAMBURGER & LOGO PORTALI -->
-    <div class="header-bar">
+    <!-- GÜNCELLENEN SOL ÜST DİKEY YERLEŞİM: LOGO ÜSTTE, HAMBURGER ALTTA -->
+    <div class="header-column">
+        <button class="brand-logo-btn" onclick="toggleMenu()">
+            <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
+        </button>
         <button class="hamburger-btn" id="menuHamburger">
             <span></span>
             <span></span>
             <span></span>
-        </button>
-        <button class="brand-logo-btn" onclick="toggleMenu()">
-            <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
         </button>
     </div>
 
@@ -606,6 +685,7 @@
                         <div id="book" class="book"></div>
                     </div>
 
+                    <!-- HER ZAMAN BELİRGİN YÖNLENDİRME OKLARI -->
                     <div class="nav-overlay-zone left-zone" id="zoneLeft">
                         <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
                     </div>
@@ -633,12 +713,18 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- SAĞ ALTA TAŞINAN SES BUTONU -->
+                    <!-- YENİ SAĞ ALT iOS LIQUID SES SWITCH'İ -->
                     <div class="sound-corner">
-                        <button id="audioToggleBtn" class="sound-mini-btn" title="Mute/Unmute">🔊</button>
+                        <div class="ios-switch-container">
+                            <span class="switch-label">Sound</span>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="audioToggleBtn" checked>
+                                <span class="ios-slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div class="hint">Kaydırma tekerleğiyle yakınlaştırabilirsiniz. Mobilde parmağınızla kaydırın.</div>
+                <div class="hint">You can zoom in and out with the scroll wheel. On mobile, swipe with your finger.</div>
             </div>
         </div>
 
@@ -735,16 +821,14 @@
             toggleMenu();
         });
         document.addEventListener('click', (e) => {
-            if (!sidebarNav.contains(e.target) && !e.target.closest('.header-bar')) {
+            if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
                 sidebarNav.classList.remove('menu-open');
             }
         });
 
-        // SES KONTROLU (SAĞ ALTTAKİ İKON GÜNCELLEMESİ)
-        document.getElementById('audioToggleBtn').addEventListener('click', function() {
-            isSoundOn = !isSoundOn;
-            this.classList.toggle('muted', !isSoundOn);
-            this.innerText = isSoundOn ? "🔊" : "🔇";
+        // SES SWITCH'İ (iOS KONTROLÜ)
+        document.getElementById('audioToggleBtn').addEventListener('change', function() {
+            isSoundOn = this.checked;
         });
 
         // MENÜ OLUŞTURMA[cite: 2]
@@ -810,14 +894,12 @@
             await loadPDF(presentations[index].url);
         }
 
-        // MOBİL SIKINTILARINI GİDEREN BOYUTLANDIRICI
+        // MOBİL RENDER DÜZELTEN BOYUTLANDIRICI
         function resizeBookToFit(viewport) {
             if (!viewport) return;
-            // Mobilde scene genişliği bazen geç yüklendiği için ekran genişliğine fallback ekledik
             const sceneW = scene.clientWidth || window.innerWidth;
             const sceneH = scene.clientHeight || (window.innerHeight - 150);
             
-            // Ekranı olabildiğince doldursun diye payı azalttık
             const multiplierW = 0.98;
             const multiplierH = 0.96;
             
@@ -829,7 +911,7 @@
             book.style.height = Math.floor(viewport.height * idealScale) + 'px';
         }
 
-        // AKILLI ÖNBELLEK VE ÇÖZÜNÜRLÜK SİSTEMİ[cite: 1]
+        // AKILLI ÖNBELLEK SİSTEMİ[cite: 1]
         async function optimizeAndRenderPage(pageNum) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
             if (pageRenderingStates[pageNum] === 'high-res') return;
@@ -1053,7 +1135,7 @@
         document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
         document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
 
-        // SWIPE İÇİN GELİŞTİRİLMİŞ TOUCHE EVENTLERİ (Mobil donmaları önler)
+        // SWIPE İÇİN GELİŞTİRİLMİŞ TOUCHE EVENTLERİ
         let touchStartX = 0;
         let touchEndX = 0;
         
