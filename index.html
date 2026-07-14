@@ -8,7 +8,7 @@
     <!-- PWA Altyapısı -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#002870">
+    <meta name="theme-color" content="#030712">
     <link rel="manifest" href="manifest.json" id="pwaManifest">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -16,15 +16,16 @@
     <style>
         :root {
             --primary-blue: #002870;
-            --liquid-glow: rgba(255, 255, 255, 0.15);
             --neon-blue: #00d2ff;
-            --book-shadow: 0 25px 65px rgba(0,0,0,0.6);
+            --book-shadow: 0 25px 65px rgba(0,0,0,0.75);
+            --glass-bg: rgba(3, 7, 18, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background: #050a1a;
+            background: #030712;
             display: flex;
             height: 100vh;
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -32,38 +33,33 @@
             color: #fff;
         }
 
-        /* CANLI SU EFEKTİ ARKA PLANI */
-        .water-background {
+        /* PREMIUM AKIŞKAN ARKA PLAN (SIVI/DUMAN EFEKTİ) */
+        .premium-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
+            background: radial-gradient(circle at 20% 30%, #081d45 0%, #030712 70%);
             overflow: hidden;
-            background: radial-gradient(circle at center, #0a1b3a 0%, #030712 100%);
         }
-        .water-background::before {
+        .premium-bg::before {
             content: "";
             position: absolute;
-            width: 200%; height: 200%;
-            top: -50%; left: -50%;
-            background: url('https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?q=80&w=1000') no-repeat center center;
-            background-size: cover;
-            opacity: 0.08;
-            filter: blur(8px);
-            animation: waterDrift 25s linear infinite;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 80% 80%, rgba(0, 40, 112, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 20%, rgba(0, 210, 255, 0.08) 0%, transparent 40%);
+            filter: blur(80px);
+            animation: fluidMotion 20s ease-in-out infinite alternate;
         }
-        @keyframes waterDrift {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.1); }
-            100% { transform: rotate(360deg) scale(1); }
+        @keyframes fluidMotion {
+            0% { transform: rotate(0deg) translate(0, 0) scale(1); }
+            50% { transform: rotate(5deg) translate(-3%, 5%) scale(1.05); }
+            100% { transform: rotate(-5deg) translate(3%, -5%) scale(0.95); }
         }
         
-        /* KALP ATIŞI KURUMSAL LOADING EKRANI (GERİ GELDİ!) */
+        /* PULSE LOADING EKRANI */
         #globalLoading { 
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: #002870; 
             z-index: 10000; 
             display: flex; 
@@ -93,6 +89,7 @@
             100% { transform: scale(1); }
         }
 
+        /* ANA PORTAL ALANI (HEP GENİŞ / FOCUS) */
         .portal-wrapper {
             display: flex;
             width: 100vw;
@@ -102,121 +99,156 @@
             z-index: 2;
         }
 
-        /* SOL BANNER */
+        /* SOL ÜST SABİT LOGO & HAMBURGER BAR */
+        .header-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1001;
+        }
+
+        .hamburger-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 40, 112, 0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+        }
+        .hamburger-btn:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
+        }
+        .hamburger-btn span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: #ffffff;
+            transition: 0.3s;
+        }
+
+        .brand-logo-btn {
+            background: #ffffff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+        .brand-logo-btn img {
+            height: 25px;
+            width: auto;
+        }
+
+        /* HAMBURGER SLIDE-OUT MENÜ (Masaüstü & Mobil Ortak) */
         .sidebar-nav {
+            position: fixed;
+            left: -340px;
+            top: 0;
+            height: 100vh;
             width: 320px;
-            background: rgba(0, 40, 112, 0.65); 
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg); 
+            border-right: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
-            padding: 24px;
-            box-shadow: 10px 0 35px rgba(0,0,0,0.5);
-            z-index: 200;
+            padding: 90px 24px 24px 24px; /* Logoların altına denk gelsin */
+            box-shadow: 25px 0 50px rgba(0,0,0,0.6);
+            z-index: 1000;
             overflow-y: auto;
-            position: relative;
-            backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px);
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            flex-shrink: 0;
+        }
+        .sidebar-nav.menu-open {
+            left: 0;
         }
 
         .sidebar-nav::-webkit-scrollbar { width: 4px; }
         .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
 
-        .logo-container {
-            width: 100%;
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            flex-shrink: 0;
-        }
-
-        .logo-container img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
         .brand-subtitle {
             font-size: 11px;
             color: #a4c2f4;
             text-transform: uppercase;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.15);
             padding-bottom: 12px;
-            flex-shrink: 0;
             font-weight: 700;
         }
 
         .menu-section-title {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: 20px;
             margin-bottom: 12px;
             padding-left: 5px;
-            border-left: 3px solid #00d2ff;
+            border-left: 3px solid var(--neon-blue);
         }
 
         .deck-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 8px;
         }
 
-        .deck-btn, .premium-btn {
-            position: relative;
-            overflow: hidden;
+        .deck-btn {
             width: 100%;
-            padding: 14px 18px;
+            padding: 12px 15px;
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 8px;
             color: #ffffff;
             text-align: left;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .deck-btn:hover, .premium-btn:hover {
+        .deck-btn:hover {
             background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
         }
 
         .deck-btn.active-deck {
             background: #ffffff;
             border-color: #ffffff;
             color: #002870; 
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
         }
 
         .deck-btn::before {
             content: "•";
-            color: #00d2ff;
-            font-size: 16px;
+            color: var(--neon-blue);
+            font-size: 14px;
         }
         .deck-btn.active-deck::before {
             color: #002870;
         }
 
-        /* WORKSPACE */
+        /* WORKSPACE (GENİŞLETİLMİŞ TASARIM) */
         .workspace {
             flex: 1;
             display: flex;
@@ -231,11 +263,11 @@
 
         .main-container {
             display: flex;
-            width: 96%;
+            width: 98%;
             flex: 1;
             overflow: hidden;
             gap: 20px;
-            height: calc(100% - 80px);
+            height: calc(100% - 70px);
         }
         
         .scene {
@@ -259,7 +291,7 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D BOOK & PAGE-PEEL YAPISI */
+        /* 3D BOOK SİSTEMİ */
         .book {
             position: relative;
             display: flex;
@@ -311,23 +343,23 @@
             border-radius: 8px;
         }
 
-        /* GEÇİŞ OKLARI */
+        /* GEÇİŞ HASSAS ALANLARI */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 150px;
-            z-index: 999;
+            top: 0; height: 100%; width: 120px;
+            z-index: 99;
             display: flex; align-items: center; justify-content: center;
         }
         .nav-overlay-zone.left-zone { left: 0; }
         .nav-overlay-zone.right-zone { right: 0; }
 
         .arrow-btn {
-            width: 55px; height: 55px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 50px; height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer;
+            color: #fff; font-size: 18px; cursor: pointer;
             opacity: 0; transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             user-select: none;
@@ -338,18 +370,18 @@
             background: #ffffff !important; color: #002870 !important;
         }
         
-        /* SLAYT ŞERİDİ */
+        /* SLIDE ŞERİDİ (SAĞ TARAF) */
         .sidebar-thumbnails {
-            width: 200px;
-            background: rgba(0, 40, 112, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 180px;
+            background: rgba(0, 40, 112, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            padding: 15px 10px;
+            gap: 12px;
+            padding: 12px 8px;
             backdrop-filter: blur(20px);
             z-index: 100;
             transition: all 0.5s ease;
@@ -357,116 +389,109 @@
         }
 
         .sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
-        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
 
         .thumb-box {
-            position: relative; width: 92%; cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 8px;
+            position: relative; width: 94%; cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
             overflow: hidden; transition: all 0.3s ease; opacity: 0.5;
             background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
         }
-        .thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.4); }
-        .thumb-box.active-thumb { border-color: #00d2ff; opacity: 1; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+        .thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.3); }
+        .thumb-box.active-thumb { border-color: var(--neon-blue); opacity: 1; box-shadow: 0 0 12px rgba(0, 210, 255, 0.3); }
         .thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
 
         .thumb-label {
-            position: absolute; bottom: 6px; right: 8px;
-            background: rgba(0,0,0,0.85); color: #00d2ff; font-size: 10px;
-            font-weight: bold; padding: 2px 6px; border-radius: 4px;
+            position: absolute; bottom: 4px; right: 6px;
+            background: rgba(0,0,0,0.8); color: var(--neon-blue); font-size: 9px;
+            font-weight: bold; padding: 1px 5px; border-radius: 3px;
         }
         
-        /* ALT PANEL */
+        /* KONTROL PANELİ VE SAĞ ALT SES KÖŞESİ */
         .bottom-bar-area {
             width: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 8px;
-            padding-top: 10px; flex-shrink: 0; z-index: 100;
-            transition: all 0.5s ease;
+            align-items: center; justify-content: center; gap: 6px;
+            padding-top: 5px; flex-shrink: 0; z-index: 101;
+            position: relative;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            justify-content: center;
         }
 
         .controls {
-            display: flex; align-items: center; gap: 15px; 
-            background: rgba(0, 40, 112, 0.8); padding: 12px 28px; border-radius: 50px;
-            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 12px; 
+            background: rgba(0, 40, 112, 0.75); padding: 10px 24px; border-radius: 50px;
+            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         
         .bottom-bar-area button {
-            padding: 8px 18px; font-size: 12px; font-weight: bold; cursor: pointer;
-            background: #fff; color: #002870; border: none; border-radius: 25px;
+            padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
+            background: #fff; color: #002870; border: none; border-radius: 20px;
             transition: all 0.3s ease;
         }
         .bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
         .bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
         
-        .goto-container { display: flex; align-items: center; gap: 5px; font-size: 13px; }
+        .goto-container { display: flex; align-items: center; gap: 4px; font-size: 12px; }
         .goto-input {
-            width: 45px; padding: 4px 6px; border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5);
+            width: 40px; padding: 3px 5px; border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
             color: #fff; text-align: center; font-weight: bold;
         }
         #pageIndicator { color: #ffffff; }
+
+        /* YENİ SAĞ ALT SES BUTONU */
+        .sound-corner {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .sound-mini-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 40, 112, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .sound-mini-btn:hover {
+            background: #ffffff;
+            color: #002870;
+            transform: scale(1.1);
+        }
+        .sound-mini-btn.muted {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: rgba(220, 38, 38, 0.4);
+            color: #f87171;
+        }
         
         .hint { 
-            font-size: 12px; 
-            color: rgba(255,255,255,0.6) !important; 
+            font-size: 11px; 
+            color: rgba(255,255,255,0.4) !important; 
             font-weight: 500;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
         }
 
-        /* PREMIUM TOP ACTION BAR */
-        .premium-actions {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 12px;
-            z-index: 10001;
-        }
-        
-        .premium-btn {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 10px 24px;
-            border-radius: 30px;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            min-width: 140px;
-            text-align: center;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .premium-btn.active {
-            background: #fff;
-            color: #002870;
-            box-shadow: 0 0 20px rgba(255,255,255,0.4);
-        }
-
-        #focusLogo {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 120px;
-            height: auto;
-            z-index: 10002;
-            display: none;
-            opacity: 0.8;
-            background: #ffffff;
-            padding: 6px 10px;
-            border-radius: 4px;
-        }
-
-        /* AUTO RESUME TOAST (GERİ GELDİ!) */
+        /* AUTO RESUME TOAST */
         #resumeToast {
             position: fixed;
             bottom: 30px;
             left: 30px;
             background: rgba(0, 40, 112, 0.95);
-            border-left: 4px solid #00d2ff;
+            border-left: 4px solid var(--neon-blue);
             padding: 15px 25px;
             border-radius: 6px;
             font-size: 13px;
@@ -484,142 +509,85 @@
             opacity: 1;
         }
 
-        /* FOCUS MODE */
-        .focus-mode-on .sidebar-nav { width: 0px !important; padding: 0px !important; border: none !important; opacity: 0; pointer-events: none; }
-        .focus-mode-on .sidebar-thumbnails { width: 0px !important; padding: 0px !important; border: none !important; opacity: 0; pointer-events: none; }
-        .focus-mode-on .bottom-bar-area { transform: translateY(150px); opacity: 0; pointer-events: none; }
-        .focus-mode-on #focusLogo { display: block; }
-        .focus-mode-on .main-container { width: 100% !important; gap: 0px !important; }
-        .focus-mode-on .workspace { padding: 0px !important; background: transparent !important; }
-
-        /* MOBİL RESPONSIVE DETAYLARI */
-        .hamburger-btn {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 45px;
-            height: 45px;
-            background: rgba(0, 40, 112, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            z-index: 10002;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 5px;
-            backdrop-filter: blur(10px);
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: #ffffff;
-            transition: 0.3s;
-        }
-
+        /* MOBİL RESPONSIVE DETAYLARI VE MOBİL RENDER DÜZELTMELERİ */
         @media (max-width: 1024px) {
-            .sidebar-nav {
-                position: fixed;
-                left: -320px;
-                top: 0;
-                height: 100vh;
-                width: 300px;
-                z-index: 10003;
-                background: rgba(0, 20, 60, 0.95);
-            }
-            .sidebar-nav.menu-open {
-                left: 0;
-            }
-            .hamburger-btn {
-                display: flex;
-            }
             .workspace {
                 height: 100%;
                 justify-content: flex-start;
                 padding-top: 80px;
-                gap: 10px;
+                gap: 5px;
             }
             .main-container {
                 flex-direction: column;
                 width: 100%;
-                gap: 10px;
-                height: calc(100% - 110px);
+                gap: 5px;
+                height: calc(100% - 100px);
             }
             .scene {
-                height: 70%;
+                height: 75%; /* Dikeyde slayta daha fazla yer veriyoruz */
                 width: 100%;
             }
             .sidebar-thumbnails {
                 width: 100%;
-                height: 90px;
+                height: 80px;
                 flex-direction: row;
-                padding: 5px 15px;
-                gap: 10px;
+                padding: 4px 10px;
+                gap: 8px;
                 overflow-x: auto;
                 overflow-y: hidden;
             }
             .thumb-box {
-                width: 90px;
-                height: 70px;
+                width: 80px;
+                height: 60px;
             }
             .arrow-btn {
-                width: 45px; height: 45px;
-                opacity: 0.4;
+                width: 40px; height: 40px;
+                opacity: 0.5;
             }
             .nav-overlay-zone {
-                width: 60px;
+                width: 50px;
             }
-            .premium-actions {
-                top: 20px;
-                right: 15px;
-                gap: 6px;
+            .sound-corner {
+                position: static;
+                transform: none;
+                margin-top: 5px;
             }
-            .premium-btn {
-                padding: 8px 12px;
-                font-size: 11px;
-                min-width: 110px;
+            .controls-wrapper {
+                flex-direction: column;
+                gap: 8px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ARKA PLAN SU KATMANI -->
-    <div class="water-background"></div>
+    <!-- GÜNCELLENEN PREMIUM AKIŞKAN ARKA PLAN -->
+    <div class="premium-bg"></div>
 
-    <!-- LOADING EKRANI (KALP ATIŞI EFECTİ GERİ EKLENDİ) -->
+    <!-- LOADING EKRANI -->
     <div id="globalLoading">
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
 
-    <!-- MOBİL HAMBURGER BUTONU -->
-    <div class="hamburger-btn" id="mobileHamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-    
-    <!-- PREMIUM ACTION BAR -->
-    <div class="premium-actions">
-        <button id="audioToggleBtn" class="premium-btn">🔊 Sound On</button>
-        <button id="focusModeBtn" class="premium-btn">✨ Focus Mode</button>
+    <!-- SOL ÜST KÖŞE - ORTAK HAMBURGER & LOGO PORTALI -->
+    <div class="header-bar">
+        <button class="hamburger-btn" id="menuHamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <button class="brand-logo-btn" onclick="toggleMenu()">
+            <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
+        </button>
     </div>
 
-    <!-- AUTO RESUME TOAST (GERİ EKLENDİ!) -->
+    <!-- AUTO RESUME TOAST -->
     <div id="resumeToast">Welcome back! You're being redirected to your last viewed page.</div>
-    
-    <!-- FOCUS LOGO -->
-    <img id="focusLogo" src="yatas_grup_logo.png" alt="Yataş Group Logo">
     
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- SIDEBAR -->
+        <!-- SLIDE-OUT SIDEBAR -->
         <div class="sidebar-nav" id="sidebarNav">
-            <div class="logo-container">
-                <img src="yatas_grup_logo.png" alt="Yataş Grup Logo">
-            </div>
             <div class="brand-subtitle">Corporate Deck Portal</div>
             
             <div class="menu-section-title">Catalogues</div>
@@ -629,7 +597,7 @@
             <ul class="deck-list" id="otherList"></ul>
         </div>
 
-        <!-- WORKSPACE -->
+        <!-- WORKSPACE (EKRANI TAMAMEN KAPLAR) -->
         <div class="workspace" id="workspace">
             <div class="main-container" id="mainContainer">
                 <div class="scene" id="scene">
@@ -653,17 +621,24 @@
 
             <!-- KONTROLLER -->
             <div class="bottom-bar-area" id="bottomBarArea">
-                <div class="controls">
-                    <button id="prevBtn" disabled>◀ Previous</button>
-                    <div class="goto-container">
-                        <input type="text" id="gotoInput" class="goto-input" value="1">
-                        <span id="pageIndicator">/ 0</span>
+                <div class="controls-wrapper">
+                    <div class="controls">
+                        <button id="prevBtn" disabled>◀ Previous</button>
+                        <div class="goto-container">
+                            <input type="text" id="gotoInput" class="goto-input" value="1">
+                            <span id="pageIndicator">/ 0</span>
+                        </div>
+                        <button id="nextBtn">Next ▶</button>
+                        <button id="zoomInBtn">🔍 +</button>
+                        <button id="zoomOutBtn">🔍 -</button>
                     </div>
-                    <button id="nextBtn">Next ▶</button>
-                    <button id="zoomInBtn">🔍 +</button>
-                    <button id="zoomOutBtn">🔍 -</button>
+
+                    <!-- SAĞ ALTA TAŞINAN SES BUTONU -->
+                    <div class="sound-corner">
+                        <button id="audioToggleBtn" class="sound-mini-btn" title="Mute/Unmute">🔊</button>
+                    </div>
                 </div>
-                <div class="hint">Scroll on the slide area to zoom. Swipe left/right on mobile.</div>
+                <div class="hint">Kaydırma tekerleğiyle yakınlaştırabilirsiniz. Mobilde parmağınızla kaydırın.</div>
             </div>
         </div>
 
@@ -707,7 +682,7 @@
         const otherList = document.getElementById('otherList');
         const globalLoading = document.getElementById('globalLoading');
         const sidebarNav = document.getElementById('sidebarNav');
-        const mobileHamburger = document.getElementById('mobileHamburger');
+        const menuHamburger = document.getElementById('menuHamburger');
 
         // PWA SERVICE WORKER
         if ('serviceWorker' in navigator) {
@@ -718,7 +693,7 @@
             });
         }
 
-        // AUDIO ENGINE UNLOCK[cite: 1]
+        // AUDIO UNLOCK[cite: 1]
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
                 transitionSound.pause();
@@ -751,35 +726,25 @@
             context.restore();
         }
 
-        // MOBİL MENÜ
-        mobileHamburger.addEventListener('click', (e) => {
-            e.stopPropagation();
+        // MENU TETİKLEME FONKSİYONLARI
+        function toggleMenu() {
             sidebarNav.classList.toggle('menu-open');
+        }
+        menuHamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu();
         });
         document.addEventListener('click', (e) => {
-            if (!sidebarNav.contains(e.target) && e.target !== mobileHamburger) {
+            if (!sidebarNav.contains(e.target) && !e.target.closest('.header-bar')) {
                 sidebarNav.classList.remove('menu-open');
             }
         });
 
-        // FOCUS MODE[cite: 1]
-        document.getElementById('focusModeBtn').addEventListener('click', function() {
-            this.classList.toggle('active');
-            document.body.classList.toggle('focus-mode-on');
-            this.innerText = document.body.classList.contains('focus-mode-on') ? "✨ Normal Mode" : "✨ Focus Mode";
-
-            setTimeout(() => {
-                if (pages[currentId]) {
-                    resetZoom();
-                    updateBookDisplay();
-                }
-            }, 500);
-        });
-
+        // SES KONTROLU (SAĞ ALTTAKİ İKON GÜNCELLEMESİ)
         document.getElementById('audioToggleBtn').addEventListener('click', function() {
             isSoundOn = !isSoundOn;
-            this.classList.toggle('active', !isSoundOn);
-            this.innerText = isSoundOn ? "🔊 Sound On" : "🔇 Muted";
+            this.classList.toggle('muted', !isSoundOn);
+            this.innerText = isSoundOn ? "🔊" : "🔇";
         });
 
         // MENÜ OLUŞTURMA[cite: 2]
@@ -845,22 +810,26 @@
             await loadPDF(presentations[index].url);
         }
 
+        // MOBİL SIKINTILARINI GİDEREN BOYUTLANDIRICI
         function resizeBookToFit(viewport) {
             if (!viewport) return;
-            const sceneW = scene.clientWidth;
-            const sceneH = scene.clientHeight;
+            // Mobilde scene genişliği bazen geç yüklendiği için ekran genişliğine fallback ekledik
+            const sceneW = scene.clientWidth || window.innerWidth;
+            const sceneH = scene.clientHeight || (window.innerHeight - 150);
             
-            const multiplierW = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.94;
-            const multiplierH = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.90;
+            // Ekranı olabildiğince doldursun diye payı azalttık
+            const multiplierW = 0.98;
+            const multiplierH = 0.96;
             
             const scaleX = (sceneW * multiplierW) / viewport.width;
             const scaleY = (sceneH * multiplierH) / viewport.height;
             const idealScale = Math.min(scaleX, scaleY);
+            
             book.style.width = Math.floor(viewport.width * idealScale) + 'px';
             book.style.height = Math.floor(viewport.height * idealScale) + 'px';
         }
 
-        // PREDICTIVE CACHE PIPELINE & RENDER[cite: 1]
+        // AKILLI ÖNBELLEK VE ÇÖZÜNÜRLÜK SİSTEMİ[cite: 1]
         async function optimizeAndRenderPage(pageNum) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
             if (pageRenderingStates[pageNum] === 'high-res') return;
@@ -1019,7 +988,7 @@
                     errorMsg.style.marginTop = '15px';
                     globalLoading.appendChild(errorMsg);
                 }
-                errorMsg.innerText = "Error loading PDF file. Please check file paths.";
+                errorMsg.innerText = "Hata: PDF dosyası yüklenemedi. Yolu kontrol ediniz.";
                 console.error(error);
             }
         }
@@ -1084,7 +1053,7 @@
         document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
         document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
 
-        // MOBİL SWIPE
+        // SWIPE İÇİN GELİŞTİRİLMİŞ TOUCHE EVENTLERİ (Mobil donmaları önler)
         let touchStartX = 0;
         let touchEndX = 0;
         
@@ -1100,7 +1069,7 @@
         }, { passive: true });
 
         function handleSwipeGesture() {
-            const threshold = 50; 
+            const threshold = 40; 
             if (touchStartX - touchEndX > threshold) {
                 flipNext(); 
             } else if (touchEndX - touchStartX > threshold) {
@@ -1153,7 +1122,7 @@
 
         window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
 
-        // COLD START / RESUME HAFIZASI[cite: 1]
+        // RE-INITIALIZATION (RESUME HAFIZASI)
         window.onload = () => {
             buildSidebarMenu();
             
