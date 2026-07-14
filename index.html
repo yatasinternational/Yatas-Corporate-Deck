@@ -18,6 +18,7 @@
             --primary-blue: #002870;
             --liquid-glow: rgba(255, 255, 255, 0.15);
             --neon-blue: #00d2ff;
+            --book-shadow: 0 25px 65px rgba(0,0,0,0.6);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -55,17 +56,8 @@
             50% { transform: rotate(180deg) scale(1.1); }
             100% { transform: rotate(360deg) scale(1); }
         }
-
-        /* İsteğe Bağlı Arka Plan Videosu Şablonu (Kullanmak istersen aşağıdaki yorumu açabilirsin) */
-        /*
-        .video-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: 1; opacity: 0.15;
-        }
-        */
         
-        /* 1. KALP ATIŞI KURUMSAL LOADING EKRANI */
+        /* KALP ATIŞI KURUMSAL LOADING EKRANI (GERİ GELDİ!) */
         #globalLoading { 
             position: fixed; 
             top: 0; 
@@ -110,7 +102,7 @@
             z-index: 2;
         }
 
-        /* DİNAMİK SOL BANNER */
+        /* SOL BANNER */
         .sidebar-nav {
             width: 320px;
             background: rgba(0, 40, 112, 0.65); 
@@ -254,6 +246,7 @@
             overflow: hidden;
             position: relative;
             height: 100%;
+            perspective: 2000px;
         }
 
         .pan-zoom-container {
@@ -266,43 +259,46 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D KİTAP YAPISI */
+        /* 3D BOOK & PAGE-PEEL YAPISI */
         .book {
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
         }
         
-        /* SADELEŞTİRİLMİŞ TEMİZ SAYFA GEÇİŞ ANİMASYONU */
         .page {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.6s, z-index 0.6s;
+            backface-visibility: hidden;
             opacity: 0;
             display: none;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            transform: scale(0.98);
         }
         
         .page.active-page {
             display: block;
             opacity: 1;
-            transform: scale(1);
+            transform: rotateY(0deg) scale(1);
             z-index: 5;
         }
 
         .page.turn-next {
             display: block;
             opacity: 0;
-            transform: translateX(-20px) scale(0.98);
+            transform: rotateY(-140deg) scale(0.95);
             z-index: 1;
             pointer-events: none;
         }
         .page.turn-prev {
             display: block;
             opacity: 0;
-            transform: translateX(20px) scale(0.98);
+            transform: rotateY(140deg) scale(0.95);
             z-index: 1;
             pointer-events: none;
         }
@@ -311,7 +307,7 @@
             width: 100% !important;
             height: 100% !important;
             display: block;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            box-shadow: var(--book-shadow);
             border-radius: 8px;
         }
 
@@ -342,7 +338,7 @@
             background: #ffffff !important; color: #002870 !important;
         }
         
-        /* SAĞ PANEL: SLAYT ŞERİDİ */
+        /* SLAYT ŞERİDİ */
         .sidebar-thumbnails {
             width: 200px;
             background: rgba(0, 40, 112, 0.25);
@@ -427,7 +423,6 @@
             z-index: 10001;
         }
         
-        /* GENİŞLETİLMİŞ BUTON ALANI (Yazıların sığması için optimize edildi) */
         .premium-btn {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(15px);
@@ -465,6 +460,7 @@
             border-radius: 4px;
         }
 
+        /* AUTO RESUME TOAST (GERİ GELDİ!) */
         #resumeToast {
             position: fixed;
             bottom: 30px;
@@ -496,7 +492,7 @@
         .focus-mode-on .main-container { width: 100% !important; gap: 0px !important; }
         .focus-mode-on .workspace { padding: 0px !important; background: transparent !important; }
 
-        /* MOBİL RESPONSIVE DETAYLARI - YENİDEN YAPILANDIRILDI */
+        /* MOBİL RESPONSIVE DETAYLARI */
         .hamburger-btn {
             display: none;
             position: fixed;
@@ -539,8 +535,6 @@
             .hamburger-btn {
                 display: flex;
             }
-            
-            /* Mobil Alan ve Sayfa Görünürlük Çözümü */
             .workspace {
                 height: 100%;
                 justify-content: flex-start;
@@ -593,12 +587,9 @@
 <body>
 
     <!-- ARKA PLAN SU KATMANI -->
-    <div class="water-background">
-        <!-- Canlı video oynatmak istersen aşağıdaki satırı aktif edebilirsin -->
-        <!-- <video autoplay muted loop playsinline class="video-bg"><source src="senin-video-linkin.mp4" type="video/mp4"></video> -->
-    </div>
+    <div class="water-background"></div>
 
-    <!-- KALP ATIŞI VE KURUMSAL ARKA PLANLI LOADING EKRANI -->
+    <!-- LOADING EKRANI (KALP ATIŞI EFECTİ GERİ EKLENDİ) -->
     <div id="globalLoading">
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
@@ -610,32 +601,30 @@
         <span></span>
     </div>
     
-    <!-- PREMIUM TOP ACTION BAR -->
+    <!-- PREMIUM ACTION BAR -->
     <div class="premium-actions">
         <button id="audioToggleBtn" class="premium-btn">🔊 Sound On</button>
         <button id="focusModeBtn" class="premium-btn">✨ Focus Mode</button>
     </div>
 
-    <!-- AUTO RESUME TOAST -->
+    <!-- AUTO RESUME TOAST (GERİ EKLENDİ!) -->
     <div id="resumeToast">Welcome back! You're being redirected to your last viewed page.</div>
     
-    <!-- FOCUS MODE AKTİF LOGO -->
+    <!-- FOCUS LOGO -->
     <img id="focusLogo" src="yatas_grup_logo.png" alt="Yataş Group Logo">
     
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- DİNAMİK LIQUID SOL BANNER -->
+        <!-- SIDEBAR -->
         <div class="sidebar-nav" id="sidebarNav">
             <div class="logo-container">
                 <img src="yatas_grup_logo.png" alt="Yataş Grup Logo">
             </div>
             <div class="brand-subtitle">Corporate Deck Portal</div>
             
-            <!-- 1. CATALOGUES -->
             <div class="menu-section-title">Catalogues</div>
             <ul class="deck-list" id="cataloguesList"></ul>
 
-            <!-- 2. OTHER PRESENTATIONS -->
             <div class="menu-section-title">Other Presentations</div>
             <ul class="deck-list" id="otherList"></ul>
         </div>
@@ -720,16 +709,16 @@
         const sidebarNav = document.getElementById('sidebarNav');
         const mobileHamburger = document.getElementById('mobileHamburger');
 
-        // PWA SERVICE WORKER OTOMATİK KAYIT SİSTEMİ
+        // PWA SERVICE WORKER
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('PWA Service Worker Başarıyla Kaydedildi.', reg))
-                    .catch(err => console.log('Service Worker kaydı şimdilik es geçildi (Lokalde normaldir).', err));
+                    .then(reg => console.log('PWA Service Worker Registered.', reg))
+                    .catch(err => console.log('Service Worker skipped.', err));
             });
         }
 
-        // AUDIO KİLİDİNİ ÇÖZME[cite: 1]
+        // AUDIO ENGINE UNLOCK[cite: 1]
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
                 transitionSound.pause();
@@ -762,7 +751,7 @@
             context.restore();
         }
 
-        // MOBİL HAMBURGER GEÇİŞİ
+        // MOBİL MENÜ
         mobileHamburger.addEventListener('click', (e) => {
             e.stopPropagation();
             sidebarNav.classList.toggle('menu-open');
@@ -773,7 +762,7 @@
             }
         });
 
-        // FOCUS MODE TETİKLEYİCİ[cite: 1]
+        // FOCUS MODE[cite: 1]
         document.getElementById('focusModeBtn').addEventListener('click', function() {
             this.classList.toggle('active');
             document.body.classList.toggle('focus-mode-on');
@@ -793,7 +782,7 @@
             this.innerText = isSoundOn ? "🔊 Sound On" : "🔇 Muted";
         });
 
-        // DİNAMİK MENU OLUŞTURMA[cite: 2]
+        // MENÜ OLUŞTURMA[cite: 2]
         function buildSidebarMenu() {
             cataloguesList.innerHTML = "";
             otherList.innerHTML = "";
@@ -871,7 +860,7 @@
             book.style.height = Math.floor(viewport.height * idealScale) + 'px';
         }
 
-        // HIBRID SAYFA RENDER[cite: 1]
+        // PREDICTIVE CACHE PIPELINE & RENDER[cite: 1]
         async function optimizeAndRenderPage(pageNum) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
             if (pageRenderingStates[pageNum] === 'high-res') return;
@@ -1095,7 +1084,7 @@
         document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
         document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
 
-        // MOBİL SWIPE (KAYDIRMA) MEKANİZMASI
+        // MOBİL SWIPE
         let touchStartX = 0;
         let touchEndX = 0;
         
@@ -1135,6 +1124,7 @@
             }
         });
 
+        // ZOOM & SCROLL
         scene.addEventListener('wheel', (e) => {
             e.preventDefault();
             if (e.deltaY < 0) { scale = Math.min(scale + 0.2, 5); } else { scale = Math.max(scale - 0.2, 1); }
