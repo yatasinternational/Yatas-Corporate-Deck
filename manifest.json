@@ -1,0 +1,15 @@
+{
+  "short_name": "Yataş Portal",
+  "name": "Yataş Group Corporate Portal",
+  "icons": [
+    {
+      "src": "yatas_grup_logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#050a1a",
+  "display": "standalone",
+  "theme_color": "#002870"
+}
