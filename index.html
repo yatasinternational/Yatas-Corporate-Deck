@@ -18,12 +18,42 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             color: #fff;
+            perspective: 2000px;
         }
         
+        /* YATAŞ KURUMSAL LACİVERT KALP ATIŞI LOADING EKRANI */
         #globalLoading { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #070d22; z-index: 10000; display: flex; 
-            justify-content: center; align-items: center; font-size: 18px; letter-spacing: 1px;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background: #002870; 
+            z-index: 10000; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            gap: 20px;
+        }
+
+        .loading-pulse-logo {
+            width: 180px;
+            height: auto;
+            background: #ffffff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: yatasHeartbeat 1.4s ease-in-out infinite;
+        }
+
+        @keyframes yatasHeartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.08); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.13); }
+            70% { transform: scale(1); }
+            100% { transform: scale(1); }
         }
 
         .portal-wrapper {
@@ -31,25 +61,45 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* SOL PANEL: YATAŞ KURUMSAL BANNER */
+        /* FOCUS MODE AKTİF LOGO */
+        #focusLogo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 120px;
+            height: auto;
+            z-index: 10002;
+            display: none;
+            opacity: 0.8;
+            background: #ffffff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: opacity 0.3s;
+        }
+        #focusLogo:hover { opacity: 1; }
+
+        /* SOL PANEL */
         .sidebar-nav {
             width: 320px;
-            background: #002870; /* Yataş Kurumsal Lacivert */
+            background: #002870; 
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             padding: 20px;
             box-shadow: 5px 0 25px rgba(0,0,0,0.5);
             z-index: 200;
-            overflow-y: auto; /* Çok sunum eklenirse menü kendi içinde kayabilsin */
+            overflow-y: auto;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            flex-shrink: 0;
         }
 
         .sidebar-nav::-webkit-scrollbar { width: 4px; }
         .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
 
-        /* Beyaz Logoluk Alan */
         .logo-container {
             width: 100%;
             background: #ffffff;
@@ -74,13 +124,12 @@
             color: #a4c2f4;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             border-bottom: 1px solid rgba(255,255,255,0.15);
             padding-bottom: 12px;
             flex-shrink: 0;
         }
 
-        /* YENİ KATEGORİ BAŞLIKLARI (ANA BAŞLIKLAR) */
         .menu-section-title {
             font-size: 13px;
             color: #ffffff;
@@ -100,7 +149,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-bottom: 20px; /* İki kategori arasında boşluk */
+            margin-bottom: 20px;
         }
 
         .deck-btn {
@@ -148,9 +197,10 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 15px 0;
             position: relative;
             background: rgba(7, 13, 34, 0.35);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .main-container {
@@ -159,6 +209,7 @@
             flex: 1;
             overflow: hidden;
             gap: 15px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
         
         .scene {
@@ -185,6 +236,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transform-style: preserve-3d;
+            perspective: 2000px;
         }
         
         .page {
@@ -193,11 +246,32 @@
             width: 100%; height: 100%;
             opacity: 0;
             display: none;
+            transform-origin: left center;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+            backface-visibility: hidden;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.5);
         }
         
         .page.active-page {
             display: block;
             opacity: 1;
+            transform: rotateY(0deg) scale(1);
+            z-index: 5;
+        }
+
+        .page.turn-next {
+            display: block;
+            opacity: 0;
+            transform: rotateY(-75deg) scale(0.9);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .page.turn-prev {
+            display: block;
+            opacity: 0;
+            transform: rotateY(75deg) scale(0.9);
+            z-index: 1;
+            pointer-events: none;
         }
 
         canvas {
@@ -208,11 +282,11 @@
             border-radius: 6px;
         }
 
-        /* PREMIUM GEÇİŞ OKLARI */
+        /* GEÇİŞ OKLARI */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 100px;
-            z-index: 9999 !important;
+            top: 0; height: 100%; width: 120px;
+            z-index: 999;
             display: flex; align-items: center; justify-content: center;
         }
         .nav-overlay-zone.left-zone { left: 0; }
@@ -251,6 +325,8 @@
             padding: 15px 10px;
             backdrop-filter: blur(15px);
             z-index: 100;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            flex-shrink: 0;
         }
 
         .sidebar-thumbnails::-webkit-scrollbar { width: 5px; }
@@ -277,6 +353,7 @@
             width: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 6px;
             padding-top: 10px; flex-shrink: 0; z-index: 100;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .controls {
@@ -308,32 +385,114 @@
             font-weight: 500;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
         }
+
+        /* ACTION BAR */
+        .premium-actions {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10001;
+        }
+        .premium-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 10px 16px;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .premium-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .premium-btn.active {
+            background: #fff;
+            color: #002870;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+
+        /* AUTO RESUME TOAST */
+        #resumeToast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0, 40, 112, 0.95);
+            border-left: 4px solid #ffffff;
+            padding: 15px 25px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10005;
+            display: none;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #resumeToast.show {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* FOCUS MODE SIFIRLANAN BOYUTLAR */
+        .focus-mode-on .sidebar-nav { width: 0px !important; padding: 0px !important; border: none !important; opacity: 0; pointer-events: none; }
+        .focus-mode-on .sidebar-thumbnails { width: 0px !important; padding: 0px !important; border: none !important; opacity: 0; pointer-events: none; }
+        .focus-mode-on .bottom-bar-area { transform: translateY(150px); opacity: 0; pointer-events: none; }
+        .focus-mode-on #focusLogo { display: block; }
+        .focus-mode-on .main-container { width: 100% !important; gap: 0px !important; }
+        .focus-mode-on .workspace { padding: 0px !important; background: transparent !important; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="globalLoading">Yataş Group Deck Engine is launching...</div>
+    <!-- KALP ATIŞI VE KURUMSAL ARKA PLANLI LOADING EKRANI -->
+    <div id="globalLoading">
+        <img src="image_26c641.png" alt="Yataş Group" class="loading-pulse-logo">
+    </div>
     
-    <div class="portal-wrapper">
+    <!-- PREMIUM TOP ACTION BAR -->
+    <div class="premium-actions">
+        <button id="audioToggleBtn" class="premium-btn">🔊 Sound On</button>
+        <button id="focusModeBtn" class="premium-btn">✨ Focus Mode</button>
+    </div>
+
+    <!-- AUTO RESUME TOAST -->
+    <div id="resumeToast">Hoş geldiniz! En son incelediğiniz sayfaya yönlendiriliyorsunuz.</div>
+    
+    <!-- FOCUS MODE AKTİF LOGO -->
+    <img id="focusLogo" src="image_26c641.png" alt="Yataş Group Logo">
+    
+    <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- SOL BANNER: KATEGORİZASYONLU YATAŞ MENÜSÜ -->
-        <div class="sidebar-nav">
+        <!-- SOL BANNER -->
+        <div class="sidebar-nav" id="sidebarNav">
             <div class="logo-container">
                 <img src="image_26c641.png" alt="Yataş Grup Logo">
             </div>
             <div class="brand-subtitle">Corporate Deck Portal</div>
             
-            <!-- 1. ANA BAŞLIK: CATALOGUES -->
+            <!-- 1. CATALOGUES -->
             <div class="menu-section-title">Catalogues</div>
             <ul class="deck-list" id="cataloguesList"></ul>
 
-            <!-- 2. ANA BAŞLIK: OTHER PRESENTATIONS -->
+            <!-- 2. OTHER PRESENTATIONS -->
             <div class="menu-section-title">Other Presentatıons</div>
             <ul class="deck-list" id="otherList"></ul>
         </div>
 
         <!-- WORKSPACE -->
-        <div class="workspace">
+        <div class="workspace" id="workspace">
             <div class="main-container" id="mainContainer">
                 <div class="scene" id="scene">
                     
@@ -373,8 +532,7 @@
     </div>
 
     <script>
-        // İNCELEMEN İÇİN ÖZELLİKLE AYIRDIĞIM YENİ VERİ YAPISI
-        // Dosya isimlerini (url kısımlarını) klasöründekilerle birebir eşleyebilirsin abi.
+        // SİTENİN ORİJİNAL VERİ YAPISI KORUNDU
         const presentationData = {
             catalogues: [
                 { title: "Enza Home", url: "Enza Home.pdf" },
@@ -387,18 +545,20 @@
             ]
         };
 
-        // Arka planda aktif sunumu yönetmek için düz listeye çeviriyoruz
         const presentations = [...presentationData.catalogues, ...presentationData.otherPresentations];
-
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
+        let currentActivePresentationIndex = 0;
         let currentId = 0; 
         let pages = [];
         let thumbElements = [];
         let pdfDoc = null;
-        
         let scale = 1; let posX = 0; let posY = 0;
         let isDragging = false; let startX; let startY;
+        let isSoundOn = true;
+        let pageRenderingStates = {}; 
+
+        const transitionSound = new Audio('glossy_magazine.mp3');
 
         const zoomContainer = document.getElementById('zoomContainer');
         const book = document.getElementById('book');
@@ -409,14 +569,62 @@
         const otherList = document.getElementById('otherList');
         const globalLoading = document.getElementById('globalLoading');
 
-        // BEYNİ BURASI: Sol taraftaki listeleri iki ayrı gruba dinamik olarak basan fonksiyon
+        function unlockAudioEngine() {
+            transitionSound.play().then(() => {
+                transitionSound.pause();
+                transitionSound.currentTime = 0;
+            }).catch(e => console.log('Audio engine setup.'));
+            window.removeEventListener('click', unlockAudioEngine);
+            window.removeEventListener('keydown', unlockAudioEngine);
+        }
+        window.addEventListener('click', unlockAudioEngine);
+        window.addEventListener('keydown', unlockAudioEngine);
+
+        function playPaperSound() {
+            if (!isSoundOn) return;
+            try {
+                transitionSound.currentTime = 0;
+                transitionSound.play();
+            } catch (e) { console.log("Audio trigger context check."); }
+        }
+
+        // WATERMARK ENJEKSİYONU
+        function injectWatermark(context, width, height) {
+            context.save();
+            context.font = "bold " + Math.floor(width / 22) + "px 'Segoe UI', Arial, sans-serif";
+            context.fillStyle = "rgba(255, 255, 255, 0.06)";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.translate(width / 2, height / 2);
+            context.rotate(-Math.PI / 6);
+            context.fillText("© YATAŞ GROUP - ALL RIGHTS RESERVED", 0, 0);
+            context.restore();
+        }
+
+        document.getElementById('focusModeBtn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.body.classList.toggle('focus-mode-on');
+            this.innerText = document.body.classList.contains('focus-mode-on') ? "✨ Normal Mode" : "✨ Focus Mode";
+
+            setTimeout(() => {
+                if (pages[currentId]) {
+                    resetZoom();
+                    updateBookDisplay();
+                }
+            }, 450);
+        });
+
+        document.getElementById('audioToggleBtn').addEventListener('click', function() {
+            isSoundOn = !isSoundOn;
+            this.classList.toggle('active', !isSoundOn);
+            this.innerText = isSoundOn ? "🔊 Sound On" : "🔇 Muted";
+        });
+
         function buildSidebarMenu() {
             cataloguesList.innerHTML = "";
             otherList.innerHTML = "";
-
             let globalIdx = 0;
 
-            // Catalogues Listesini Oluşturma
             presentationData.catalogues.forEach((deck) => {
                 const currentIdx = globalIdx;
                 const li = document.createElement('li');
@@ -430,7 +638,6 @@
                 globalIdx++;
             });
 
-            // Other Presentations Listesini Oluşturma
             presentationData.otherPresentations.forEach((deck) => {
                 const currentIdx = globalIdx;
                 const li = document.createElement('li');
@@ -445,58 +652,148 @@
             });
         }
 
-        async function switchPresentation(index) {
+        async function switchPresentation(index, targetSavedPage = 0) {
+            currentActivePresentationIndex = index;
+            localStorage.setItem('corporate_last_presentation', index);
+
             const buttons = document.querySelectorAll('.deck-btn');
             buttons.forEach(b => {
                 const bIdx = parseInt(b.getAttribute('data-index'));
                 b.classList.toggle('active-deck', bIdx === index);
             });
 
+            const errorMsg = document.getElementById('loadingErrorMsg');
+            if(errorMsg) errorMsg.remove();
             globalLoading.style.display = 'flex';
-            globalLoading.innerText = `Loading "${presentations[index].title}"...`;
 
             book.innerHTML = '';
             sidebarThumbnails.innerHTML = '';
             pages = [];
             thumbElements = [];
-            currentId = 0;
+            currentId = targetSavedPage;
+            pageRenderingStates = {};
             resetZoom();
 
             await loadPDF(presentations[index].url);
         }
 
         function resizeBookToFit(viewport) {
+            if (!viewport) return;
             const sceneW = scene.clientWidth;
             const sceneH = scene.clientHeight;
-            const scaleX = (sceneW * 0.94) / viewport.width;
-            const scaleY = (sceneH * 0.90) / viewport.height;
+            
+            const multiplierW = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.95;
+            const multiplierH = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.92;
+            
+            const scaleX = (sceneW * multiplierW) / viewport.width;
+            const scaleY = (sceneH * multiplierH) / viewport.height;
             const idealScale = Math.min(scaleX, scaleY);
             book.style.width = Math.floor(viewport.width * idealScale) + 'px';
             book.style.height = Math.floor(viewport.height * idealScale) + 'px';
         }
 
-        async function renderPage(pageNum, totalPages) {
+        // HİBRİT ÖNBELLEK VE SIFIR GECİKMELİ ÖNİZLEME SİSTEMİ
+        async function optimizeAndRenderPage(pageNum) {
+            if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
+            if (pageRenderingStates[pageNum] === 'high-res') return;
+
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 2.0 });
+                const distance = Math.abs((pageNum - 1) - currentId);
+                const isHighResTarget = distance <= 2;
+                const renderScale = isHighResTarget ? 3.0 : 1.2;
 
-                const pageDiv = document.createElement('div');
-                pageDiv.className = 'page';
+                let pageDiv = pages[pageNum - 1];
+                if (!pageDiv) {
+                    pageDiv = document.createElement('div');
+                    pageDiv.className = 'page';
+                    const canvas = document.createElement('canvas');
+                    pageDiv.appendChild(canvas);
+                    book.appendChild(pageDiv);
+                    pages[pageNum - 1] = pageDiv;
+                }
+
+                const canvas = pageDiv.querySelector('canvas');
+                const context = canvas.getContext('2d');
+                
+                // Sağdaki thumbnail hazırsa, yüksek çözünürlük çizilene kadar anında kopyala (Sıfır Bekleme)
+                const sourceThumbBox = document.getElementById(`thumb-box-${pageNum}`);
+                if (sourceThumbBox && !pageRenderingStates[pageNum]) {
+                    const thumbCanvas = sourceThumbBox.querySelector('canvas');
+                    if (thumbCanvas && thumbCanvas.width > 0) {
+                        canvas.width = thumbCanvas.width;
+                        canvas.height = thumbCanvas.height;
+                        context.drawImage(thumbCanvas, 0, 0);
+                        pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+                        if (pageNum - 1 === currentId) updateBookDisplay();
+                    }
+                }
+
+                const viewport = page.getViewport({ scale: renderScale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+                pageRenderingStates[pageNum] = isHighResTarget ? 'high-res' : 'low-res';
+
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                injectWatermark(context, canvas.width, canvas.height);
+
+                if (pageNum - 1 === currentId) {
+                    updateBookDisplay();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function runPredictiveCachePipeline() {
+            const total = pdfDoc.numPages;
+            const activeIdx = currentId + 1;
+
+            optimizeAndRenderPage(activeIdx);
+            for (let i = 1; i <= 2; i++) {
+                optimizeAndRenderPage(activeIdx + i);
+                optimizeAndRenderPage(activeIdx - i);
+            }
+
+            for (let p = 1; p <= total; p++) {
+                if (Math.abs((p - 1) - currentId) > 3) {
+                    if (pageRenderingStates[p] === 'high-res') {
+                        pageRenderingStates[p] = 'purged'; 
+                        optimizeAndRenderPage(p);
+                    }
+                }
+            }
+        }
+
+        function createSequentialThumbContainers(total) {
+            sidebarThumbnails.innerHTML = '';
+            for (let i = 1; i <= total; i++) {
+                const thumbBox = document.createElement('div');
+                thumbBox.className = 'thumb-box';
+                thumbBox.id = `thumb-box-${i}`;
                 
                 const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.height = viewport.height; canvas.width = viewport.width;
+                thumbBox.appendChild(canvas);
 
-                pageDiv.appendChild(canvas);
-                book.appendChild(pageDiv);
+                const label = document.createElement('div');
+                label.className = 'thumb-label'; label.innerText = i;
+                thumbBox.appendChild(label);
 
-                const renderTask = page.render({ canvasContext: context, viewport: viewport });
-                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 }); 
-                pages[pageNum - 1] = pageDiv;
+                sidebarThumbnails.appendChild(thumbBox);
+                thumbElements[i - 1] = thumbBox;
 
-                await renderTask.promise;
-                updateBookDisplay();
-            } catch (err) { console.error(err); }
+                thumbBox.addEventListener('click', () => {
+                    if (currentId === i - 1) return;
+                    playPaperSound();
+                    currentId = i - 1;
+                    localStorage.setItem('corporate_last_page', currentId);
+                    resetZoom();
+                    
+                    optimizeAndRenderPage(i); 
+                    updateBookDisplay();
+                    runPredictiveCachePipeline();
+                });
+            }
         }
 
         async function renderThumbnail(pageNum) {
@@ -504,26 +801,12 @@
                 const page = await pdfDoc.getPage(pageNum);
                 const viewport = page.getViewport({ scale: 0.35 }); 
 
-                const thumbBox = document.createElement('div');
-                thumbBox.className = 'thumb-box';
-                
-                const canvas = document.createElement('canvas');
+                const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
+                if (!thumbBox) return;
+
+                const canvas = thumbBox.querySelector('canvas');
                 const context = canvas.getContext('2d');
                 canvas.height = viewport.height; canvas.width = viewport.width;
-                thumbBox.appendChild(canvas);
-
-                const label = document.createElement('div');
-                label.className = 'thumb-label'; label.innerText = pageNum;
-                thumbBox.appendChild(label);
-
-                sidebarThumbnails.appendChild(thumbBox);
-                thumbElements[pageNum - 1] = thumbBox;
-
-                thumbBox.addEventListener('click', () => {
-                    currentId = pageNum - 1;
-                    resetZoom();
-                    updateBookDisplay();
-                });
 
                 await page.render({ canvasContext: context, viewport: viewport }).promise;
             } catch (err) { console.error(err); }
@@ -536,25 +819,37 @@
                 pages = new Array(totalPages);
                 thumbElements = new Array(totalPages);
 
-                const firstBatch = Math.min(3, totalPages);
-                for (let pageNum = 1; pageNum <= firstBatch; pageNum++) {
-                    await renderPage(pageNum, totalPages);
+                createSequentialThumbContainers(totalPages);
+
+                const thumbPromises = [];
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    thumbPromises.push(renderThumbnail(pageNum));
                 }
+                await Promise.all(thumbPromises);
+
+                const startRenderPage = currentId + 1;
+                await optimizeAndRenderPage(startRenderPage);
 
                 globalLoading.style.display = 'none';
                 zoomContainer.style.display = 'block';
                 updateBookDisplay();
+                runPredictiveCachePipeline();
 
-                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-                    renderThumbnail(pageNum).then(() => {
-                        if (pageNum - 1 === currentId && thumbElements[currentId]) {
-                            thumbElements[currentId].classList.add('active-thumb');
-                        }
-                    });
-                    if (pageNum > 3) { renderPage(pageNum, totalPages); }
+                if (thumbElements[currentId]) {
+                    thumbElements[currentId].classList.add('active-thumb');
                 }
             } catch (error) {
-                globalLoading.innerText = "Error loading PDF file. Please check file paths.";
+                globalLoading.style.display = 'flex';
+                let errorMsg = document.getElementById('loadingErrorMsg');
+                if(!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.id = 'loadingErrorMsg';
+                    errorMsg.style.color = '#ff4d4d';
+                    errorMsg.style.fontWeight = 'bold';
+                    errorMsg.style.marginTop = '15px';
+                    globalLoading.appendChild(errorMsg);
+                }
+                errorMsg.innerText = "Error loading PDF file. Please check file paths.";
                 console.error(error);
             }
         }
@@ -566,9 +861,13 @@
             pages.forEach((page, index) => {
                 if (!page) return;
                 if (index === currentId) {
-                    page.classList.add('active-page');
+                    page.className = 'page active-page';
                     resizeBookToFit(page.pdfViewport);
-                } else { page.classList.remove('active-page'); }
+                } else if (index < currentId) {
+                    page.className = 'page turn-next';
+                } else {
+                    page.className = 'page turn-prev';
+                }
             });
 
             thumbElements.forEach((thumb, index) => {
@@ -585,8 +884,30 @@
             document.getElementById('pageIndicator').innerText = `/ ${total}`;
         }
 
-        function flipNext() { if (currentId < pages.length - 1 && pages[currentId + 1]) { currentId++; resetZoom(); updateBookDisplay(); } }
-        function flipPrev() { if (currentId > 0 && pages[currentId - 1]) { currentId--; resetZoom(); updateBookDisplay(); } }
+        function flipNext() { 
+            if (currentId < pages.length - 1) { 
+                playPaperSound();
+                currentId++; 
+                localStorage.setItem('corporate_last_page', currentId);
+                resetZoom(); 
+                optimizeAndRenderPage(currentId + 1);
+                updateBookDisplay(); 
+                runPredictiveCachePipeline();
+            } 
+        }
+        
+        function flipPrev() { 
+            if (currentId > 0) { 
+                playPaperSound();
+                currentId--; 
+                localStorage.setItem('corporate_last_page', currentId);
+                resetZoom(); 
+                optimizeAndRenderPage(currentId + 1);
+                updateBookDisplay(); 
+                runPredictiveCachePipeline();
+            } 
+        }
+        
         function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
         function updateTransform() { zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
 
@@ -597,7 +918,14 @@
             if (e.key === 'Enter') {
                 let targetPage = parseInt(gotoInput.value);
                 if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
-                    currentId = targetPage - 1; resetZoom(); updateBookDisplay(); gotoInput.blur();
+                    playPaperSound();
+                    currentId = targetPage - 1; 
+                    localStorage.setItem('corporate_last_page', currentId);
+                    resetZoom(); 
+                    optimizeAndRenderPage(targetPage);
+                    updateBookDisplay(); 
+                    runPredictiveCachePipeline();
+                    gotoInput.blur();
                 } else { gotoInput.value = currentId + 1; }
             }
         });
@@ -630,9 +958,24 @@
 
         window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
 
+        // LOCALSTORAGE İLE SUNUM VE SAYFA HAFIZASI
         window.onload = () => {
             buildSidebarMenu();
-            loadPDF(presentations[0].url); // İlk açılışta listenin en üstündeki PDF'i yükler
+            
+            const savedPresentation = localStorage.getItem('corporate_last_presentation');
+            const savedPage = localStorage.getItem('corporate_last_page');
+
+            if (savedPresentation !== null && presentations[savedPresentation]) {
+                const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
+                
+                const toast = document.getElementById('resumeToast');
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 4000);
+
+                switchPresentation(parseInt(savedPresentation), targetPageIdx);
+            } else {
+                switchPresentation(0, 0); 
+            }
         };
     </script>
 </body>
