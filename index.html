@@ -33,7 +33,7 @@
             color: #fff;
         }
 
-        /* YENİ NESİL PREMIUM VE GÖRÜNÜR MESH GRADIENT ARKA PLAN */
+        /* PREMIUM MESH GRADIENT ARKA PLAN */
         .premium-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -91,7 +91,7 @@
             100% { transform: scale(1); }
         }
 
-        /* ANA PORTAL ALANI (HEP GENİŞ / FOCUS) */
+        /* ANA PORTAL ALANI */
         .portal-wrapper {
             display: flex;
             width: 100vw;
@@ -173,7 +173,7 @@
             border-right: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
-            padding: 150px 24px 24px 24px; /* Dikey konumlanan logonun altında kalması için padding arttı */
+            padding: 150px 24px 24px 24px;
             box-shadow: 25px 0 50px rgba(0,0,0,0.6);
             z-index: 1000;
             overflow-y: auto;
@@ -286,9 +286,14 @@
             perspective: 2000px;
         }
 
+        /* iOS ÇÖKMESİNİ ENGELLEYEN YENİ GENİŞLİK VE FLEX AYARI */
         .pan-zoom-container {
             position: absolute;
-            display: none;
+            width: 100%;
+            height: 100%;
+            display: none; /* JS ile 'flex' yapılacak */
+            justify-content: center;
+            align-items: center;
             cursor: grab;
             transform-origin: center center;
             will-change: transform;
@@ -299,9 +304,6 @@
         /* 3D BOOK SİSTEMİ */
         .book {
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             transform-style: preserve-3d;
             transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
         }
@@ -346,7 +348,7 @@
             border-radius: 8px;
         }
 
-        /* HER ZAMAN BELİRGİN YÖNLENDİRME OKLARI */
+        /* YÖNLENDİRME OKLARI */
         .nav-overlay-zone {
             position: absolute;
             top: 0; height: 100%; width: 120px;
@@ -363,7 +365,7 @@
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 20px; cursor: pointer;
-            opacity: 0.65; /* HER ZAMAN GÖRÜNÜR KILDIK */
+            opacity: 0.65;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(8px);
             user-select: none;
@@ -453,7 +455,7 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* YENİ NESİL iOS TARZI LIQUID SES SWITCH'İ */
+        /* iOS TARZI LIQUID SES SWITCH'İ */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -569,12 +571,12 @@
             opacity: 1;
         }
 
-        /* MOBİL SÜRÜM - KESİN ÇÖZÜMLÜ CSS REVIZYONLARI */
+        /* MOBİL REVIZYONLARI */
         @media (max-width: 1024px) {
             .workspace {
                 height: 100vh;
                 justify-content: flex-start;
-                padding-top: 140px; /* Üst dikey logoların altında kalması için */
+                padding-top: 140px; 
                 gap: 5px;
             }
             .main-container {
@@ -584,7 +586,6 @@
                 height: calc(100% - 150px);
             }
             
-            /* Sahnemizi sıkıştırmayı önleyip %74 net yükseklik veriyoruz */
             .scene {
                 height: 74% !important; 
                 width: 100% !important;
@@ -593,31 +594,29 @@
                 justify-content: center;
             }
             
-            /* Alt Slayt Şeridini Ekranın En Altına Alıp Küçülttük */
             .sidebar-thumbnails {
                 width: 100% !important;
-                height: 60px !important; /* Dikey alanı daralttık */
+                height: 60px !important;
                 flex-direction: row !important;
                 padding: 4px 10px !important;
                 gap: 8px !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
                 background: rgba(0, 40, 112, 0.3) !important;
-                margin-top:auto; /* En alta dayar */
+                margin-top: auto;
             }
             .thumb-box {
-                width: 60px !important; /* Genişliği küçüldü */
-                height: 45px !important; /* Yüksekliği küçüldü */
+                width: 60px !important; 
+                height: 45px !important;
             }
             .arrow-btn {
                 width: 44px; height: 44px;
-                opacity: 0.7; /* Mobilde de her zaman görünür */
+                opacity: 0.7;
             }
             .nav-overlay-zone {
                 width: 50px;
             }
             
-            /* Mobilde Ses Switch'ini aşağıya düzgünce hizaladık */
             .sound-corner {
                 position: static !important;
                 transform: none !important;
@@ -640,7 +639,6 @@
 </head>
 <body>
 
-    <!-- YENİ NESİL PREMIUM GÖRÜNÜR MESH ARKA PLAN -->
     <div class="premium-bg"></div>
 
     <!-- LOADING EKRANI -->
@@ -648,7 +646,7 @@
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
 
-    <!-- GÜNCELLENEN SOL ÜST DİKEY YERLEŞİM: LOGO ÜSTTE, HAMBURGER ALTTA -->
+    <!-- SOL ÜST DİKEY YERLEŞİM: LOGO ÜSTTE, HAMBURGER ALTTA -->
     <div class="header-column">
         <button class="brand-logo-btn" onclick="toggleMenu()">
             <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
@@ -661,22 +659,21 @@
     </div>
 
     <!-- AUTO RESUME TOAST -->
-    <div id="resumeToast">Welcome back! You're being redirected to your last viewed page.</div>
+    <div id="resumeToast">>Welcome back! You're being redirected to your last viewed page.</div>
     
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- SLIDE-OUT SIDEBAR -->
+        <!-- SIDEBAR -->
         <div class="sidebar-nav" id="sidebarNav">
             <div class="brand-subtitle">Corporate Deck Portal</div>
             
             <div class="menu-section-title">Catalogues</div>
             <ul class="deck-list" id="cataloguesList"></ul>
 
-            <div class="menu-section-title">Other Presentations</div>
+            <div class="menu-section-title">Other Presentatıons</div>
             <ul class="deck-list" id="otherList"></ul>
         </div>
 
-        <!-- WORKSPACE (EKRANI TAMAMEN KAPLAR) -->
         <div class="workspace" id="workspace">
             <div class="main-container" id="mainContainer">
                 <div class="scene" id="scene">
@@ -685,7 +682,7 @@
                         <div id="book" class="book"></div>
                     </div>
 
-                    <!-- HER ZAMAN BELİRGİN YÖNLENDİRME OKLARI -->
+                    <!-- OK YÖNLENDİRMELERİ -->
                     <div class="nav-overlay-zone left-zone" id="zoneLeft">
                         <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
                     </div>
@@ -713,7 +710,7 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- YENİ SAĞ ALT iOS LIQUID SES SWITCH'İ -->
+                    <!-- SES SWITCH'İ -->
                     <div class="sound-corner">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound</span>
@@ -731,7 +728,6 @@
     </div>
 
     <script>
-        // SUNUM VERİLERİ[cite: 2]
         const presentationData = {
             catalogues: [
                 { title: "Enza Home", url: "Enza Home.pdf" },
@@ -779,7 +775,7 @@
             });
         }
 
-        // AUDIO UNLOCK[cite: 1]
+        // AUDIO UNLOCK
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
                 transitionSound.pause();
@@ -799,7 +795,7 @@
             } catch (e) { console.log("Audio trigger error."); }
         }
 
-        // FİLİGRAN SİSTEMİ[cite: 1]
+        // FİLİGRAN
         function injectWatermark(context, width, height) {
             context.save();
             context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
@@ -812,7 +808,7 @@
             context.restore();
         }
 
-        // MENU TETİKLEME FONKSİYONLARI
+        // MENU TETİKLEYİCİLERİ
         function toggleMenu() {
             sidebarNav.classList.toggle('menu-open');
         }
@@ -826,12 +822,12 @@
             }
         });
 
-        // SES SWITCH'İ (iOS KONTROLÜ)
+        // SES SWITCH'İ
         document.getElementById('audioToggleBtn').addEventListener('change', function() {
             isSoundOn = this.checked;
         });
 
-        // MENÜ OLUŞTURMA[cite: 2]
+        // SIDEBAR MENÜ İNŞASI
         function buildSidebarMenu() {
             cataloguesList.innerHTML = "";
             otherList.innerHTML = "";
@@ -894,14 +890,18 @@
             await loadPDF(presentations[index].url);
         }
 
-        // MOBİL RENDER DÜZELTEN BOYUTLANDIRICI
+        // AKILLI MOBİL BOYUTLANDIRICI VE YEDEK MEKANİZMA
         function resizeBookToFit(viewport) {
             if (!viewport) return;
-            const sceneW = scene.clientWidth || window.innerWidth;
-            const sceneH = scene.clientHeight || (window.innerHeight - 150);
+            let sceneW = scene.clientWidth;
+            let sceneH = scene.clientHeight;
             
-            const multiplierW = 0.98;
-            const multiplierH = 0.96;
+            // iOS Safari çökmesini engellemek için yedek (fallback) ölçü
+            if (!sceneW || sceneW === 0) sceneW = window.innerWidth;
+            if (!sceneH || sceneH === 0) sceneH = window.innerHeight * 0.55; 
+            
+            const multiplierW = 0.96;
+            const multiplierH = 0.94;
             
             const scaleX = (sceneW * multiplierW) / viewport.width;
             const scaleY = (sceneH * multiplierH) / viewport.height;
@@ -911,7 +911,7 @@
             book.style.height = Math.floor(viewport.height * idealScale) + 'px';
         }
 
-        // AKILLI ÖNBELLEK SİSTEMİ[cite: 1]
+        // AKILLI ÖNBELLEK SİSTEMİ
         async function optimizeAndRenderPage(pageNum) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
             if (pageRenderingStates[pageNum] === 'high-res') return;
@@ -920,7 +920,7 @@
                 const page = await pdfDoc.getPage(pageNum);
                 const distance = Math.abs((pageNum - 1) - currentId);
                 const isHighResTarget = distance <= 2;
-                const renderScale = isHighResTarget ? 2.5 : 1.2;
+                const renderScale = isHighResTarget ? 2.2 : 1.1;
 
                 let pageDiv = pages[pageNum - 1];
                 if (!pageDiv) {
@@ -1052,7 +1052,8 @@
                 globalLoading.style.opacity = '0';
                 setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
                 
-                zoomContainer.style.display = 'block';
+                // GÜNCELLEME: Çökmeyi önlemek için artık BLOCK yerine FLEX ile yüklüyoruz
+                zoomContainer.style.display = 'flex';
                 updateBookDisplay();
                 runPredictiveCachePipeline();
 
@@ -1070,7 +1071,7 @@
                     errorMsg.style.marginTop = '15px';
                     globalLoading.appendChild(errorMsg);
                 }
-                errorMsg.innerText = "Hata: PDF dosyası yüklenemedi. Yolu kontrol ediniz.";
+                errorMsg.innerText = "Hata: PDF dosyası yüklenemedi.";
                 console.error(error);
             }
         }
@@ -1135,7 +1136,7 @@
         document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
         document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
 
-        // SWIPE İÇİN GELİŞTİRİLMİŞ TOUCHE EVENTLERİ
+        // SWIPE JESTLERİ
         let touchStartX = 0;
         let touchEndX = 0;
         
@@ -1204,7 +1205,6 @@
 
         window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
 
-        // RE-INITIALIZATION (RESUME HAFIZASI)
         window.onload = () => {
             buildSidebarMenu();
             
