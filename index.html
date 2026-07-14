@@ -2,17 +2,28 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yataş Group - Corporate Deck Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yataş Group - Premium Corporate Portal</title>
     
+    <!-- PWA Altyapısı (Mobil Ana Ekrana Eklenebilir Uygulama Meta Etiketleri) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002870">
+    <link rel="manifest" href="manifest.json" id="pwaManifest">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
     <style>
+        :root {
+            --primary-blue: #002870;
+            --liquid-glow: rgba(255, 255, 255, 0.15);
+            --neon-blue: #00d2ff;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background: url('image_26c6be.jpg') no-repeat center center fixed;
-            background-size: cover;
+            background: radial-gradient(circle at center, #0f1c3f 0%, #050a1a 100%);
             display: flex;
             height: 100vh;
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -21,7 +32,7 @@
             perspective: 2000px;
         }
         
-        /* YATAŞ KURUMSAL LACİVERT KALP ATIŞI LOADING EKRANI */
+        /* 1. KALP ATIŞI KURUMSAL LOADING EKRANI */
         #globalLoading { 
             position: fixed; 
             top: 0; 
@@ -35,6 +46,7 @@
             justify-content: center; 
             align-items: center; 
             gap: 20px;
+            transition: opacity 0.5s ease;
         }
 
         .loading-pulse-logo {
@@ -61,40 +73,41 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* FOCUS MODE AKTİF LOGO */
-        #focusLogo {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 120px;
-            height: auto;
-            z-index: 10002;
-            display: none;
-            opacity: 0.8;
-            background: #ffffff;
-            padding: 6px 10px;
-            border-radius: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: opacity 0.3s;
-        }
-        #focusLogo:hover { opacity: 1; }
-
-        /* SOL PANEL */
+        /* AKIŞKAN SIVI ARKA PLAN SİMÜLASYONU (DİNAMİK SOL BANNER) */
         .sidebar-nav {
             width: 320px;
-            background: #002870; 
+            background: rgba(0, 40, 112, 0.7); 
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+            padding: 24px;
+            box-shadow: 10px 0 35px rgba(0,0,0,0.5);
             z-index: 200;
             overflow-y: auto;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            backdrop-filter: blur(25px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             flex-shrink: 0;
+        }
+
+        /* Canlı Akışkan Sıvı Mesh Arka Plan Efekti */
+        .sidebar-nav::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 210, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: fluidMovement 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes fluidMovement {
+            0% { transform: scale(1) translate(0px, 0px); }
+            50% { transform: scale(1.1) translate(10px, -15px); }
+            100% { transform: scale(1) translate(-5px, 10px); }
         }
 
         .sidebar-nav::-webkit-scrollbar { width: 4px; }
@@ -104,12 +117,12 @@
             width: 100%;
             background: #ffffff;
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             flex-shrink: 0;
         }
 
@@ -123,68 +136,97 @@
             font-size: 11px;
             color: #a4c2f4;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
+            letter-spacing: 2.5px;
+            margin-bottom: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.15);
             padding-bottom: 12px;
             flex-shrink: 0;
+            font-weight: 700;
         }
 
         .menu-section-title {
-            font-size: 13px;
-            color: #ffffff;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            margin-bottom: 12px;
             padding-left: 5px;
-            border-left: 3px solid #ffffff;
-            padding-top: 2px;
-            padding-bottom: 2px;
+            border-left: 3px solid #00d2ff;
         }
 
         .deck-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 25px;
         }
 
-        .deck-btn {
+        /* LIQUID GLASS BUTONLAR VE PARLAMA SÜZMESİ EFECTİ */
+        .deck-btn, .premium-btn {
+            position: relative;
+            overflow: hidden;
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
             color: #ffffff;
             text-align: left;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.23s ease-in-out;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .deck-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(4px);
+        /* Parlama Süzmesi Katmanı */
+        .deck-btn::after, .premium-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -100%;
+            width: 40%; height: 200%;
+            background: linear-gradient(
+                90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .deck-btn:hover::after, .premium-btn:hover::after {
+            left: 140%;
+            transition: all 0.9s cubic-bezier(0.165, 0.84, 0.44, 1);
+            opacity: 1;
+        }
+
+        .deck-btn:hover, .premium-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15), inset 0 0 8px rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px) scale(1.02);
         }
 
         .deck-btn.active-deck {
             background: #ffffff;
             border-color: #ffffff;
             color: #002870; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
         }
 
         .deck-btn::before {
             content: "•";
-            color: #fff;
+            color: #00d2ff;
             font-size: 16px;
+            transition: color 0.3s;
         }
         .deck-btn.active-deck::before {
             color: #002870;
@@ -197,19 +239,19 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            padding: 20px 0;
             position: relative;
-            background: rgba(7, 13, 34, 0.35);
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            background: radial-gradient(circle at 50% 50%, rgba(15, 28, 63, 0.4) 0%, rgba(5, 10, 26, 0) 100%);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .main-container {
             display: flex;
-            width: 98%;
+            width: 96%;
             flex: 1;
             overflow: hidden;
-            gap: 15px;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            gap: 20px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .scene {
@@ -231,15 +273,32 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
+        /* 2. 3D PARALAKS SÜZÜLEN KİTAP YAPISI */
         .book {
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             transform-style: preserve-3d;
-            perspective: 2000px;
+            perspective: 2500px;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Yaşayan Ambient Glow (Arka Plana Sızan Yumuşak Işık) */
+        .book::before {
+            content: '';
+            position: absolute;
+            top: 5%; left: 5%;
+            width: 90%; height: 90%;
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.35) 0%, transparent 70%);
+            filter: blur(60px);
+            z-index: -1;
+            transform: scale(1.1);
+            pointer-events: none;
+            transition: all 0.8s ease-in-out;
         }
         
+        /* 3. LIQUID SWISH SAYFA GEÇİŞ ANİMASYONU */
         .page {
             position: absolute;
             top: 0; left: 0;
@@ -247,29 +306,34 @@
             opacity: 0;
             display: none;
             transform-origin: left center;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+            transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        opacity 0.7s ease, 
+                        filter 0.5s ease;
             backface-visibility: hidden;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+            filter: blur(0px);
         }
         
         .page.active-page {
             display: block;
             opacity: 1;
-            transform: rotateY(0deg) scale(1);
+            transform: rotateY(0deg) scale(1) translateZ(0);
             z-index: 5;
         }
 
+        /* Sayfa arkaya düşerken esneyip bulanıklaşsın */
         .page.turn-next {
             display: block;
             opacity: 0;
-            transform: rotateY(-75deg) scale(0.9);
+            transform: rotateY(-95deg) scale(0.85) translateZ(-150px);
+            filter: blur(6px);
             z-index: 1;
             pointer-events: none;
         }
         .page.turn-prev {
             display: block;
             opacity: 0;
-            transform: rotateY(75deg) scale(0.9);
+            transform: rotateY(95deg) scale(0.85) translateZ(-150px);
+            filter: blur(6px);
             z-index: 1;
             pointer-events: none;
         }
@@ -278,14 +342,14 @@
             width: 100% !important;
             height: 100% !important;
             display: block;
-            box-shadow: 0 25px 65px rgba(0,0,0,0.8);
-            border-radius: 6px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 30px rgba(255,255,255,0.05);
+            border-radius: 8px;
         }
 
-        /* GEÇİŞ OKLARI */
+        /* GEÇİŞ OKLARI VE ALANLARI */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 120px;
+            top: 0; height: 100%; width: 150px;
             z-index: 999;
             display: flex; align-items: center; justify-content: center;
         }
@@ -293,100 +357,118 @@
         .nav-overlay-zone.right-zone { right: 0; }
 
         .arrow-btn {
-            width: 50px; height: 50px;
+            width: 55px; height: 55px;
             background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 20px; cursor: pointer;
-            opacity: 0.35; transition: all 0.25s ease-in-out;
-            backdrop-filter: blur(5px);
+            opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
             user-select: none;
         }
-        .nav-overlay-zone:hover { cursor: pointer; }
-        .nav-overlay-zone:hover .arrow-btn { opacity: 0.75; background: rgba(0, 0, 0, 0.7); }
+        .nav-overlay-zone:hover .arrow-btn { opacity: 0.75; transform: scale(1); }
         .arrow-btn:hover {
-            opacity: 1 !important; transform: scale(1.1);
-            background: #ffffff !important; color: #000000 !important;
-            box-shadow: 0 0 20px rgba(255,255,255,0.6);
+            opacity: 1 !important; transform: scale(1.15) !important;
+            background: #ffffff !important; color: #002870 !important;
+            box-shadow: 0 0 25px rgba(255,255,255,0.4);
         }
         
         /* SAĞ PANEL: SLAYT ŞERİDİ */
         .sidebar-thumbnails {
             width: 200px;
-            background: rgba(0, 40, 112, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: rgba(0, 40, 112, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 15px;
             padding: 15px 10px;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             z-index: 100;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             flex-shrink: 0;
         }
 
-        .sidebar-thumbnails::-webkit-scrollbar { width: 5px; }
-        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
+        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+
+        /* 4. SLAYT GİRİŞ ARDIŞIK ANİMASYONU (STAGGERED) */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px) scale(0.9);
+            }
+            to {
+                opacity: 0.5;
+                transform: translateX(0) scale(1);
+            }
+        }
 
         .thumb-box {
             position: relative; width: 92%; cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 6px;
-            overflow: hidden; transition: all 0.2s ease-in-out; opacity: 0.5;
-            background: rgba(255, 255, 255, 0.05); flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 8px;
+            overflow: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0.5;
+            background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
+            animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
-        .thumb-box:hover { opacity: 0.8; border-color: rgba(255,255,255,0.5); }
-        .thumb-box.active-thumb { border-color: #ffffff; opacity: 1; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
+        .thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.4); transform: scale(1.03); }
+        .thumb-box.active-thumb { border-color: #00d2ff; opacity: 1; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
         .thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
 
         .thumb-label {
-            position: absolute; bottom: 4px; right: 6px;
-            background: rgba(0,0,0,0.8); color: #fff; font-size: 10px;
-            font-weight: bold; padding: 1px 5px; border-radius: 3px;
+            position: absolute; bottom: 6px; right: 8px;
+            background: rgba(0,0,0,0.85); color: #00d2ff; font-size: 10px;
+            font-weight: bold; padding: 2px 6px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         /* ALT PANEL */
         .bottom-bar-area {
             width: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 6px;
+            align-items: center; justify-content: center; gap: 8px;
             padding-top: 10px; flex-shrink: 0; z-index: 100;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .controls {
             display: flex; align-items: center; gap: 15px; 
-            background: rgba(0, 40, 112, 0.85); padding: 10px 25px; border-radius: 50px;
-            backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+            background: rgba(0, 40, 112, 0.8); padding: 12px 28px; border-radius: 50px;
+            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
         }
         
         .bottom-bar-area button {
             padding: 8px 18px; font-size: 12px; font-weight: bold; cursor: pointer;
             background: #fff; color: #002870; border: none; border-radius: 25px;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .bottom-bar-area button:hover { background: #e5e5e5; }
-        .bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; }
+        .bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
+        .bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
         
+        /* 5. AKTİF BASILMA REAKSİYONU (BUTTON SQUISH) */
+        .premium-btn:active, .bottom-bar-area button:active, .deck-btn:active {
+            transform: scale(0.95) !important;
+        }
+
         .goto-container { display: flex; align-items: center; gap: 5px; font-size: 13px; }
         .goto-input {
-            width: 40px; padding: 3px 5px; border-radius: 5px;
-            border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.4);
+            width: 45px; padding: 4px 6px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5);
             color: #fff; text-align: center; font-weight: bold;
         }
         #pageIndicator { color: #ffffff; }
         
         .hint { 
             font-size: 12px; 
-            color: #ffffff !important; 
+            color: rgba(255,255,255,0.6) !important; 
             font-weight: 500;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
         }
 
-        /* ACTION BAR */
+        /* PREMIUM TOP ACTION BAR */
         .premium-actions {
             position: fixed;
             top: 20px;
@@ -396,27 +478,37 @@
             z-index: 10001;
         }
         .premium-btn {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 18px;
             border-radius: 30px;
             color: #fff;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .premium-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
         }
         .premium-btn.active {
             background: #fff;
             color: #002870;
-            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        /* FOCUS MODE AKTİF LOGO */
+        #focusLogo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 120px;
+            height: auto;
+            z-index: 10002;
+            display: none;
+            opacity: 0.8;
+            background: #ffffff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         /* AUTO RESUME TOAST */
@@ -425,9 +517,9 @@
             bottom: 30px;
             left: 30px;
             background: rgba(0, 40, 112, 0.95);
-            border-left: 4px solid #ffffff;
+            border-left: 4px solid #00d2ff;
             padding: 15px 25px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -435,7 +527,7 @@
             display: none;
             transform: translateY(100px);
             opacity: 0;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         #resumeToast.show {
             display: block;
@@ -443,7 +535,7 @@
             opacity: 1;
         }
 
-        /* FOCUS MODE SIFIRLANAN BOYUTLAR */
+        /* FOCUS MODE PASİFLEŞTİRME */
         .focus-mode-on .sidebar-nav { width: 0px !important; padding: 0px !important; border: none !important; opacity: 0; pointer-events: none; }
         .focus-mode-on .sidebar-thumbnails { width: 0px !important; padding: 0px !important; border: none !important; opacity: 0; pointer-events: none; }
         .focus-mode-on .bottom-bar-area { transform: translateY(150px); opacity: 0; pointer-events: none; }
@@ -451,7 +543,75 @@
         .focus-mode-on .main-container { width: 100% !important; gap: 0px !important; }
         .focus-mode-on .workspace { padding: 0px !important; background: transparent !important; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* MOBİL RESPONSIVE DETAYLARI VE SWIPE TASARIMI */
+        .hamburger-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 40, 112, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            z-index: 10002;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            backdrop-filter: blur(10px);
+        }
+        .hamburger-btn span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #ffffff;
+            transition: 0.3s;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-nav {
+                position: fixed;
+                left: -320px;
+                top: 0;
+                height: 100vh;
+                width: 300px;
+                z-index: 10003;
+                background: rgba(0, 20, 60, 0.95);
+            }
+            .sidebar-nav.menu-open {
+                left: 0;
+            }
+            .hamburger-btn {
+                display: flex;
+            }
+            .main-container {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+            .sidebar-thumbnails {
+                width: 100%;
+                height: 100px;
+                flex-direction: row;
+                padding: 5px 15px;
+                gap: 10px;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+            .thumb-box {
+                width: 110px;
+                height: 80px;
+            }
+            .arrow-btn {
+                width: 45px; height: 45px;
+                opacity: 0.4;
+            }
+            .nav-overlay-zone {
+                width: 70px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -459,6 +619,13 @@
     <!-- KALP ATIŞI VE KURUMSAL ARKA PLANLI LOADING EKRANI -->
     <div id="globalLoading">
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
+    </div>
+
+    <!-- MOBİL HAMBURGER BUTONU -->
+    <div class="hamburger-btn" id="mobileHamburger">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
     
     <!-- PREMIUM TOP ACTION BAR -->
@@ -468,14 +635,14 @@
     </div>
 
     <!-- AUTO RESUME TOAST -->
-    <div id="resumeToast">Welcome back! You're being redirected to your last viewed page.</div>
+    <div id="resumeToast">Hoş geldiniz! En son incelediğiniz sayfaya yönlendiriliyorsunuz.</div>
     
     <!-- FOCUS MODE AKTİF LOGO -->
     <img id="focusLogo" src="yatas_grup_logo.png" alt="Yataş Group Logo">
     
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- SOL BANNER -->
+        <!-- DİNAMİK LIQUID SOL BANNER -->
         <div class="sidebar-nav" id="sidebarNav">
             <div class="logo-container">
                 <img src="yatas_grup_logo.png" alt="Yataş Grup Logo">
@@ -487,7 +654,7 @@
             <ul class="deck-list" id="cataloguesList"></ul>
 
             <!-- 2. OTHER PRESENTATIONS -->
-            <div class="menu-section-title">Other Presentatıons</div>
+            <div class="menu-section-title">Other Presentations</div>
             <ul class="deck-list" id="otherList"></ul>
         </div>
 
@@ -525,23 +692,23 @@
                     <button id="zoomInBtn">🔍 +</button>
                     <button id="zoomOutBtn">🔍 -</button>
                 </div>
-                <div class="hint">Use your mouse wheel to zoom in/out on the slide area.</div>
+                <div class="hint">Scroll on the slide area to zoom. Swipe left/right on mobile.</div>
             </div>
         </div>
 
     </div>
 
     <script>
-        // SİTENİN ORİJİNAL VERİ YAPISI KORUNDU
+        // SUNUM VERİLERİ[cite: 2]
         const presentationData = {
             catalogues: [
                 { title: "Enza Home", url: "Enza Home.pdf" },
                 { title: "Yataş Bedding", url: "Yataş Bedding.pdf" },
             ],
             otherPresentations: [
-                { title: "Yataş Projects", url: "Yataş Projects.pdf" },
-                { title: "Yataş Projects References", url: "Yataş Projects References.pdf" },
-                { title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" }
+                { title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" },
+		{ title: "Yataş Projects", url: "Yataş Projects.pdf" },
+                { title: "Yataş Projects References", url: "Yataş Projects References.pdf" }
             ]
         };
 
@@ -568,31 +735,34 @@
         const cataloguesList = document.getElementById('cataloguesList');
         const otherList = document.getElementById('otherList');
         const globalLoading = document.getElementById('globalLoading');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const mobileHamburger = document.getElementById('mobileHamburger');
 
+        // AUDIO KİLİDİNİ ÇÖZME[cite: 1]
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
                 transitionSound.pause();
                 transitionSound.currentTime = 0;
-            }).catch(e => console.log('Audio engine setup.'));
+            }).catch(e => console.log('Audio Engine ready.'));
             window.removeEventListener('click', unlockAudioEngine);
-            window.removeEventListener('keydown', unlockAudioEngine);
+            window.removeEventListener('touchstart', unlockAudioEngine);
         }
         window.addEventListener('click', unlockAudioEngine);
-        window.addEventListener('keydown', unlockAudioEngine);
+        window.addEventListener('touchstart', unlockAudioEngine);
 
         function playPaperSound() {
             if (!isSoundOn) return;
             try {
                 transitionSound.currentTime = 0;
                 transitionSound.play();
-            } catch (e) { console.log("Audio trigger context check."); }
+            } catch (e) { console.log("Audio trigger error."); }
         }
 
-        // WATERMARK ENJEKSİYONU
+        // FİLİGRAN SİSTEMİ[cite: 1]
         function injectWatermark(context, width, height) {
             context.save();
-            context.font = "bold " + Math.floor(width / 22) + "px 'Segoe UI', Arial, sans-serif";
-            context.fillStyle = "rgba(255, 255, 255, 0.06)";
+            context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
+            context.fillStyle = "rgba(255, 255, 255, 0.05)";
             context.textAlign = "center";
             context.textBaseline = "middle";
             context.translate(width / 2, height / 2);
@@ -601,6 +771,18 @@
             context.restore();
         }
 
+        // MOBİL HAMBURGER GEÇİŞİ
+        mobileHamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebarNav.classList.toggle('menu-open');
+        });
+        document.addEventListener('click', (e) => {
+            if (!sidebarNav.contains(e.target) && e.target !== mobileHamburger) {
+                sidebarNav.classList.remove('menu-open');
+            }
+        });
+
+        // FOCUS MODE TETİKLEYİCİ[cite: 1]
         document.getElementById('focusModeBtn').addEventListener('click', function() {
             this.classList.toggle('active');
             document.body.classList.toggle('focus-mode-on');
@@ -611,7 +793,7 @@
                     resetZoom();
                     updateBookDisplay();
                 }
-            }, 450);
+            }, 500);
         });
 
         document.getElementById('audioToggleBtn').addEventListener('click', function() {
@@ -620,6 +802,7 @@
             this.innerText = isSoundOn ? "🔊 Sound On" : "🔇 Muted";
         });
 
+        // DİNAMİK MENU OLUŞTURMA[cite: 2]
         function buildSidebarMenu() {
             cataloguesList.innerHTML = "";
             otherList.innerHTML = "";
@@ -632,7 +815,10 @@
                 btn.className = `deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
                 btn.innerText = deck.title;
                 btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => switchPresentation(currentIdx));
+                btn.addEventListener('click', () => {
+                    switchPresentation(currentIdx);
+                    sidebarNav.classList.remove('menu-open');
+                });
                 li.appendChild(btn);
                 cataloguesList.appendChild(li);
                 globalIdx++;
@@ -645,12 +831,34 @@
                 btn.className = `deck-btn`;
                 btn.innerText = deck.title;
                 btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => switchPresentation(currentIdx));
+                btn.addEventListener('click', () => {
+                    switchPresentation(currentIdx);
+                    sidebarNav.classList.remove('menu-open');
+                });
                 li.appendChild(btn);
                 otherList.appendChild(li);
                 globalIdx++;
             });
         }
+
+        // 3D PARALAKS - SÜZÜLME ETKİSİ
+        scene.addEventListener('mousemove', (e) => {
+            if (scale > 1 || window.innerWidth <= 1024) return; 
+            const rect = scene.getBoundingClientRect();
+            const x = e.clientX - rect.left - (rect.width / 2);
+            const y = e.clientY - rect.top - (rect.height / 2);
+            
+            const rotateX = -(y / rect.height) * 12; 
+            const rotateY = (x / rect.width) * 12;
+            
+            book.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            book.style.transition = "transform 0.1s ease-out";
+        });
+
+        scene.addEventListener('mouseleave', () => {
+            book.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            book.style.transition = "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)";
+        });
 
         async function switchPresentation(index, targetSavedPage = 0) {
             currentActivePresentationIndex = index;
@@ -662,9 +870,8 @@
                 b.classList.toggle('active-deck', bIdx === index);
             });
 
-            const errorMsg = document.getElementById('loadingErrorMsg');
-            if(errorMsg) errorMsg.remove();
             globalLoading.style.display = 'flex';
+            globalLoading.style.opacity = '1';
 
             book.innerHTML = '';
             sidebarThumbnails.innerHTML = '';
@@ -682,8 +889,8 @@
             const sceneW = scene.clientWidth;
             const sceneH = scene.clientHeight;
             
-            const multiplierW = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.95;
-            const multiplierH = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.92;
+            const multiplierW = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.94;
+            const multiplierH = document.body.classList.contains('focus-mode-on') ? 0.99 : 0.90;
             
             const scaleX = (sceneW * multiplierW) / viewport.width;
             const scaleY = (sceneH * multiplierH) / viewport.height;
@@ -692,7 +899,7 @@
             book.style.height = Math.floor(viewport.height * idealScale) + 'px';
         }
 
-        // HİBRİT ÖNBELLEK VE SIFIR GECİKMELİ ÖNİZLEME SİSTEMİ
+        // ÖNGÖRÜLÜ ÖNBELLEK VE HIBRID SAYFA RENDER[cite: 1]
         async function optimizeAndRenderPage(pageNum) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
             if (pageRenderingStates[pageNum] === 'high-res') return;
@@ -701,7 +908,7 @@
                 const page = await pdfDoc.getPage(pageNum);
                 const distance = Math.abs((pageNum - 1) - currentId);
                 const isHighResTarget = distance <= 2;
-                const renderScale = isHighResTarget ? 3.0 : 1.2;
+                const renderScale = isHighResTarget ? 2.5 : 1.2;
 
                 let pageDiv = pages[pageNum - 1];
                 if (!pageDiv) {
@@ -716,7 +923,6 @@
                 const canvas = pageDiv.querySelector('canvas');
                 const context = canvas.getContext('2d');
                 
-                // Sağdaki thumbnail hazırsa, yüksek çözünürlük çizilene kadar anında kopyala (Sıfır Bekleme)
                 const sourceThumbBox = document.getElementById(`thumb-box-${pageNum}`);
                 if (sourceThumbBox && !pageRenderingStates[pageNum]) {
                     const thumbCanvas = sourceThumbBox.querySelector('canvas');
@@ -765,12 +971,14 @@
             }
         }
 
+        // THUMBNAIL VE STAGGERED GİRİŞ SİSTEMİ
         function createSequentialThumbContainers(total) {
             sidebarThumbnails.innerHTML = '';
             for (let i = 1; i <= total; i++) {
                 const thumbBox = document.createElement('div');
                 thumbBox.className = 'thumb-box';
                 thumbBox.id = `thumb-box-${i}`;
+                thumbBox.style.animationDelay = `${Math.min(i * 0.04, 0.4)}s`;
                 
                 const canvas = document.createElement('canvas');
                 thumbBox.appendChild(canvas);
@@ -830,7 +1038,9 @@
                 const startRenderPage = currentId + 1;
                 await optimizeAndRenderPage(startRenderPage);
 
-                globalLoading.style.display = 'none';
+                globalLoading.style.opacity = '0';
+                setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
+                
                 zoomContainer.style.display = 'block';
                 updateBookDisplay();
                 runPredictiveCachePipeline();
@@ -874,7 +1084,7 @@
                 if (!thumb) return;
                 if (index === currentId) {
                     thumb.classList.add('active-thumb');
-                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 } else { thumb.classList.remove('active-thumb'); }
             });
 
@@ -914,6 +1124,30 @@
         document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
         document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
 
+        // MOBİL SWIPE (KAYDIRMA) MEKANİZMASI
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        scene.addEventListener('touchstart', (e) => {
+            if (scale > 1) return;
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        scene.addEventListener('touchend', (e) => {
+            if (scale > 1) return;
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        }, { passive: true });
+
+        function handleSwipeGesture() {
+            const threshold = 50; 
+            if (touchStartX - touchEndX > threshold) {
+                flipNext(); // Sola kaydırma -> Sonraki sayfa
+            } else if (touchEndX - touchStartX > threshold) {
+                flipPrev(); // Sağa kaydırma -> Önceki sayfa
+            }
+        }
+
         gotoInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 let targetPage = parseInt(gotoInput.value);
@@ -935,7 +1169,7 @@
             if (e.deltaY < 0) { scale = Math.min(scale + 0.2, 5); } else { scale = Math.max(scale - 0.2, 1); }
             if (scale === 1) { posX = 0; posY = 0; }
             updateTransform();
-        });
+        }, { passive: false });
 
         scene.addEventListener('mousedown', (e) => {
             if (scale === 1 || e.target.closest('.nav-overlay-zone')) return;
@@ -958,7 +1192,7 @@
 
         window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
 
-        // LOCALSTORAGE İLE SUNUM VE SAYFA HAFIZASI
+        // COLD START / RESUME HAFIZASI[cite: 1]
         window.onload = () => {
             buildSidebarMenu();
             
