@@ -323,36 +323,43 @@
             will-change: transform;
         }
         
+        /* GERÇEKÇİ 3D SAYFA GEÇİŞ VE VİSİBİLİTY ALTYAPISI (SIFIR BEYAZLAMA) */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             margin: auto;
             width: 100%; height: 100%;
-            transform-origin: center center; 
+            transform-origin: left center; /* Sol kenardan gerçekçi kitap açılışı */
             transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.6s, z-index 0.6s;
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-in-out, visibility 0.7s;
             backface-visibility: hidden;
             opacity: 0;
-            display: none;
+            visibility: hidden; /* display: none KALDIRILDI - Animasyon kesintisini önler */
             will-change: transform, opacity;
         }
+        
+        /* Aktif olan ana sayfa */
         .page.active-page {
-            display: block;
+            visibility: visible;
             opacity: 1;
-            transform: rotateY(0deg) scale(1) translate3d(0,0,0);
+            transform: rotateY(0deg) scale(1) translate3d(0, 0, 0);
             z-index: 5;
         }
+        
+        /* Sola doğru çevrilen sayfa efekti */
         .page.turn-next {
-            display: block;
+            visibility: visible;
             opacity: 0;
-            transform: rotateY(-140deg) scale(0.95) translate3d(0,0,0);
+            transform: rotateY(-90deg) scale(0.9) translate3d(-100px, 0, 0);
             z-index: 1;
             pointer-events: none;
         }
+        
+        /* Sağa doğru geri açılan sayfa efekti */
         .page.turn-prev {
-            display: block;
+            visibility: visible;
             opacity: 0;
-            transform: rotateY(140deg) scale(0.95) translate3d(0,0,0);
+            transform: rotateY(90deg) scale(0.9) translate3d(100px, 0, 0);
             z-index: 1;
             pointer-events: none;
         }
@@ -365,7 +372,7 @@
             box-shadow: var(--book-shadow);
             border-radius: 8px;
             overflow: hidden;
-            background: #020617; /* Siyah/koyu arka plan render anında beyaz kıpraşmayı önler */
+            background: #020617; 
         }
 
         .base-lowres-canvas {
@@ -926,7 +933,6 @@
             context.save();
             context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
             context.fillStyle = "rgba(255, 255, 255, 0.05)";
-            context.textAlign = "center";
             context.textBaseline = "middle";
             context.translate(width / 2, height / 2);
             context.rotate(-Math.PI / 6);
@@ -1010,11 +1016,10 @@
             book.style.width = Math.floor(finalW) + 'px';
             book.style.height = Math.floor(finalH) + 'px';
 
-            // Kitap boyutlandığında veya ekran döndüğünde zoom container hizalamasını güncelle
             updateTransform();
         }
 
-        // AKILLI RENDER SİSTEMİ (Çift Katmanlı / Double-Buffered Yapı ile Sıfır Kıpraşma)
+        // AKILLI SIFIR KIPRAŞMA / DOUBLE-BUFFER RENDER ENGINE
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -1052,25 +1057,28 @@
 
                 const viewport = page.getViewport({ scale: targetScale });
 
-                // SESSİZ ARKA PLAN (OFFSCREEN) CANVAS OLUŞTURMA
-                // Bu sayede asıl ekrandaki canvas silinmeden çizim arkada bitirilir.
+                // SESSİZ ARKA PLAN CANVAS (Çift katman çizimi başlatılıyor)
+                const newWidth = Math.floor(viewport.width);
+                const newHeight = Math.floor(viewport.height);
+
                 const offscreenCanvas = document.createElement('canvas');
-                offscreenCanvas.width = viewport.width;
-                offscreenCanvas.height = viewport.height;
+                offscreenCanvas.width = newWidth;
+                offscreenCanvas.height = newHeight;
                 const offscreenContext = offscreenCanvas.getContext('2d');
 
-                // Arkadaki sanal tuval üzerine render et
+                // Görseli görünmeyen sanal tuvalde üret
                 await page.render({ 
                     canvasContext: offscreenContext, 
                     viewport: viewport 
                 }).promise;
 
-                // Filigranı sessizce ekle
-                injectWatermark(offscreenContext, offscreenCanvas.width, offscreenCanvas.height);
+                injectWatermark(offscreenContext, newWidth, newHeight);
 
-                // Çizim tamamlandıktan sonra tek hamlede ekrandaki asıl Canvas'a aktar (Kıpraşmayı yok eden anlık aktarım)
-                canvas.height = offscreenCanvas.height; 
-                canvas.width = offscreenCanvas.width;
+                // ÇİZİM BİTTİĞİ SALİSE BOYUTU SET ET (Bembeyaz parlamayı engelleyen can alıcı nokta)
+                if (canvas.width !== newWidth || canvas.height !== newHeight) {
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                }
                 context.drawImage(offscreenCanvas, 0, 0);
 
                 if (pageNum - 1 === currentId) {
@@ -1153,8 +1161,11 @@
                 if (!page) return;
                 if (index === currentId) {
                     page.className = 'page active-page'; resizeBookToFit(page.pdfViewport);
-                } else if (index < currentId) { page.className = 'page turn-next'; } 
-                else { page.className = 'page turn-prev'; }
+                } else if (index < currentId) { 
+                    page.className = 'page turn-next'; 
+                } else { 
+                    page.className = 'page turn-prev'; 
+                }
             });
 
             thumbElements.forEach((thumb, index) => {
@@ -1183,9 +1194,7 @@
             } 
         }
         
-        // ==========================================================================
         // GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU
-        // ==========================================================================
         function resetZoom() { 
             scale = 1; 
             posX = 0; 
