@@ -18,7 +18,7 @@
         :root {
             --primary-blue: #002870;
             --neon-blue: #00d2ff;
-            --book-shadow: 0 15px 45px rgba(0,0,0,0.6);
+            --book-shadow: 0 25px 55px rgba(0,0,0,0.65);
             --glass-bg: rgba(2, 6, 23, 0.88);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
@@ -293,7 +293,7 @@
             position: relative;
             height: 100%;
             min-height: 0;
-            perspective: 2000px;
+            perspective: 1200px; /* Eşsiz 3D derinlik alanı yaratır */
             background: transparent;
         }
 
@@ -306,7 +306,7 @@
             justify-content: center;
             align-items: center;
             cursor: grab;
-            transform-origin: 0 0;
+            transform-origin: 50% 50%;
             will-change: transform;
             z-index: 10;
         }
@@ -316,50 +316,77 @@
         .book {
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             justify-content: center;
             align-items: center;
             will-change: transform;
         }
         
-        /* GERÇEKÇİ 3D SAYFA GEÇİŞ VE VİSİBİLİTY ALTYAPISI (SIFIR BEYAZLAMA) */
+        /* APPLE COVER FLOW ENGINE (SIFIR BEYAZLAMA & MAKSİMUM AKICILIK) */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             margin: auto;
             width: 100%; height: 100%;
-            transform-origin: left center; /* Sol kenardan gerçekçi kitap açılışı */
             transform-style: preserve-3d;
-            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-in-out, visibility 0.7s;
+            /* Apple'ın imza akıcılık eğrisi */
+            transition: 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                filter 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                visibility 0.8s;
             backface-visibility: hidden;
             opacity: 0;
-            visibility: hidden; /* display: none KALDIRILDI - Animasyon kesintisini önler */
-            will-change: transform, opacity;
+            visibility: hidden;
+            filter: blur(10px);
+            will-change: transform, opacity, filter;
         }
         
-        /* Aktif olan ana sayfa */
+        /* Merkeze odaklanan ve parlayan aktif sayfa */
         .page.active-page {
             visibility: visible;
             opacity: 1;
-            transform: rotateY(0deg) scale(1) translate3d(0, 0, 0);
-            z-index: 5;
+            filter: blur(0px); /* Kusursuz netlik */
+            transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+            z-index: 10;
         }
         
-        /* Sola doğru çevrilen sayfa efekti */
-        .page.turn-next {
+        /* Sol yığındaki albüm kapakları (iCloud Albüm Tarzı) */
+        .page.page-left-stack {
             visibility: visible;
-            opacity: 0;
-            transform: rotateY(-90deg) scale(0.9) translate3d(-100px, 0, 0);
-            z-index: 1;
+            opacity: 0.45;
+            filter: blur(1.5px);
+            transform: translate3d(-35%, 0, -180px) rotateY(32deg) scale(0.85);
+            z-index: 5;
             pointer-events: none;
         }
         
-        /* Sağa doğru geri açılan sayfa efekti */
-        .page.turn-prev {
+        /* Sağ yığındaki albüm kapakları (iCloud Albüm Tarzı) */
+        .page.page-right-stack {
+            visibility: visible;
+            opacity: 0.45;
+            filter: blur(1.5px);
+            transform: translate3d(35%, 0, -180px) rotateY(-32deg) scale(0.85);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Görünmeyen, iyice arkada kalan sol/sağ sayfalar */
+        .page.far-left-stack {
             visibility: visible;
             opacity: 0;
-            transform: rotateY(90deg) scale(0.9) translate3d(100px, 0, 0);
+            filter: blur(5px);
+            transform: translate3d(-60%, 0, -350px) rotateY(45deg) scale(0.7);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .page.far-right-stack {
+            visibility: visible;
+            opacity: 0;
+            filter: blur(5px);
+            transform: translate3d(60%, 0, -350px) rotateY(-45deg) scale(0.7);
             z-index: 1;
             pointer-events: none;
         }
@@ -370,9 +397,10 @@
             width: 100%;
             height: 100%;
             box-shadow: var(--book-shadow);
-            border-radius: 8px;
+            border-radius: 12px; /* Apple tarzı yumuşatılmış köşeler */
             overflow: hidden;
             background: #020617; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .base-lowres-canvas {
@@ -389,7 +417,7 @@
         /* FLOATING ARROW OVERLAYS */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 80px;
+            top: 0; height: 100%; width: 100px;
             z-index: 99;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none;
@@ -646,6 +674,13 @@
                 width: 100%;
                 height: 0;
                 min-height: 0;
+                perspective: 1000px;
+            }
+            .page.page-left-stack {
+                transform: translate3d(-15%, 0, -120px) rotateY(25deg) scale(0.9);
+            }
+            .page.page-right-stack {
+                transform: translate3d(15%, 0, -120px) rotateY(-25deg) scale(0.9);
             }
             .sidebar-thumbnails {
                 width: 100% !important;
@@ -701,6 +736,13 @@
                 height: 100%;
                 width: 0;
                 min-width: 0;
+                perspective: 1100px;
+            }
+            .page.page-left-stack {
+                transform: translate3d(-30%, 0, -150px) rotateY(30deg) scale(0.85);
+            }
+            .page.page-right-stack {
+                transform: translate3d(30%, 0, -150px) rotateY(-30deg) scale(0.85);
             }
             .sidebar-thumbnails {
                 width: 90px !important;
@@ -1074,7 +1116,7 @@
 
                 injectWatermark(offscreenContext, newWidth, newHeight);
 
-                // ÇİZİM BİTTİĞİ SALİSE BOYUTU SET ET (Bembeyaz parlamayı engelleyen can alıcı nokta)
+                // ÇİZİM BİTTİĞİ SALİSE BOYUTU SET ET
                 if (canvas.width !== newWidth || canvas.height !== newHeight) {
                     canvas.width = newWidth;
                     canvas.height = newHeight;
@@ -1100,10 +1142,16 @@
             const activeIdx = currentId + 1;
             renderHighQualityPage(activeIdx, scale);
             
+            // Apple Cover Flow için hem sağ hem de sol yığındaki yakın sayfaları önbelleğe alıyoruz
             const nextIdx = activeIdx + 1;
             const prevIdx = activeIdx - 1;
+            const farNextIdx = activeIdx + 2;
+            const farPrevIdx = activeIdx - 2;
+
             if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
             if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
+            if (farNextIdx <= pdfDoc.numPages) renderHighQualityPage(farNextIdx, 1);
+            if (farPrevIdx >= 1) renderHighQualityPage(farPrevIdx, 1);
         }
 
         function createSequentialThumbContainers(total) {
@@ -1155,16 +1203,31 @@
             } catch (error) { console.error(error); }
         }
 
+        // APPLE COVER FLOW YIĞIN DÜZENLEME MOTORU
         function updateBookDisplay() {
             if (pages.length === 0) return;
+            
             pages.forEach((page, index) => {
                 if (!page) return;
-                if (index === currentId) {
-                    page.className = 'page active-page'; resizeBookToFit(page.pdfViewport);
-                } else if (index < currentId) { 
-                    page.className = 'page turn-next'; 
-                } else { 
-                    page.className = 'page turn-prev'; 
+                
+                const diff = index - currentId;
+
+                if (diff === 0) {
+                    // Tam Odaklanmış Aktif Sayfa
+                    page.className = 'page active-page'; 
+                    resizeBookToFit(page.pdfViewport);
+                } else if (diff === -1) {
+                    // Sol Yığındaki İlk Sıradaki Sayfa
+                    page.className = 'page page-left-stack';
+                } else if (diff === 1) {
+                    // Sağ Yığındaki İlk Sıradaki Sayfa
+                    page.className = 'page page-right-stack';
+                } else if (diff < -1) {
+                    // Sol Yığının Arkasındaki Sayfalar
+                    page.className = 'page far-left-stack';
+                } else if (diff > 1) {
+                    // Sağ Yığının Arkasındaki Sayfalar
+                    page.className = 'page far-right-stack';
                 }
             });
 
