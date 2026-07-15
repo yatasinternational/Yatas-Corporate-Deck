@@ -363,13 +363,13 @@
             object-fit: contain;
         }
 
-        /* FLOATING ARROW OVERLAYS (CRITICAL FIX: pointer-events: none) */
+        /* FLOATING ARROW OVERLAYS */
         .nav-overlay-zone {
             position: absolute;
             top: 0; height: 100%; width: 80px;
             z-index: 99;
             display: flex; align-items: center; justify-content: center;
-            pointer-events: none; /* Allows swipe / touch gestures to pass right through to canvas */
+            pointer-events: none;
         }
         .nav-overlay-zone.left-zone { left: 0; }
         .nav-overlay-zone.right-zone { right: 0; }
@@ -386,7 +386,7 @@
             backdrop-filter: blur(8px);
             user-select: none;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            pointer-events: auto; /* Buttons remain responsive */
+            pointer-events: auto;
         }
         .arrow-btn:hover {
             opacity: 1; 
@@ -867,7 +867,8 @@
         let isPinching = false;
 
         let isSoundOn = true;
-        let pageRenderingStates = {}; 
+        let lastRenderedScale = 1; 
+        let renderTimeout = null;
 
         const transitionSound = new Audio('glossy_magazine.mp3');
 
@@ -973,7 +974,7 @@
             globalLoading.style.display = 'flex'; globalLoading.style.opacity = '1';
             book.innerHTML = ''; sidebarThumbnails.innerHTML = '';
             pages = []; thumbElements = [];
-            currentId = targetSavedPage; pageRenderingStates = {};
+            currentId = targetSavedPage;
             resetZoom();
             await loadPDF(presentations[index].url);
         }
@@ -997,15 +998,12 @@
             book.style.height = Math.floor(finalH) + 'px';
         }
 
-        async function optimizeAndRenderPage(pageNum) {
+        // VECTOR HIGH-RES RENDERING ENGINE WITH DEVICE PIXEL RATIO
+        async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
-            if (pageRenderingStates[pageNum] === 'high-res') return;
 
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const distance = Math.abs((pageNum - 1) - currentId);
-                const renderScale = distance <= 2 ? 2.2 : 1.1;
-
                 let pageDiv = pages[pageNum - 1];
                 if (!pageDiv) {
                     pageDiv = document.createElement('div'); pageDiv.className = 'page';
@@ -1015,25 +1013,50 @@
 
                 const canvas = pageDiv.querySelector('canvas');
                 const context = canvas.getContext('2d');
+
+                // Cam gibi netlik için cihazın piksel yoğunluğu (DPR) ve o anki zoom skalasını birleştiriyoruz
+                const dpr = window.devicePixelRatio || 1;
+                const baseScale = 1.5; // Temel okuma kalitesi çarpanı (dosya kalitesine sadık)
+                const renderScale = baseScale * customScale * dpr;
+
                 const viewport = page.getViewport({ scale: renderScale });
                 
-                canvas.height = viewport.height; canvas.width = viewport.width;
+                canvas.height = viewport.height; 
+                canvas.width = viewport.width;
                 pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-                pageRenderingStates[pageNum] = distance <= 2 ? 'high-res' : 'low-res';
 
                 await page.render({ canvasContext: context, viewport: viewport }).promise;
                 injectWatermark(context, canvas.width, canvas.height);
 
-                if (pageNum - 1 === currentId) updateBookDisplay();
-            } catch (err) {}
+                if (pageNum - 1 === currentId) {
+                    resizeBookToFit(pageDiv.pdfViewport);
+                }
+            } catch (err) {
+                console.error("Render hatası:", err);
+            }
+        }
+
+        // DYNAMIC ZOOM-RENDER TRIGGER (DEBOUNCED FOR PERFORMANCE)
+        function triggerDynamicZoomRender() {
+            if (renderTimeout) clearTimeout(renderTimeout);
+
+            renderTimeout = setTimeout(() => {
+                if (Math.abs(scale - lastRenderedScale) > 0.15) {
+                    lastRenderedScale = scale;
+                    // Aktif sayfayı o anki zoom kalitesinde cam gibi tekrardan çiz
+                    renderHighQualityPage(currentId + 1, scale);
+                }
+            }, 250); 
         }
 
         function runPredictiveCachePipeline() {
             const activeIdx = currentId + 1;
-            optimizeAndRenderPage(activeIdx);
-            for (let i = 1; i <= 2; i++) {
-                optimizeAndRenderPage(activeIdx + i); optimizeAndRenderPage(activeIdx - i);
-            }
+            renderHighQualityPage(activeIdx, scale);
+            // Çevre sayfaları da standart kalitede arkada hazırla
+            const nextIdx = activeIdx + 1;
+            const prevIdx = activeIdx - 1;
+            if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
+            if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
         }
 
         function createSequentialThumbContainers(total) {
@@ -1050,7 +1073,7 @@
                     if (currentId === i - 1) return;
                     playPaperSound(); currentId = i - 1;
                     localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); optimizeAndRenderPage(i); updateBookDisplay(); runPredictiveCachePipeline();
+                    resetZoom(); renderHighQualityPage(i, 1); updateBookDisplay(); runPredictiveCachePipeline();
                 });
             }
         }
@@ -1078,7 +1101,7 @@
                 for (let pageNum = 1; pageNum <= totalPages; pageNum++) { thumbPromises.push(renderThumbnail(pageNum)); }
                 await Promise.all(thumbPromises);
 
-                await optimizeAndRenderPage(currentId + 1);
+                await renderHighQualityPage(currentId + 1, 1);
                 globalLoading.style.opacity = '0'; setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
                 zoomContainer.style.display = 'flex';
                 updateBookDisplay(); runPredictiveCachePipeline();
@@ -1111,25 +1134,28 @@
         function flipNext() { 
             if (currentId < pages.length - 1) { 
                 playPaperSound(); currentId++; localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); optimizeAndRenderPage(currentId + 1); updateBookDisplay(); runPredictiveCachePipeline();
+                resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
             } 
         }
         function flipPrev() { 
             if (currentId > 0) { 
                 playPaperSound(); currentId--; localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); optimizeAndRenderPage(currentId + 1); updateBookDisplay(); runPredictiveCachePipeline();
+                resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
             } 
         }
         
-        function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
-        function updateTransform() { zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
+        function resetZoom() { scale = 1; posX = 0; posY = 0; lastRenderedScale = 1; updateTransform(); }
+        function updateTransform() { 
+            zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; 
+        }
 
         // MOUSE AND CAPTURED INPUT DRAGGING / ZOOM SYSTEM
         scene.addEventListener('wheel', (e) => {
             e.preventDefault();
-            if (e.deltaY < 0) { scale = Math.min(scale + 0.2, 5); } else { scale = Math.max(scale - 0.2, 1); }
+            if (e.deltaY < 0) { scale = Math.min(scale + 0.25, 5); } else { scale = Math.max(scale - 0.25, 1); }
             if (scale === 1) { posX = 0; posY = 0; }
             updateTransform();
+            triggerDynamicZoomRender();
         }, { passive: false });
 
         scene.addEventListener('mousedown', (e) => {
@@ -1142,7 +1168,6 @@
         // NATIVE TOUCH INTELLIGENCE (SWIPE AND PINCH HANDLER)
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                // Two fingers detected: init pinch engine
                 isPinching = true;
                 initialPinchDist = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
@@ -1168,10 +1193,11 @@
                     e.touches[0].clientY - e.touches[1].clientY
                 );
                 const factor = currentDist / initialPinchDist;
-                if(factor > 1) { scale = Math.min(scale + 0.05, 5); }
-                else if(factor < 1) { scale = Math.max(scale - 0.05, 1); }
+                if(factor > 1) { scale = Math.min(scale + 0.08, 5); }
+                else if(factor < 1) { scale = Math.max(scale - 0.08, 1); }
                 if (scale === 1) { posX = 0; posY = 0; }
                 updateTransform();
+                triggerDynamicZoomRender();
             } else if (isDragging && e.touches.length === 1 && scale > 1) {
                 posX = e.touches[0].clientX - startX;
                 posY = e.touches[0].clientY - startY;
@@ -1186,14 +1212,12 @@
             }
             if (isDragging) { isDragging = false; return; }
 
-            // Handle pure slide swipe triggers when layout scale is perfectly flat (scale === 1)
             if (scale === 1 && e.changedTouches.length > 0) {
                 const touchEndX = e.changedTouches[0].clientX;
                 const touchEndY = e.changedTouches[0].clientY;
                 const diffX = touchStartX - touchEndX;
                 const diffY = touchStartY - touchEndY;
 
-                // Restrict horizontal bounds vs vertical scrolling
                 if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
                     if (diffX > 0) flipNext(); else flipPrev();
                 }
@@ -1203,8 +1227,17 @@
         // HARDWARE BUTTON TRIGGERS
         document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
         document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
-        document.getElementById('zoomInBtn').addEventListener('click', () => { scale = Math.min(scale + 0.5, 5); updateTransform(); });
-        document.getElementById('zoomOutBtn').addEventListener('click', () => { scale = Math.max(scale - 0.5, 1); if(scale===1){posX=0;posY=0;} updateTransform(); });
+        document.getElementById('zoomInBtn').addEventListener('click', () => { 
+            scale = Math.min(scale + 0.5, 5); 
+            updateTransform(); 
+            triggerDynamicZoomRender();
+        });
+        document.getElementById('zoomOutBtn').addEventListener('click', () => { 
+            scale = Math.max(scale - 0.5, 1); 
+            if(scale===1){posX=0;posY=0;} 
+            updateTransform(); 
+            triggerDynamicZoomRender();
+        });
         document.getElementById('nextBtn').addEventListener('click', flipNext);
         document.getElementById('prevBtn').addEventListener('click', flipPrev);
 
@@ -1213,7 +1246,7 @@
                 let targetPage = parseInt(gotoInput.value);
                 if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
                     playPaperSound(); currentId = targetPage - 1; localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); optimizeAndRenderPage(targetPage); updateBookDisplay(); runPredictiveCachePipeline();
+                    resetZoom(); renderHighQualityPage(targetPage, 1); updateBookDisplay(); runPredictiveCachePipeline();
                     gotoInput.blur();
                 } else { gotoInput.value = currentId + 1; }
             }
