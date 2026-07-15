@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Yataş Group - Premium Corporate Portal</title>
     
     <!-- PWA Infrastructure -->
@@ -33,6 +33,7 @@
             background: #020617;
             display: flex;
             height: 100vh;
+            height: 100dvh; /* Dynamic viewport height to bypass mobile browser address bar bugs */
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             color: #fff;
@@ -101,12 +102,13 @@
             display: flex;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             position: relative;
             z-index: 2;
         }
 
-        /* HEADER LEFT COLUMN */
+        /* HEADER LEFT COLUMN CONTROL PANEL */
         .header-column {
             position: absolute;
             top: 20px;
@@ -167,12 +169,13 @@
             transition: 0.3s;
         }
 
-        /* SIDEBAR NAVIGATION */
+        /* SIDEBAR NAVIGATION Drawer */
         .sidebar-nav {
             position: fixed;
             left: -340px;
             top: 0;
             height: 100vh;
+            height: 100dvh;
             width: 320px;
             background: var(--glass-bg); 
             border-right: 1px solid var(--glass-border);
@@ -274,7 +277,7 @@
             display: flex;
             width: 100%;
             flex: 1;
-            min-height: 0; /* Prevents flex children from overflowing parent */
+            min-height: 0;
             overflow: hidden;
             gap: 20px;
             padding: 20px;
@@ -320,7 +323,7 @@
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            margin: auto; /* Solid alignment trick preventing drift */
+            margin: auto;
             width: 100%; height: 100%;
             transform-origin: center center; 
             transform-style: preserve-3d;
@@ -474,7 +477,7 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* SWITCH FOR SYSTEM AUDIO */
+        /* SOUND CONTROLLER WRAPPER (DYNAMIC PLACEMENT) */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -486,12 +489,19 @@
             z-index: 105;
         }
 
+        /* HEADER INTEGRATED SOUND TOGGLE (Used for mobile portrait) */
+        .header-sound-container {
+            display: none;
+            align-items: center;
+            z-index: 1001;
+        }
+
         .ios-switch-container {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(0, 40, 112, 0.7);
-            padding: 6px 12px;
+            background: rgba(0, 40, 112, 0.85);
+            padding: 8px 12px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(15px);
@@ -590,32 +600,36 @@
             opacity: 1;
         }
 
-        /* RESPONSIVE LAYOUT OPTIMIZATIONS (COMPLETELY ISOLATED SCENE CALCULATION) */
-        @media (max-width: 1024px) {
+        /* ==========================================================================
+           RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
+           ========================================================================== */
+
+        /* PORTRAIT DEVICING (Dikey Mobil Görünüm) */
+        @media (max-width: 1024px) and (orientation: portrait) {
             .workspace {
-                height: 100vh;
-                padding-top: 100px; /* Leave space for brand logo button */
+                height: 100%;
+                padding-top: 90px; /* Space for brand logo and toggles */
             }
             .main-container {
                 flex-direction: column;
                 padding: 10px;
                 gap: 10px;
+                height: calc(100% - 130px); /* Strictly reserve remaining area */
             }
-            
             .scene {
                 flex: 1;
-                height: 0; /* Forces scene to fill exactly the remaining space */
-                min-height: 0;
                 width: 100%;
+                height: 0; /* Clear baseline heights to let CSS compute dynamic heights */
+                min-height: 0;
             }
             
-            /* Preview slider banner is kept at a fixed 75px height and isolated completely */
+            /* Squeeze bottom slider to fit without taking up viewport space */
             .sidebar-thumbnails {
                 width: 100% !important;
-                height: 75px !important;
+                height: 65px !important;
                 flex-direction: row !important;
-                padding: 6px 10px !important;
-                gap: 8px !important;
+                padding: 4px 8px !important;
+                gap: 6px !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
                 background: rgba(0, 40, 112, 0.3) !important;
@@ -623,8 +637,8 @@
                 flex-shrink: 0;
             }
             .thumb-box {
-                width: 80px !important; 
-                height: 55px !important;
+                width: 70px !important; 
+                height: 48px !important;
             }
             .arrow-btn {
                 width: 44px; height: 44px;
@@ -634,22 +648,90 @@
                 width: 50px;
             }
             
+            /* HIDE BOTTOM BAR SOUND ON PORTRAIT to avoid page scroll */
             .sound-corner {
-                position: static !important;
-                transform: none !important;
-                margin-top: 8px;
+                display: none !important;
+            }
+            /* SHOW COMFORTABLE SOUND SWITCH AT TOP LEFT UNDER LOGO */
+            .header-sound-container {
                 display: flex;
-                justify-content: center;
-                width: 100%;
             }
-            .controls-wrapper {
-                flex-direction: column;
-                gap: 5px;
-                width: 100%;
+
+            .bottom-bar-area {
+                padding: 10px 0;
             }
-            .header-column {
-                top: 15px;
-                left: 15px;
+            .controls {
+                padding: 8px 18px;
+                gap: 8px;
+            }
+        }
+
+        /* LANDSCAPE DEVICING (Yatay Mobil Görünüm) */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            .workspace {
+                height: 100%;
+                padding-top: 0; /* Keep header strictly absolute floating */
+            }
+            .main-container {
+                flex-direction: row; /* Layout landscape side by side */
+                padding: 10px;
+                gap: 10px;
+                height: calc(100% - 70px); /* Leave exactly 70px for bottom docks */
+            }
+            .scene {
+                flex: 1;
+                height: 100%;
+                width: 0; /* Fixes absolute width flex grow issue */
+                min-width: 0;
+            }
+
+            /* Thumbnails on the right side in landscape views */
+            .sidebar-thumbnails {
+                width: 90px !important;
+                height: 100% !important;
+                flex-direction: column !important;
+                padding: 6px 4px !important;
+                gap: 8px !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                background: rgba(0, 40, 112, 0.3) !important;
+                border-radius: 8px;
+                flex-shrink: 0;
+            }
+            .thumb-box {
+                width: 100% !important; 
+                height: 50px !important;
+            }
+
+            .arrow-btn {
+                width: 38px; height: 38px;
+                font-size: 14px;
+            }
+            .nav-overlay-zone {
+                width: 40px;
+            }
+
+            .bottom-bar-area {
+                padding: 8px 0;
+                height: 60px;
+            }
+            .controls {
+                padding: 6px 15px;
+                gap: 10px;
+            }
+            .hint {
+                display: none; /* Hide helper hints on tight landscape heights */
+            }
+            /* Sound corner layout on bottom right of the landscape bar */
+            .sound-corner {
+                display: flex !important;
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .header-sound-container {
+                display: none !important;
             }
         }
     </style>
@@ -673,6 +755,17 @@
             <span></span>
             <span></span>
         </button>
+
+        <!-- Dynamic Header Switch (Will appear only on Mobile Portrait under hamburger) -->
+        <div class="header-sound-container" id="headerSoundContainer">
+            <div class="ios-switch-container">
+                <span class="switch-label">Sound</span>
+                <label class="ios-switch">
+                    <input type="checkbox" class="audioToggleBtnClass" checked>
+                    <span class="ios-slider"></span>
+                </label>
+            </div>
+        </div>
     </div>
 
     <!-- RESUME LAST SESSION TOAST -->
@@ -718,7 +811,7 @@
             <div class="bottom-bar-area" id="bottomBarArea">
                 <div class="controls-wrapper">
                     <div class="controls">
-                        <button id="prevBtn" disabled>◀ Previous</button>
+                        <button id="prevBtn" disabled>◀ Prev</button>
                         <div class="goto-container">
                             <input type="text" id="gotoInput" class="goto-input" value="1">
                             <span id="pageIndicator">/ 0</span>
@@ -728,12 +821,12 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE -->
-                    <div class="sound-corner">
+                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Mobile Landscape view) -->
+                    <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
                             <label class="ios-switch">
-                                <input type="checkbox" id="audioToggleBtn" checked>
+                                <input type="checkbox" class="audioToggleBtnClass" checked>
                                 <span class="ios-slider"></span>
                             </label>
                         </div>
@@ -846,9 +939,14 @@
             }
         });
 
-        // AUDIO TOGGLE EVENT LISTENER
-        document.getElementById('audioToggleBtn').addEventListener('change', function() {
-            isSoundOn = this.checked;
+        // SYNC MUTUAL SOUND SWITCHES (Header Sound Toggle & Footer Sound Toggle)
+        document.querySelectorAll('.audioToggleBtnClass').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                isSoundOn = this.checked;
+                document.querySelectorAll('.audioToggleBtnClass').forEach(other => {
+                    other.checked = isSoundOn;
+                });
+            });
         });
 
         // POPULATING THE PRESENTATION MENU DRAWER
