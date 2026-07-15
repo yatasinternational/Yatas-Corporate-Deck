@@ -3,94 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero-Flicker PDF Viewer</title>
+    <title>Symmetric PDF Viewer</title>
+    <!-- PDF.js Kütüphanesi -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+    
     <style>
-        :root { --bg-color: #090d16; --container-bg: #020617; }
-        body { background: var(--bg-color); margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        
-        #book { position: relative; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        
-        /* GPU Hızlandırması İçin Kritik */
+        :root {
+            --bg-color: #090d16;
+            --container-bg: #020617;
+            --accent-color: #3b82f6;
+            --text-color: #f8fafc;
+            --book-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition-speed: 0.25s;
+        }
+
+        /* Temiz, sıfırlanmış ve simetrik temel yapı */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Minimalist Üst Başlık ve Bilgi Alanı */
+        header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+            height: 30px;
+        }
+
+        /* Sayfa Gösterim ve Kitap Alanı */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+        }
+
+        #book {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform var(--transition-speed) ease-in-out;
+        }
+
+        .page {
+            width: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* Çift Katmanlı Çizim ve Parlama Önleme Yapısı */
         .canvas-container-layer {
-            position: absolute; /* Üst üste bindirmek için */
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; /* Başlangıçta görünmez */
-            transition: opacity 0.3s ease-in-out;
-            will-change: opacity; /* GPU'yu tetikler */
+            position: relative;
+            width: 100%;
+            height: 100%;
+            box-shadow: var(--book-shadow);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--container-bg); /* Parlamayı önleyen koyu zemin */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .canvas-container-layer.active {
-            opacity: 1; /* Sadece aktif olan görünür */
+        .base-lowres-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 1;
+            display: block;
+            background: var(--container-bg);
+            transition: opacity var(--transition-speed) ease-in-out;
         }
 
-        canvas {
-            max-width: 90vw;
-            max-height: 90vh;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            will-change: transform; /* Donanımsal hızlandırma */
+        /* Alt Navigasyon Kontrolleri */
+        footer {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all var(--transition-speed) ease;
+            user-select: none;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-indicator {
+            font-size: 0.85rem;
+            font-variant-numeric: tabular-nums;
+            min-width: 80px;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        /* Mobil Optimizasyonlar */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="book"></div>
+    <header>
+        <div id="doc-title">PDF Dokümanı</div>
+        <div id="zoom-indicator">100%</div>
+    </header>
+
+    <main>
+        <div id="book">
+            <!-- Sayfalar JS ile dinamik olarak buraya eklenecektir -->
+        </div>
+    </main>
+
+    <footer>
+        <button id="prev-btn" class="nav-btn" disabled>Geri</button>
+        <div class="page-indicator" id="page-num-display">0 / 0</div>
+        <button id="next-btn" class="nav-btn" disabled>İleri</button>
+    </footer>
 
     <script>
-        const pdfUrl = 'sample.pdf';
-        let pdfDoc = null, currentIdx = 0;
+        // PDF Dosya Yolu (Kendi PDF url'ini ya da dosya adını buraya yazabilirsin)
+        const pdfUrl = 'sample.pdf'; 
+
+        let pdfDoc = null;
+        let currentId = 0; // 0 tabanlı sayfa indexi
+        let pages = [];
+        
         const book = document.getElementById('book');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pageNumDisplay = document.getElementById('page-num-display');
+        const zoomIndicator = document.getElementById('zoom-indicator');
 
-        async function init() {
-            pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
-            // İlk 2 sayfayı hemen render et (Ön yükleme)
-            renderPage(0);
-            renderPage(1);
-        }
-
-        async function renderPage(idx) {
-            if (idx < 0 || idx >= pdfDoc.numPages || document.getElementById(`page-${idx}`)) return;
-
-            const page = await pdfDoc.getPage(idx + 1);
-            const container = document.createElement('div');
-            container.id = `page-${idx}`;
-            container.className = 'canvas-container-layer';
-            
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            
-            // Yüksek kalite ayarı
-            const viewport = page.getViewport({ scale: 2.0 });
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            canvas.style.width = '80vw'; // Ekran oranına göre ayar
-
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
-            
-            container.appendChild(canvas);
-            book.appendChild(container);
-            
-            if (idx === currentIdx) container.classList.add('active');
-        }
-
-        function showPage(idx) {
-            document.querySelectorAll('.canvas-container-layer').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(`page-${idx}`);
-            if (target) {
-                target.classList.add('active');
-                currentIdx = idx;
-                // İleriye dönük sayfayı pre-render et
-                renderPage(idx + 1);
+        // PDF Başlatma ve Yükleme
+        async function initViewer() {
+            try {
+                pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+                document.getElementById('doc-title').textContent = "Yükleniyor...";
+                
+                // Sayfa yapısını önceden kur
+                for (let i = 0; i < pdfDoc.numPages; i++) {
+                    pages.push(null);
+                }
+                
+                pageNumDisplay.textContent = `1 / ${pdfDoc.numPages}`;
+                await showPage(0);
+                updateControls();
+            } catch (err) {
+                console.error("PDF yüklenirken hata oluştu:", err);
+                document.getElementById('doc-title').textContent = "Hata Oluştu";
             }
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' && currentIdx < pdfDoc.numPages - 1) showPage(currentIdx + 1);
-            if (e.key === 'ArrowLeft' && currentIdx > 0) showPage(currentIdx - 1);
+        // Sayfa Değiştirme ve Çift Katmanlı Çizimi Tetikleme
+        async function showPage(index) {
+            if (index < 0 || index >= pdfDoc.numPages) return;
+            
+            // Aktif sınıfları temizle
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            currentId = index;
+            
+            // Eğer sayfa daha önce render edilmediyse veya sıfırdan çizilecekse oluştur
+            if (!pages[index]) {
+                await renderHighQualityPage(index + 1);
+            }
+            
+            const activePage = pages[index];
+            if (activePage) {
+                activePage.classList.add('active');
+                if (activePage.pdfViewport) {
+                    resizeBookToFit(activePage.pdfViewport);
+                }
+            }
+            
+            pageNumDisplay.textContent = `${index + 1} / ${pdfDoc.numPages}`;
+            updateControls();
+        }
+
+        // Akıllı Double-Buffering Render Fonksiyonu (Hızlı, kıpraşmasız ve kayıpsız)
+        async function renderHighQualityPage(pageNum, customScale = 1) {
+            if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
+
+            try {
+                const page = await pdfDoc.getPage(pageNum);
+                let pageDiv = pages[pageNum - 1];
+                
+                if (!pageDiv) {
+                    pageDiv = document.createElement('div'); 
+                    pageDiv.className = 'page';
+                    
+                    const container = document.createElement('div');
+                    container.className = 'canvas-container-layer';
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'base-lowres-canvas';
+                    
+                    container.appendChild(canvas);
+                    pageDiv.appendChild(container);
+                    book.appendChild(pageDiv); 
+                    pages[pageNum - 1] = pageDiv;
+                }
+
+                const canvas = pageDiv.querySelector('.base-lowres-canvas');
+                const context = canvas.getContext('2d');
+                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+
+                // Çözünürlüğü ekran kalitesine göre optimize et (DPR 2 ile sınırlandırıldı)
+                const dpr = Math.min(window.devicePixelRatio || 1, 2); 
+                let targetScale = customScale * dpr;
+
+                const sampleViewport = page.getViewport({ scale: targetScale });
+                if (sampleViewport.width > 2048) {
+                    targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
+                }
+
+                const viewport = page.getViewport({ scale: targetScale });
+
+                // GİZLİ BUFFER CANVAS OLUŞTURMA (Arkada sessizce çizmek için)
+                const bufferCanvas = document.createElement('canvas');
+                bufferCanvas.width = viewport.width;
+                bufferCanvas.height = viewport.height;
+                const bufferContext = bufferCanvas.getContext('2d');
+
+                // Arkada render işlemini gerçekleştir
+                await page.render({ 
+                    canvasContext: bufferContext, 
+                    viewport: viewport 
+                }).promise;
+
+                // Opsiyonel Filigran/Watermark Entegrasyonu
+                injectWatermark(bufferContext, bufferCanvas.width, bufferCanvas.height);
+
+                // Çizim bittiğinde, tek hamlede ekrandaki asıl Canvas'a aktar
+                canvas.width = bufferCanvas.width;
+                canvas.height = bufferCanvas.height;
+                context.drawImage(bufferCanvas, 0, 0);
+
+                if (pageNum - 1 === currentId) {
+                    resizeBookToFit(pageDiv.pdfViewport);
+                }
+            } catch (err) {
+                console.error("Render hatası:", err);
+            }
+        }
+
+        // Simetrik ve Dengeli Ekrana Sığdırma Hesaplaması
+        function resizeBookToFit(pdfViewport) {
+            const containerWidth = book.parentElement.clientWidth;
+            const containerHeight = book.parentElement.clientHeight;
+            
+            const pdfWidth = pdfViewport.width;
+            const pdfHeight = pdfViewport.height;
+            
+            const scaleX = containerWidth / pdfWidth;
+            const scaleY = containerHeight / pdfHeight;
+            const finalScale = Math.min(scaleX, scaleY) * 0.95; // %5 emniyet payı
+            
+            const width = pdfWidth * finalScale;
+            const height = pdfHeight * finalScale;
+            
+            book.style.width = `${width}px`;
+            book.style.height = `${height}px`;
+
+            const pagesElements = book.querySelectorAll('.page');
+            pagesElements.forEach(p => {
+                p.style.width = `${width}px`;
+                p.style.height = `${height}px`;
+            });
+
+            zoomIndicator.textContent = `${Math.round(finalScale * 100)}%`;
+        }
+
+        // Filigran Fonksiyonu (İhtiyaca göre özelleştirilebilir)
+        function injectWatermark(ctx, width, height) {
+            ctx.save();
+            ctx.font = `${Math.max(width * 0.03, 16)}px sans-serif`;
+            ctx.fillStyle = "rgba(120, 120, 120, 0.15)";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.translate(width / 2, height / 2);
+            ctx.rotate(-Math.PI / 4);
+            ctx.fillText("PREVIEW ONLY", 0, 0);
+            ctx.restore();
+        }
+
+        // Buton Aktiflik Durumları
+        function updateControls() {
+            prevBtn.disabled = currentId === 0;
+            nextBtn.disabled = currentId === pdfDoc.numPages - 1;
+        }
+
+        // Event Listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentId > 0) showPage(currentId - 1);
         });
 
-        init();
+        nextBtn.addEventListener('click', () => {
+            if (currentId < pdfDoc.numPages - 1) showPage(currentId + 1);
+        });
+
+        // Klavye Yön Tuşları ile Geçiş Desteği
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentId > 0) {
+                showPage(currentId - 1);
+            } else if (e.key === 'ArrowRight' && currentId < pdfDoc.numPages - 1) {
+                showPage(currentId + 1);
+            }
+        });
+
+        // Pencere Boyutu Değiştiğinde Simetriyi Koru
+        window.addEventListener('resize', () => {
+            const activePage = pages[currentId];
+            if (activePage && activePage.pdfViewport) {
+                resizeBookToFit(activePage.pdfViewport);
+            }
+        });
+
+        // Mobil Cihazlar İçin Sağa-Sola Kaydırma (Swipe) Desteği
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        book.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        book.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const threshold = 50; // Kaydırma hassasiyeti
+            if (touchStartX - touchEndX > threshold && currentId < pdfDoc.numPages - 1) {
+                showPage(currentId + 1); // Sola kaydırınca sonraki sayfa
+            } else if (touchEndX - touchStartX > threshold && currentId > 0) {
+                showPage(currentId - 1); // Sağa kaydırınca önceki sayfa
+            }
+        }
+
+        // Başlat
+        window.addEventListener('DOMContentLoaded', initViewer);
     </script>
 </body>
 </html>
