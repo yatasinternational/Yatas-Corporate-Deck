@@ -305,7 +305,7 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D BOOK ENGINE */
+        /* 3D BOOK ENGINE (FIXED DRIFTING BY CENTERED ORIGIN) */
         .book {
             position: relative;
             transform-style: preserve-3d;
@@ -317,9 +317,10 @@
         
         .page {
             position: absolute;
-            top: 0; left: 0;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
             width: 100%; height: 100%;
-            transform-origin: left center;
+            transform-origin: center center; /* Fixed Right Side Drifting */
             transform-style: preserve-3d;
             transition: transform 0.8s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.6s, z-index 0.6s;
             backface-visibility: hidden;
@@ -329,20 +330,20 @@
         .page.active-page {
             display: block;
             opacity: 1;
-            transform: rotateY(0deg) scale(1);
+            transform: translate(-50%, -50%) rotateY(0deg) scale(1);
             z-index: 5;
         }
         .page.turn-next {
             display: block;
             opacity: 0;
-            transform: rotateY(-140deg) scale(0.95);
+            transform: translate(-50%, -50%) rotateY(-140deg) scale(0.95);
             z-index: 1;
             pointer-events: none;
         }
         .page.turn-prev {
             display: block;
             opacity: 0;
-            transform: rotateY(140deg) scale(0.95);
+            transform: translate(-50%, -50%) rotateY(140deg) scale(0.95);
             z-index: 1;
             pointer-events: none;
         }
@@ -1106,7 +1107,7 @@
             }
         }
 
-        // RE-LAYOUT THE VIEWS AND TRANSITIONS
+        // RE-LAYOUT THE VIEWS AND TRANSITIONS (STABILIZED CENTER TRANSLATION)
         function updateBookDisplay() {
             const total = pages.length;
             if (total === 0) return;
@@ -1169,7 +1170,7 @@
         document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
         document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
 
-        // SWIPE INTERACTIVE JESTURES
+        // SWIPE INTERACTIVE GESTURES
         let touchStartX = 0;
         let touchEndX = 0;
         
