@@ -297,6 +297,7 @@
             background: transparent;
         }
 
+        /* DYNAMIC SCALING WRAPPER (Origin top left ensures absolute cursor accuracy) */
         .pan-zoom-container {
             position: absolute;
             width: 100%;
@@ -305,7 +306,7 @@
             justify-content: center;
             align-items: center;
             cursor: grab;
-            transform-origin: center center;
+            transform-origin: 0 0; /* Sol üst kilitlenmesini JavaScript pan mekanizmasıyla yönetmek için 0 0 yapıldı */
             will-change: transform;
             z-index: 10;
         }
@@ -617,7 +618,6 @@
            RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
            ========================================================================== */
 
-        /* PORTRAIT VIEW (Dikey Mobil Görünüm) */
         @media (max-width: 1024px) and (orientation: portrait) {
             .workspace {
                 height: 100%;
@@ -673,7 +673,6 @@
             }
         }
 
-        /* LANDSCAPE VIEW (Yatay Mobil Görünüm) */
         @media (max-width: 1024px) and (orientation: landscape) {
             .workspace {
                 height: 100%;
@@ -1005,9 +1004,11 @@
             }
             book.style.width = Math.floor(finalW) + 'px';
             book.style.height = Math.floor(finalH) + 'px';
+
+            // Kitap boyutlandığında veya ekran döndüğünde zoom container hizalamasını güncelle
+            updateTransform();
         }
 
-        // AKILLI MOBİL ODAKLI ÇÖKMEZ TEK CANVAS MOTORU (Limit: 2048px Genişlik)
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -1035,11 +1036,9 @@
                 const context = canvas.getContext('2d');
                 pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
 
-                // 1. Ekran Yoğunluğu ve Zoom Oranı Çarpımı
                 const dpr = window.devicePixelRatio || 1;
                 let targetScale = customScale * dpr;
 
-                // 2. ÇÖKME KORUMASI (Genişliği 2048px üzerine çıkartmaz, RAM'i doldurmaz)
                 const sampleViewport = page.getViewport({ scale: targetScale });
                 if (sampleViewport.width > 2048) {
                     targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
@@ -1047,7 +1046,6 @@
 
                 const viewport = page.getViewport({ scale: targetScale });
 
-                // 3. Çizim ve Temizleme
                 canvas.height = viewport.height; 
                 canvas.width = viewport.width;
 
@@ -1066,7 +1064,6 @@
             }
         }
 
-        // Gecikmeli Netleştirme Tetikleyicisi
         function triggerDynamicZoomRender() {
             if (renderTimeout) clearTimeout(renderTimeout);
             renderTimeout = setTimeout(() => {
@@ -1078,7 +1075,6 @@
             const activeIdx = currentId + 1;
             renderHighQualityPage(activeIdx, scale);
             
-            // Yan sayfalar arka planda RAM'i korumak için 1.0 scale ile saklanır
             const nextIdx = activeIdx + 1;
             const prevIdx = activeIdx - 1;
             if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
@@ -1107,7 +1103,7 @@
         async function renderThumbnail(pageNum) {
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.2 }); // Düşük boyutlu thumbnail RAM tüketimini azaltır
+                const viewport = page.getViewport({ scale: 0.2 }); 
                 const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
                 if (!thumbBox) return;
                 const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
@@ -1170,33 +1166,88 @@
             } 
         }
         
-        function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
-        function updateTransform() { 
-            zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; 
+        // ==========================================================================
+        // GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU (Hatasız & Sol Üste Kilitlenmeyen Tasarım)
+        // ==========================================================================
+        function resetZoom() { 
+            scale = 1; 
+            posX = 0; 
+            posY = 0; 
+            updateTransform(); 
         }
 
-        // MOUSE AND CAPTURED INPUT DRAGGING / ZOOM SYSTEM
-        scene.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            if (e.deltaY < 0) { scale = Math.min(scale + 0.25, 5); } else { scale = Math.max(scale - 0.25, 1); }
-            if (scale === 1) { posX = 0; posY = 0; }
+        function updateTransform() { 
+            if (scale <= 1) {
+                // Eğer zoom yapılmadıysa kitabı sahnenin tam ortasına kusursuzca ortala
+                scale = 1; posX = 0; posY = 0;
+                zoomContainer.style.left = '0px';
+                zoomContainer.style.top = '0px';
+                zoomContainer.style.transform = `translate(0px, 0px) scale(1)`;
+            } else {
+                // Zoom varken kullanıcının sürüklediği (pan) değerlere göre transform uygula
+                // Sınır koruması: Ekran dışına sonsuz kaçmayı engeller
+                const maxPanX = (scale - 1) * scene.clientWidth / 2;
+                const maxPanY = (scale - 1) * scene.clientHeight / 2;
+                
+                posX = Math.max(-maxPanX * 2, Math.min(posX, maxPanX * 0.5));
+                posY = Math.max(-maxPanY * 2, Math.min(posY, maxPanY * 0.5));
+
+                zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            }
+        }
+
+        // Tıklanan / Dokunulan Koordinatı Merkez Alarak Akıllı Zoom Yapma Fonksiyonu
+        function zoomToPoint(clientX, clientY, zoomStep) {
+            const rect = scene.getBoundingClientRect();
+            
+            // İmlecin sahnedeki (scene) pozisyonunu hesapla
+            const mouseX = clientX - rect.left;
+            const mouseY = clientY - rect.top;
+
+            // Zoom öncesindeki sahne merkezine göre mesafeler
+            const sceneCenterX = rect.width / 2;
+            const sceneCenterY = rect.height / 2;
+
+            const oldScale = scale;
+            scale = Math.max(1, Math.min(scale + zoomStep, 5));
+
+            if (scale > 1) {
+                // İmlecin olduğu noktanın zoom sonrası kaçmaması için kayma (offset) hesabı
+                posX = mouseX - (mouseX - posX) * (scale / oldScale);
+                posY = mouseY - (mouseY - posY) * (scale / oldScale);
+            } else {
+                posX = 0;
+                posY = 0;
+            }
+
             updateTransform();
             triggerDynamicZoomRender();
+        }
+
+        // MOUSE EVENTS
+        scene.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const step = e.deltaY < 0 ? 0.3 : -0.3;
+            zoomToPoint(e.clientX, e.clientY, step);
         }, { passive: false });
 
         scene.addEventListener('mousedown', (e) => {
             if (scale === 1 || e.target.closest('.arrow-btn')) return;
-            isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY;
+            isDragging = true; 
+            startX = e.clientX - posX; 
+            startY = e.clientY - posY;
         });
+
         window.addEventListener('mousemove', (e) => { 
             if (!isDragging) return; 
             posX = e.clientX - startX; 
             posY = e.clientY - startY; 
             updateTransform(); 
         });
+
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // TOUCH INTELLIGENCE (PINCH-TO-ZOOM / SWIPE WITH NO COLLISION)
+        // TOUCH CONTROLS WITH DIRECT PINCH-CENTER POINT
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPinching = true;
@@ -1204,6 +1255,11 @@
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
+                
+                // İki parmağın tam orta noktasını bulup zoom merkezi yapıyoruz
+                touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
             } else if (e.touches.length === 1) {
                 isPinching = false;
                 touchStartX = e.touches[0].clientX;
@@ -1223,12 +1279,15 @@
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
+                const currentMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
                 const factor = currentDist / initialPinchDist;
-                if(factor > 1) { scale = Math.min(scale + 0.08, 5); }
-                else if(factor < 1) { scale = Math.max(scale - 0.08, 1); }
-                if (scale === 1) { posX = 0; posY = 0; }
-                updateTransform();
-                triggerDynamicZoomRender();
+                const step = factor > 1 ? 0.12 : -0.12;
+
+                zoomToPoint(currentMidX, currentMidY, step);
+                initialPinchDist = currentDist; // Akıcı zoom geçişi için sıfırlama
+
             } else if (isDragging && e.touches.length === 1 && scale > 1) {
                 posX = e.touches[0].clientX - startX;
                 posY = e.touches[0].clientY - startY;
@@ -1258,17 +1317,16 @@
         // BUTTON EVENTS
         document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
         document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
+        
         document.getElementById('zoomInBtn').addEventListener('click', () => { 
-            scale = Math.min(scale + 0.5, 5); 
-            updateTransform(); 
-            triggerDynamicZoomRender();
+            // Ekranın tam ortasını referans alarak yapay zoom tetikle
+            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.5);
         });
+        
         document.getElementById('zoomOutBtn').addEventListener('click', () => { 
-            scale = Math.max(scale - 0.5, 1); 
-            if(scale===1){posX=0;posY=0;} 
-            updateTransform(); 
-            triggerDynamicZoomRender();
+            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, -0.5);
         });
+
         document.getElementById('nextBtn').addEventListener('click', flipNext);
         document.getElementById('prevBtn').addEventListener('click', flipPrev);
 
