@@ -258,28 +258,29 @@
             color: #002870;
         }
 
-        /* WORKSPACE AREA */
+        /* WORKSPACE AREA (ISOLATED WORKSPACE HEIGHTS) */
         .workspace {
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
+            height: 100%;
+            overflow: hidden;
             position: relative;
             z-index: 5;
-            height: 100%;
         }
 
+        /* CONTAINER GRID RESTRICTING OVERFLOWS */
         .main-container {
             display: flex;
-            width: 98%;
+            width: 100%;
             flex: 1;
+            min-height: 0; /* Prevents flex children from overflowing parent */
             overflow: hidden;
             gap: 20px;
-            height: calc(100% - 70px);
+            padding: 20px;
         }
         
+        /* SCENE ZONE */
         .scene {
             flex: 1;
             display: flex;
@@ -288,6 +289,7 @@
             overflow: hidden;
             position: relative;
             height: 100%;
+            min-height: 0;
             perspective: 2000px;
         }
 
@@ -305,7 +307,7 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D BOOK ENGINE (FIXED DRIFTING BY CENTERED ORIGIN) */
+        /* 3D BOOK ENGINE (FIXED STABLE CENTERED ORIGIN) */
         .book {
             position: relative;
             transform-style: preserve-3d;
@@ -317,10 +319,10 @@
         
         .page {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            margin: auto; /* Solid alignment trick preventing drift */
             width: 100%; height: 100%;
-            transform-origin: center center; /* Fixed Right Side Drifting */
+            transform-origin: center center; 
             transform-style: preserve-3d;
             transition: transform 0.8s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.6s, z-index 0.6s;
             backface-visibility: hidden;
@@ -330,20 +332,20 @@
         .page.active-page {
             display: block;
             opacity: 1;
-            transform: translate(-50%, -50%) rotateY(0deg) scale(1);
+            transform: rotateY(0deg) scale(1);
             z-index: 5;
         }
         .page.turn-next {
             display: block;
             opacity: 0;
-            transform: translate(-50%, -50%) rotateY(-140deg) scale(0.95);
+            transform: rotateY(-140deg) scale(0.95);
             z-index: 1;
             pointer-events: none;
         }
         .page.turn-prev {
             display: block;
             opacity: 0;
-            transform: translate(-50%, -50%) rotateY(140deg) scale(0.95);
+            transform: rotateY(140deg) scale(0.95);
             z-index: 1;
             pointer-events: none;
         }
@@ -357,10 +359,10 @@
             object-fit: contain;
         }
 
-        /* NAVIGATION OVERLAYS */
+        /* FLOATING OVERLAYS */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 120px;
+            top: 0; height: 100%; width: 100px;
             z-index: 99;
             display: flex; align-items: center; justify-content: center;
         }
@@ -389,7 +391,7 @@
             box-shadow: 0 10px 25px rgba(255,255,255,0.25);
         }
         
-        /* SIDEBAR THUMBNAILS */
+        /* DESKTOP SIDEBAR THUMBNAILS */
         .sidebar-thumbnails {
             width: 180px;
             background: rgba(0, 40, 112, 0.15);
@@ -425,12 +427,20 @@
             font-weight: bold; padding: 1px 5px; border-radius: 3px;
         }
         
-        /* CONTROL INTERFACE */
+        /* BOTTOM DOCK SYSTEM */
         .bottom-bar-area {
-            width: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 6px;
-            padding-top: 5px; flex-shrink: 0; z-index: 101;
+            width: 100%; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px;
+            padding: 15px 0; 
+            flex-shrink: 0; 
+            z-index: 101;
             position: relative;
+            background: rgba(2, 6, 23, 0.85);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .controls-wrapper {
@@ -443,7 +453,7 @@
 
         .controls {
             display: flex; align-items: center; gap: 12px; 
-            background: rgba(0, 40, 112, 0.8); padding: 10px 24px; border-radius: 50px;
+            background: rgba(0, 40, 112, 0.85); padding: 10px 24px; border-radius: 50px;
             backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
@@ -464,7 +474,7 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* SOUND SWITCH CONFIGURATION */
+        /* SWITCH FOR SYSTEM AUDIO */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -556,7 +566,7 @@
             font-weight: 500;
         }
 
-        /* AUTO RESUME TOAST ALERT */
+        /* AUTO RESUME SESSION TOAST */
         #resumeToast {
             position: fixed;
             bottom: 30px;
@@ -580,44 +590,41 @@
             opacity: 1;
         }
 
-        /* MOBILE OPTIMIZATIONS (PORTRAIT FRIENDLY) */
+        /* RESPONSIVE LAYOUT OPTIMIZATIONS (COMPLETELY ISOLATED SCENE CALCULATION) */
         @media (max-width: 1024px) {
             .workspace {
                 height: 100vh;
-                justify-content: flex-start;
-                padding-top: 130px; 
-                gap: 5px;
+                padding-top: 100px; /* Leave space for brand logo button */
             }
             .main-container {
                 flex-direction: column;
-                width: 100%;
-                gap: 5px;
-                height: calc(100% - 140px);
+                padding: 10px;
+                gap: 10px;
             }
             
             .scene {
-                height: 72% !important; 
-                width: 100% !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0 10px;
+                flex: 1;
+                height: 0; /* Forces scene to fill exactly the remaining space */
+                min-height: 0;
+                width: 100%;
             }
             
+            /* Preview slider banner is kept at a fixed 75px height and isolated completely */
             .sidebar-thumbnails {
                 width: 100% !important;
-                height: 60px !important;
+                height: 75px !important;
                 flex-direction: row !important;
-                padding: 4px 10px !important;
+                padding: 6px 10px !important;
                 gap: 8px !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
                 background: rgba(0, 40, 112, 0.3) !important;
-                margin-top: auto;
+                border-radius: 8px;
+                flex-shrink: 0;
             }
             .thumb-box {
-                width: 60px !important; 
-                height: 45px !important;
+                width: 80px !important; 
+                height: 55px !important;
             }
             .arrow-btn {
                 width: 44px; height: 44px;
@@ -912,11 +919,11 @@
         function resizeBookToFit(viewport) {
             if (!viewport) return;
             
-            let sceneW = scene.clientWidth;
-            let sceneH = scene.clientHeight;
-            
-            if (!sceneW || sceneW === 0) sceneW = window.innerWidth;
-            if (!sceneH || sceneH === 0) sceneH = window.innerHeight * 0.55; 
+            // Measure actual remaining scene width and height (ignoring other elements)
+            const sceneW = scene.clientWidth;
+            const sceneH = scene.clientHeight;
+
+            if (!sceneW || !sceneH) return;
 
             const pdfRatio = viewport.width / viewport.height;
 
@@ -927,11 +934,11 @@
             let finalW, finalH;
 
             if (maxAllowedW / maxAllowedH > pdfRatio) {
-                // Screen layout is wider than the document aspect-ratio
+                // Screen layout is wider than the document aspect-ratio -> bound by height
                 finalH = maxAllowedH;
                 finalW = finalH * pdfRatio;
             } else {
-                // Screen layout is narrower than the document aspect-ratio
+                // Screen layout is narrower than the document aspect-ratio -> bound by width
                 finalW = maxAllowedW;
                 finalH = finalW / pdfRatio;
             }
@@ -1107,7 +1114,7 @@
             }
         }
 
-        // RE-LAYOUT THE VIEWS AND TRANSITIONS (STABILIZED CENTER TRANSLATION)
+        // RE-LAYOUT THE VIEWS AND TRANSITIONS (STABILIZED HEIGHT/WIDTH ALIGNMENT)
         function updateBookDisplay() {
             const total = pages.length;
             if (total === 0) return;
@@ -1244,7 +1251,7 @@
         // VIEWPORT RESIZE LISTENERS
         window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
 
-        // APPLICATION INTIALIZATION
+        // APPLICATION INITIALIZATION
         window.onload = () => {
             buildSidebarMenu();
             
