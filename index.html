@@ -297,7 +297,7 @@
             background: transparent;
         }
 
-        /* DYNAMIC SCALING WRAPPER (Origin top left ensures absolute cursor accuracy) */
+        /* DYNAMIC SCALING WRAPPER */
         .pan-zoom-container {
             position: absolute;
             width: 100%;
@@ -306,7 +306,7 @@
             justify-content: center;
             align-items: center;
             cursor: grab;
-            transform-origin: 0 0; /* Sol üst kilitlenmesini JavaScript pan mekanizmasıyla yönetmek için 0 0 yapıldı */
+            transform-origin: 0 0;
             will-change: transform;
             z-index: 10;
         }
@@ -320,6 +320,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            will-change: transform;
         }
         
         .page {
@@ -333,24 +334,25 @@
             backface-visibility: hidden;
             opacity: 0;
             display: none;
+            will-change: transform, opacity;
         }
         .page.active-page {
             display: block;
             opacity: 1;
-            transform: rotateY(0deg) scale(1);
+            transform: rotateY(0deg) scale(1) translate3d(0,0,0);
             z-index: 5;
         }
         .page.turn-next {
             display: block;
             opacity: 0;
-            transform: rotateY(-140deg) scale(0.95);
+            transform: rotateY(-140deg) scale(0.95) translate3d(0,0,0);
             z-index: 1;
             pointer-events: none;
         }
         .page.turn-prev {
             display: block;
             opacity: 0;
-            transform: rotateY(140deg) scale(0.95);
+            transform: rotateY(140deg) scale(0.95) translate3d(0,0,0);
             z-index: 1;
             pointer-events: none;
         }
@@ -363,6 +365,7 @@
             box-shadow: var(--book-shadow);
             border-radius: 8px;
             overflow: hidden;
+            background: #020617; /* Siyah/koyu arka plan render anında beyaz kıpraşmayı önler */
         }
 
         .base-lowres-canvas {
@@ -372,6 +375,8 @@
             height: 100% !important;
             z-index: 1;
             display: block;
+            will-change: transform, opacity;
+            transition: opacity 0.15s ease-in-out;
         }
 
         /* FLOATING ARROW OVERLAYS */
@@ -1009,6 +1014,7 @@
             updateTransform();
         }
 
+        // AKILLI RENDER SİSTEMİ (Çift Katmanlı / Double-Buffered Yapı ile Sıfır Kıpraşma)
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -1046,15 +1052,26 @@
 
                 const viewport = page.getViewport({ scale: targetScale });
 
-                canvas.height = viewport.height; 
-                canvas.width = viewport.width;
+                // SESSİZ ARKA PLAN (OFFSCREEN) CANVAS OLUŞTURMA
+                // Bu sayede asıl ekrandaki canvas silinmeden çizim arkada bitirilir.
+                const offscreenCanvas = document.createElement('canvas');
+                offscreenCanvas.width = viewport.width;
+                offscreenCanvas.height = viewport.height;
+                const offscreenContext = offscreenCanvas.getContext('2d');
 
+                // Arkadaki sanal tuval üzerine render et
                 await page.render({ 
-                    canvasContext: context, 
+                    canvasContext: offscreenContext, 
                     viewport: viewport 
                 }).promise;
 
-                injectWatermark(context, canvas.width, canvas.height);
+                // Filigranı sessizce ekle
+                injectWatermark(offscreenContext, offscreenCanvas.width, offscreenCanvas.height);
+
+                // Çizim tamamlandıktan sonra tek hamlede ekrandaki asıl Canvas'a aktar (Kıpraşmayı yok eden anlık aktarım)
+                canvas.height = offscreenCanvas.height; 
+                canvas.width = offscreenCanvas.width;
+                context.drawImage(offscreenCanvas, 0, 0);
 
                 if (pageNum - 1 === currentId) {
                     resizeBookToFit(pageDiv.pdfViewport);
@@ -1167,7 +1184,7 @@
         }
         
         // ==========================================================================
-        // GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU (Hatasız & Sol Üste Kilitlenmeyen Tasarım)
+        // GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU
         // ==========================================================================
         function resetZoom() { 
             scale = 1; 
@@ -1178,41 +1195,31 @@
 
         function updateTransform() { 
             if (scale <= 1) {
-                // Eğer zoom yapılmadıysa kitabı sahnenin tam ortasına kusursuzca ortala
                 scale = 1; posX = 0; posY = 0;
                 zoomContainer.style.left = '0px';
                 zoomContainer.style.top = '0px';
-                zoomContainer.style.transform = `translate(0px, 0px) scale(1)`;
+                zoomContainer.style.transform = `translate3d(0px, 0px, 0px) scale(1)`;
             } else {
-                // Zoom varken kullanıcının sürüklediği (pan) değerlere göre transform uygula
-                // Sınır koruması: Ekran dışına sonsuz kaçmayı engeller
                 const maxPanX = (scale - 1) * scene.clientWidth / 2;
                 const maxPanY = (scale - 1) * scene.clientHeight / 2;
                 
                 posX = Math.max(-maxPanX * 2, Math.min(posX, maxPanX * 0.5));
                 posY = Math.max(-maxPanY * 2, Math.min(posY, maxPanY * 0.5));
 
-                zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+                zoomContainer.style.transform = `translate3d(${posX}px, ${posY}px, 0px) scale(${scale})`;
             }
         }
 
-        // Tıklanan / Dokunulan Koordinatı Merkez Alarak Akıllı Zoom Yapma Fonksiyonu
         function zoomToPoint(clientX, clientY, zoomStep) {
             const rect = scene.getBoundingClientRect();
             
-            // İmlecin sahnedeki (scene) pozisyonunu hesapla
             const mouseX = clientX - rect.left;
             const mouseY = clientY - rect.top;
-
-            // Zoom öncesindeki sahne merkezine göre mesafeler
-            const sceneCenterX = rect.width / 2;
-            const sceneCenterY = rect.height / 2;
 
             const oldScale = scale;
             scale = Math.max(1, Math.min(scale + zoomStep, 5));
 
             if (scale > 1) {
-                // İmlecin olduğu noktanın zoom sonrası kaçmaması için kayma (offset) hesabı
                 posX = mouseX - (mouseX - posX) * (scale / oldScale);
                 posY = mouseY - (mouseY - posY) * (scale / oldScale);
             } else {
@@ -1256,7 +1263,6 @@
                     e.touches[0].clientY - e.touches[1].clientY
                 );
                 
-                // İki parmağın tam orta noktasını bulup zoom merkezi yapıyoruz
                 touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
                 touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
@@ -1286,12 +1292,18 @@
                 const step = factor > 1 ? 0.12 : -0.12;
 
                 zoomToPoint(currentMidX, currentMidY, step);
-                initialPinchDist = currentDist; // Akıcı zoom geçişi için sıfırlama
+                initialPinchDist = currentDist; 
 
             } else if (isDragging && e.touches.length === 1 && scale > 1) {
                 posX = e.touches[0].clientX - startX;
                 posY = e.touches[0].clientY - startY;
                 updateTransform();
+            }
+        }, { passive: false });
+
+        scene.addEventListener('touchmove', (e) => {
+            if (isPinching && e.touches.length === 2) {
+                e.preventDefault();
             }
         }, { passive: false });
 
@@ -1319,7 +1331,6 @@
         document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
         
         document.getElementById('zoomInBtn').addEventListener('click', () => { 
-            // Ekranın tam ortasını referans alarak yapay zoom tetikle
             zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.5);
         });
         
