@@ -932,42 +932,45 @@
         let isSoundOn = true;
         let renderTimeout = null;
 
-        const transitionSound = new Audio('glossy_magazine.mp3');
+        // HIGH-PERFORMANCE AUDIO POOL SYSTEM
+        const audioFileUrl = 'glossy_magazine.mp3';
+        const audioPoolSize = 6; // Arka arkaya 6 hızlı geçişi kesintisiz miksler
+        const audioPool = [];
+        let currentPoolIndex = 0;
 
-        // CACHED ELEMENTS
-        const zoomContainer = document.getElementById('zoomContainer');
-        const book = document.getElementById('book');
-        const scene = document.getElementById('scene');
-        const sidebarThumbnails = document.getElementById('sidebarThumbnails');
-        const gotoInput = document.getElementById('gotoInput');
-        const cataloguesList = document.getElementById('cataloguesList');
-        const otherList = document.getElementById('otherList');
-        const globalLoading = document.getElementById('globalLoading');
-        const sidebarNav = document.getElementById('sidebarNav');
-        const menuHamburger = document.getElementById('menuHamburger');
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
-            });
+        // Havuzu önceden oluştur
+        for (let i = 0; i < audioPoolSize; i++) {
+            audioPool.push(new Audio(audioFileUrl));
         }
 
+        // Kullanıcı etkileşimiyle tüm havuzun kilidini aç (Tarayıcı güvenlik önlemleri)
         function unlockAudioEngine() {
-            transitionSound.play().then(() => {
-                transitionSound.pause();
-                transitionSound.currentTime = 0;
-            }).catch(e => {});
+            audioPool.forEach(sound => {
+                sound.play().then(() => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                }).catch(e => {});
+            });
             window.removeEventListener('click', unlockAudioEngine);
             window.removeEventListener('touchstart', unlockAudioEngine);
         }
         window.addEventListener('click', unlockAudioEngine);
         window.addEventListener('touchstart', unlockAudioEngine);
 
+        // Havuzdan sıradaki ses kanalını tetikler
         function playPaperSound() {
             if (!isSoundOn) return;
             try {
-                transitionSound.currentTime = 0;
-                transitionSound.play();
+                const sound = audioPool[currentPoolIndex];
+                sound.currentTime = 0;
+                const playPromise = sound.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        // Tarayıcı blokajlarını sessizce yut
+                    });
+                }
+                // Sıradaki kanala geç (ring-buffer)
+                currentPoolIndex = (currentPoolIndex + 1) % audioPoolSize;
             } catch (e) {}
         }
 
