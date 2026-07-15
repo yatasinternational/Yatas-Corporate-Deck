@@ -1,1228 +1,1247 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yataş Group - Premium Corporate Portal</title>
-    
-    <!-- PWA Altyapısı -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#020617">
-    <link rel="manifest" href="manifest.json" id="pwaManifest">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Yataş Group - Premium Corporate Portal</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<!-- PWA Altyapısı -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#020617">
+<link rel="manifest" href="manifest.json" id="pwaManifest">
 
-    <style>
-        :root {
-            --primary-blue: #002870;
-            --neon-blue: #00d2ff;
-            --book-shadow: 0 30px 70px rgba(0,0,0,0.8);
-            --glass-bg: rgba(2, 6, 23, 0.88);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            background: #020617;
-            display: flex;
-            height: 100vh;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden;
-            color: #fff;
-        }
+<style>
+:root {
+--primary-blue: #002870;
+--neon-blue: #00d2ff;
+--book-shadow: 0 15px 45px rgba(0,0,0,0.6);
+--glass-bg: rgba(2, 6, 23, 0.88);
+--glass-border: rgba(255, 255, 255, 0.08);
+}
 
-        /* PREMIUM MESH GRADIENT ARKA PLAN */
-        .premium-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-            background: #020617;
-            overflow: hidden;
-        }
-        .premium-bg::before {
-            content: "";
-            position: absolute;
-            top: -20%; left: -20%; width: 140%; height: 140%;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
-                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
-            filter: blur(60px);
-            animation: elegantBgMotion 25s ease-in-out infinite alternate;
-        }
-        @keyframes elegantBgMotion {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(2%, -4%) scale(1.05); }
-            100% { transform: translate(-2%, 4%) scale(0.98); }
-        }
-        
-        /* PULSE LOADING EKRANI */
-        #globalLoading { 
-            position: fixed; 
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #002870; 
-            z-index: 10000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            gap: 20px;
-            transition: opacity 0.5s ease;
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .loading-pulse-logo {
-            width: 180px;
-            height: auto;
-            background: #ffffff;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            animation: yatasHeartbeat 1.4s ease-in-out infinite;
-        }
+body {
+background: #020617;
+display: flex;
+height: 100vh;
+font-family: 'Segoe UI', Arial, sans-serif;
+overflow: hidden;
+color: #fff;
+}
 
-        @keyframes yatasHeartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.08); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.13); }
-            70% { transform: scale(1); }
-            100% { transform: scale(1); }
-        }
+/* PREMIUM MESH GRADIENT ARKA PLAN */
+.premium-bg {
+position: absolute;
+top: 0; left: 0; width: 100%; height: 100%;
+z-index: 1;
+background: #020617;
+overflow: hidden;
+}
+.premium-bg::before {
+content: "";
+position: absolute;
+top: -20%; left: -20%; width: 140%; height: 140%;
+background-image:
+radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
+radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
+radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
+filter: blur(60px);
+animation: elegantBgMotion 25s ease-in-out infinite alternate;
+}
+@keyframes elegantBgMotion {
+0% { transform: translate(0, 0) scale(1); }
+50% { transform: translate(2%, -4%) scale(1.05); }
+100% { transform: translate(-2%, 4%) scale(0.98); }
+}
 
-        /* ANA PORTAL ALANI */
-        .portal-wrapper {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-            z-index: 2;
-        }
+/* PULSE LOADING EKRANI */
+#globalLoading {
+position: fixed;
+top: 0; left: 0; width: 100vw; height: 100vh;
+background: #002870;
+z-index: 10000;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 20px;
+transition: opacity 0.5s ease;
+}
 
-        /* SOL ÜST - DİKEY SIRALI LOGO VE HAMBURGER */
-        .header-column {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-            z-index: 1001;
-        }
+.loading-pulse-logo {
+width: 180px;
+height: auto;
+background: #ffffff;
+padding: 15px 20px;
+border-radius: 8px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+animation: yatasHeartbeat 1.4s ease-in-out infinite;
+}
 
-        .brand-logo-btn {
-            background: #ffffff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .brand-logo-btn:hover {
-            transform: translateY(-2px);
-        }
-        .brand-logo-btn img {
-            height: 24px;
-            width: auto;
-        }
+@keyframes yatasHeartbeat {
+0% { transform: scale(1); }
+14% { transform: scale(1.08); }
+28% { transform: scale(1); }
+42% { transform: scale(1.13); }
+70% { transform: scale(1); }
+100% { transform: scale(1); }
+}
 
-        .hamburger-btn {
-            width: 46px;
-            height: 46px;
-            background: rgba(0, 40, 112, 0.85);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 5px;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .hamburger-btn:hover {
-            background: rgba(255,255,255,0.15);
-            transform: scale(1.05);
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #ffffff;
-            transition: 0.3s;
-        }
+/* ANA PORTAL ALANI */
+.portal-wrapper {
+display: flex;
+width: 100vw;
+height: 100vh;
+overflow: hidden;
+position: relative;
+z-index: 2;
+}
 
-        /* SIDEBAR MENÜ */
-        .sidebar-nav {
-            position: fixed;
-            left: -340px;
-            top: 0;
-            height: 100vh;
-            width: 320px;
-            background: var(--glass-bg); 
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            padding: 150px 24px 24px 24px;
-            box-shadow: 25px 0 50px rgba(0,0,0,0.6);
-            z-index: 1000;
-            overflow-y: auto;
-            backdrop-filter: blur(30px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .sidebar-nav.menu-open {
-            left: 0;
-        }
+/* SOL ÜST - DİKEY SIRALI LOGO VE HAMBURGER */
+.header-column {
+position: absolute;
+top: 20px;
+left: 20px;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: 12px;
+z-index: 1001;
+}
 
-        .sidebar-nav::-webkit-scrollbar { width: 4px; }
-        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+.brand-logo-btn {
+background: #ffffff;
+padding: 8px 15px;
+border-radius: 8px;
+box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+height: 46px;
+display: flex;
+align-items: center;
+justify-content: center;
+border: none;
+cursor: pointer;
+transition: transform 0.3s ease;
+}
+.brand-logo-btn:hover {
+transform: translateY(-2px);
+}
+.brand-logo-btn img {
+height: 24px;
+width: auto;
+}
 
-        .brand-subtitle {
-            font-size: 11px;
-            color: #a4c2f4;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 12px;
-            font-weight: 700;
-        }
+.hamburger-btn {
+width: 46px;
+height: 46px;
+background: rgba(0, 40, 112, 0.85);
+border: 1px solid var(--glass-border);
+border-radius: 8px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 5px;
+backdrop-filter: blur(15px);
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.hamburger-btn:hover {
+background: rgba(255,255,255,0.15);
+transform: scale(1.05);
+}
+.hamburger-btn span {
+display: block;
+width: 20px;
+height: 2px;
+background: #ffffff;
+transition: 0.3s;
+}
 
-        .menu-section-title {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 20px;
-            margin-bottom: 12px;
-            padding-left: 5px;
-            border-left: 3px solid var(--neon-blue);
-        }
+/* SIDEBAR MENÜ */
+.sidebar-nav {
+position: fixed;
+left: -340px;
+top: 0;
+height: 100vh;
+width: 320px;
+background: var(--glass-bg);
+border-right: 1px solid var(--glass-border);
+display: flex;
+flex-direction: column;
+padding: 150px 24px 24px 24px;
+box-shadow: 25px 0 50px rgba(0,0,0,0.6);
+z-index: 1000;
+overflow-y: auto;
+backdrop-filter: blur(30px);
+transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sidebar-nav.menu-open {
+left: 0;
+}
 
-        .deck-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
 
-        .deck-btn {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            color: #ffffff;
-            text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .deck-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-        .deck-btn.active-deck {
-            background: #ffffff;
-            border-color: #ffffff;
-            color: #002870; 
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-        }
-        .deck-btn::before {
-            content: "•";
-            color: var(--neon-blue);
-            font-size: 14px;
-        }
-        .deck-btn.active-deck::before {
-            color: #002870;
-        }
+.brand-subtitle {
+font-size: 11px;
+color: #a4c2f4;
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-bottom: 20px;
+border-bottom: 1px solid rgba(255,255,255,0.15);
+padding-bottom: 12px;
+font-weight: 700;
+}
 
-        /* WORKSPACE */
-        .workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            position: relative;
-            z-index: 5;
-            height: 100%;
-        }
+.menu-section-title {
+font-size: 11px;
+color: rgba(255, 255, 255, 0.6);
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-top: 20px;
+margin-bottom: 12px;
+padding-left: 5px;
+border-left: 3px solid var(--neon-blue);
+}
 
-        .main-container {
-            display: flex;
-            width: 98%;
-            flex: 1;
-            overflow: hidden;
-            gap: 20px;
-            height: calc(100% - 70px);
-        }
-        
-        .scene {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            height: 100%;
-            perspective: 2000px;
-        }
+.deck-list {
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
 
-        /* iOS ÇÖKMESİNİ ENGELLEYEN YENİ GENİŞLİK VE FLEX AYARI */
-        .pan-zoom-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none; /* JS ile 'flex' yapılacak */
-            justify-content: center;
-            align-items: center;
-            cursor: grab;
-            transform-origin: center center;
-            will-change: transform;
-            z-index: 10;
-        }
-        .pan-zoom-container:active { cursor: grabbing; }
-        
-        /* 3D BOOK SİSTEMİ */
-        .book {
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
-        }
-        
-        .page {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            transform-origin: left center;
-            transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.6s, z-index 0.6s;
-            backface-visibility: hidden;
-            opacity: 0;
-            display: none;
-        }
-        .page.active-page {
-            display: block;
-            opacity: 1;
-            transform: rotateY(0deg) scale(1);
-            z-index: 5;
-        }
-        .page.turn-next {
-            display: block;
-            opacity: 0;
-            transform: rotateY(-140deg) scale(0.95);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .page.turn-prev {
-            display: block;
-            opacity: 0;
-            transform: rotateY(140deg) scale(0.95);
-            z-index: 1;
-            pointer-events: none;
-        }
+.deck-btn {
+width: 100%;
+padding: 12px 15px;
+background: rgba(255, 255, 255, 0.04);
+border: 1px solid rgba(255, 255, 255, 0.06);
+border-radius: 8px;
+color: #ffffff;
+text-align: left;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.deck-btn:hover {
+background: rgba(255, 255, 255, 0.12);
+border-color: rgba(255, 255, 255, 0.2);
+transform: translateX(5px);
+}
+.deck-btn.active-deck {
+background: #ffffff;
+border-color: #ffffff;
+color: #002870;
+box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+.deck-btn::before {
+content: "•";
+color: var(--neon-blue);
+font-size: 14px;
+}
+.deck-btn.active-deck::before {
+color: #002870;
+}
 
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
-            display: block;
-            box-shadow: var(--book-shadow);
-            border-radius: 8px;
-        }
+/* WORKSPACE */
+.workspace {
+flex: 1;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+align-items: center;
+padding: 20px 0;
+position: relative;
+z-index: 5;
+height: 100%;
+}
 
-        /* YÖNLENDİRME OKLARI */
-        .nav-overlay-zone {
-            position: absolute;
-            top: 0; height: 100%; width: 120px;
-            z-index: 99;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .nav-overlay-zone.left-zone { left: 0; }
-        .nav-overlay-zone.right-zone { right: 0; }
+.main-container {
+display: flex;
+width: 98%;
+flex: 1;
+overflow: hidden;
+gap: 20px;
+height: calc(100% - 70px);
+}
 
-        .arrow-btn {
-            width: 54px; height: 54px;
-            background: rgba(0, 40, 112, 0.5);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer;
-            opacity: 0.65;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(8px);
-            user-select: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        .arrow-btn:hover {
-            opacity: 1; 
-            transform: scale(1.15);
-            background: #ffffff; 
-            color: #002870;
-            border-color: #ffffff;
-            box-shadow: 0 10px 25px rgba(255,255,255,0.25);
-        }
-        
-        /* SAĞ SLIDE ŞERİDİ */
-        .sidebar-thumbnails {
-            width: 180px;
-            background: rgba(0, 40, 112, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 8px;
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            transition: all 0.5s ease;
-            flex-shrink: 0;
-        }
-        .sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
-        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.scene {
+flex: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+overflow: hidden;
+position: relative;
+height: 100%;
+perspective: 2000px;
+}
 
-        .thumb-box {
-            position: relative; width: 94%; cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
-            overflow: hidden; transition: all 0.3s ease; opacity: 0.5;
-            background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
-        }
-        .thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.3); }
-        .thumb-box.active-thumb { border-color: var(--neon-blue); opacity: 1; box-shadow: 0 0 12px rgba(0, 210, 255, 0.3); }
-        .thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
+.pan-zoom-container {
+position: absolute;
+width: 100%;
+height: 100%;
+display: none;
+justify-content: center;
+align-items: center;
+cursor: grab;
+transform-origin: center center;
+will-change: transform;
+z-index: 10;
+}
+.pan-zoom-container:active { cursor: grabbing; }
 
-        .thumb-label {
-            position: absolute; bottom: 4px; right: 6px;
-            background: rgba(0,0,0,0.8); color: var(--neon-blue); font-size: 9px;
-            font-weight: bold; padding: 1px 5px; border-radius: 3px;
-        }
-        
-        /* KONTROL PANELİ */
-        .bottom-bar-area {
-            width: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 6px;
-            padding-top: 5px; flex-shrink: 0; z-index: 101;
-            position: relative;
-        }
+/* 3D BOOK SİSTEMİ */
+.book {
+position: relative;
+transform-style: preserve-3d;
+transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
+display: flex;
+justify-content: center;
+align-items: center;
+}
 
-        .controls-wrapper {
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
-            justify-content: center;
-        }
+.page {
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 100%;
+transform-origin: left center;
+transform-style: preserve-3d;
+transition: transform 0.8s cubic-bezier(0.2, 1, 0.22, 1), opacity 0.6s, z-index 0.6s;
+backface-visibility: hidden;
+opacity: 0;
+display: none;
+}
+.page.active-page {
+display: block;
+opacity: 1;
+transform: rotateY(0deg) scale(1);
+z-index: 5;
+}
+.page.turn-next {
+display: block;
+opacity: 0;
+transform: rotateY(-140deg) scale(0.95);
+z-index: 1;
+pointer-events: none;
+}
+.page.turn-prev {
+display: block;
+opacity: 0;
+transform: rotateY(140deg) scale(0.95);
+z-index: 1;
+pointer-events: none;
+}
 
-        .controls {
-            display: flex; align-items: center; gap: 12px; 
-            background: rgba(0, 40, 112, 0.8); padding: 10px 24px; border-radius: 50px;
-            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-        
-        .bottom-bar-area button {
-            padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
-            background: #fff; color: #002870; border: none; border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-        .bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
-        .bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
-        
-        .goto-container { display: flex; align-items: center; gap: 4px; font-size: 12px; }
-        .goto-input {
-            width: 40px; padding: 3px 5px; border-radius: 5px;
-            border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
-            color: #fff; text-align: center; font-weight: bold;
-        }
-        #pageIndicator { color: #ffffff; }
+canvas {
+width: 100% !important;
+height: 100% !important;
+display: block;
+box-shadow: var(--book-shadow);
+border-radius: 8px;
+object-fit: contain; /* En boy bozulmasın */
+}
 
-        /* iOS TARZI LIQUID SES SWITCH'İ */
-        .sound-corner {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 105;
-        }
+/* YÖNLENDİRME OKLARI */
+.nav-overlay-zone {
+position: absolute;
+top: 0; height: 100%; width: 120px;
+z-index: 99;
+display: flex; align-items: center; justify-content: center;
+}
+.nav-overlay-zone.left-zone { left: 0; }
+.nav-overlay-zone.right-zone { right: 0; }
 
-        .ios-switch-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 40, 112, 0.7);
-            padding: 6px 12px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-        }
+.arrow-btn {
+width: 54px; height: 54px;
+background: rgba(0, 40, 112, 0.5);
+border: 1.5px solid rgba(255, 255, 255, 0.2);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+color: #fff; font-size: 20px; cursor: pointer;
+opacity: 0.65;
+transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+backdrop-filter: blur(8px);
+user-select: none;
+box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+.arrow-btn:hover {
+opacity: 1;
+transform: scale(1.15);
+background: #ffffff;
+color: #002870;
+border-color: #ffffff;
+box-shadow: 0 10px 25px rgba(255,255,255,0.25);
+}
 
-        .switch-label {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.8);
-            user-select: none;
-        }
+/* SAĞ SLIDE ŞERİDİ */
+.sidebar-thumbnails {
+width: 180px;
+background: rgba(0, 40, 112, 0.15);
+border: 1px solid rgba(255, 255, 255, 0.05);
+border-radius: 12px;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+padding: 12px 8px;
+backdrop-filter: blur(20px);
+z-index: 100;
+transition: all 0.5s ease;
+flex-shrink: 0;
+}
+.sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
+.sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
 
-        .ios-switch {
-            position: relative;
-            display: inline-block;
-            width: 42px;
-            height: 24px;
-        }
+.thumb-box {
+position: relative; width: 94%; cursor: pointer;
+border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
+overflow: hidden; transition: all 0.3s ease; opacity: 0.5;
+background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
+}
+.thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.3); }
+.thumb-box.active-thumb { border-color: var(--neon-blue); opacity: 1; box-shadow: 0 0 12px rgba(0, 210, 255, 0.3); }
+.thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
 
-        .ios-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+.thumb-label {
+position: absolute; bottom: 4px; right: 6px;
+background: rgba(0,0,0,0.8); color: var(--neon-blue); font-size: 9px;
+font-weight: bold; padding: 1px 5px; border-radius: 3px;
+}
 
-        .ios-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 34px;
-        }
+/* KONTROL PANELİ */
+.bottom-bar-area {
+width: 100%; display: flex; flex-direction: column;
+align-items: center; justify-content: center; gap: 6px;
+padding-top: 5px; flex-shrink: 0; z-index: 101;
+position: relative;
+}
 
-        .ios-slider:before {
-            position: absolute;
-            content: "🔊";
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
+.controls-wrapper {
+display: flex;
+align-items: center;
+position: relative;
+width: 100%;
+justify-content: center;
+}
 
-        input:checked + .ios-slider {
-            background-color: var(--neon-blue);
-        }
+.controls {
+display: flex; align-items: center; gap: 12px;
+background: rgba(0, 40, 112, 0.8); padding: 10px 24px; border-radius: 50px;
+backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
+box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
 
-        input:checked + .ios-slider:before {
-            transform: translateX(18px);
-            content: "🔊";
-        }
+.bottom-bar-area button {
+padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
+background: #fff; color: #002870; border: none; border-radius: 20px;
+transition: all 0.3s ease;
+}
+.bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
+.bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
 
-        input:not(:checked) + .ios-slider:before {
-            content: "🔇";
-            background-color: #f3f4f6;
-        }
-        
-        .hint { 
-            font-size: 11px; 
-            color: rgba(255,255,255,0.4) !important; 
-            font-weight: 500;
-        }
+.goto-container { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+.goto-input {
+width: 40px; padding: 3px 5px; border-radius: 5px;
+border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
+color: #fff; text-align: center; font-weight: bold;
+}
+#pageIndicator { color: #ffffff; }
 
-        /* AUTO RESUME TOAST */
-        #resumeToast {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: rgba(0, 40, 112, 0.95);
-            border-left: 4px solid var(--neon-blue);
-            padding: 15px 25px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 10005;
-            display: none;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #resumeToast.show {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
+/* SES SWITCH'İ */
+.sound-corner {
+position: absolute;
+right: 25px;
+top: 50%;
+transform: translateY(-50%);
+display: flex;
+align-items: center;
+gap: 10px;
+z-index: 105;
+}
 
-        /* MOBİL REVIZYONLARI */
-        @media (max-width: 1024px) {
-            .workspace {
-                height: 100vh;
-                justify-content: flex-start;
-                padding-top: 140px; 
-                gap: 5px;
-            }
-            .main-container {
-                flex-direction: column;
-                width: 100%;
-                gap: 5px;
-                height: calc(100% - 150px);
-            }
-            
-            .scene {
-                height: 74% !important; 
-                width: 100% !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .sidebar-thumbnails {
-                width: 100% !important;
-                height: 60px !important;
-                flex-direction: row !important;
-                padding: 4px 10px !important;
-                gap: 8px !important;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                margin-top: auto;
-            }
-            .thumb-box {
-                width: 60px !important; 
-                height: 45px !important;
-            }
-            .arrow-btn {
-                width: 44px; height: 44px;
-                opacity: 0.7;
-            }
-            .nav-overlay-zone {
-                width: 50px;
-            }
-            
-            .sound-corner {
-                position: static !important;
-                transform: none !important;
-                margin-top: 8px;
-                display: flex;
-                justify-content: center;
-                width: 100%;
-            }
-            .controls-wrapper {
-                flex-direction: column;
-                gap: 5px;
-                width: 100%;
-            }
-            .header-column {
-                top: 15px;
-                left: 15px;
-            }
-        }
-    </style>
+.ios-switch-container {
+display: flex;
+align-items: center;
+gap: 8px;
+background: rgba(0, 40, 112, 0.7);
+padding: 6px 12px;
+border-radius: 30px;
+border: 1px solid rgba(255, 255, 255, 0.12);
+backdrop-filter: blur(15px);
+box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+.switch-label {
+font-size: 10px;
+font-weight: 800;
+letter-spacing: 1px;
+text-transform: uppercase;
+color: rgba(255, 255, 255, 0.8);
+user-select: none;
+}
+
+.ios-switch {
+position: relative;
+display: inline-block;
+width: 42px;
+height: 24px;
+}
+
+.ios-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+.ios-slider {
+position: absolute;
+cursor: pointer;
+top: 0; left: 0; right: 0; bottom: 0;
+background-color: rgba(255, 255, 255, 0.2);
+transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
+border-radius: 34px;
+}
+
+.ios-slider:before {
+position: absolute;
+content: "🔊";
+font-size: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
+border-radius: 50%;
+box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+input:checked + .ios-slider {
+background-color: var(--neon-blue);
+}
+
+input:checked + .ios-slider:before {
+transform: translateX(18px);
+content: "🔊";
+}
+
+input:not(:checked) + .ios-slider:before {
+content: "🔇";
+background-color: #f3f4f6;
+}
+
+.hint {
+font-size: 11px;
+color: rgba(255,255,255,0.4) !important;
+font-weight: 500;
+}
+
+/* AUTO RESUME TOAST */
+#resumeToast {
+position: fixed;
+bottom: 30px;
+left: 30px;
+background: rgba(0, 40, 112, 0.95);
+border-left: 4px solid var(--neon-blue);
+padding: 15px 25px;
+border-radius: 6px;
+font-size: 13px;
+font-weight: 600;
+box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+z-index: 10005;
+display: none;
+transform: translateY(100px);
+opacity: 0;
+transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#resumeToast.show {
+display: block;
+transform: translateY(0);
+opacity: 1;
+}
+
+/* MOBİL REVIZYONLARI */
+@media (max-width: 1024px) {
+.workspace {
+height: 100vh;
+justify-content: flex-start;
+padding-top: 130px;
+gap: 5px;
+}
+.main-container {
+flex-direction: column;
+width: 100%;
+gap: 5px;
+height: calc(100% - 140px);
+}
+
+.scene {
+height: 72% !important;
+width: 100% !important;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 10px;
+}
+
+.sidebar-thumbnails {
+width: 100% !important;
+height: 60px !important;
+flex-direction: row !important;
+padding: 4px 10px !important;
+gap: 8px !important;
+overflow-x: auto !important;
+overflow-y: hidden !important;
+background: rgba(0, 40, 112, 0.3) !important;
+margin-top: auto;
+}
+.thumb-box {
+width: 60px !important;
+height: 45px !important;
+}
+.arrow-btn {
+width: 44px; height: 44px;
+opacity: 0.7;
+}
+.nav-overlay-zone {
+width: 50px;
+}
+
+.sound-corner {
+position: static !important;
+transform: none !important;
+margin-top: 8px;
+display: flex;
+justify-content: center;
+width: 100%;
+}
+.controls-wrapper {
+flex-direction: column;
+gap: 5px;
+width: 100%;
+}
+.header-column {
+top: 15px;
+left: 15px;
+}
+}
+</style>
 </head>
 <body>
 
-    <div class="premium-bg"></div>
-
-    <!-- LOADING EKRANI -->
-    <div id="globalLoading">
-        <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
-    </div>
-
-    <!-- SOL ÜST DİKEY YERLEŞİM: LOGO ÜSTTE, HAMBURGER ALTTA -->
-    <div class="header-column">
-        <button class="brand-logo-btn" onclick="toggleMenu()">
-            <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
-        </button>
-        <button class="hamburger-btn" id="menuHamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </div>
-
-    <!-- AUTO RESUME TOAST -->
-    <div id="resumeToast">Welcome back! You're being redirected to your last viewed page.</div>
-    
-    <div class="portal-wrapper" id="portalWrapper">
-        
-        <!-- SIDEBAR -->
-        <div class="sidebar-nav" id="sidebarNav">
-            <div class="brand-subtitle">Corporate Deck Portal</div>
-            
-            <div class="menu-section-title">Catalogues</div>
-            <ul class="deck-list" id="cataloguesList"></ul>
-
-            <div class="menu-section-title">Other Presentatıons</div>
-            <ul class="deck-list" id="otherList"></ul>
-        </div>
-
-        <div class="workspace" id="workspace">
-            <div class="main-container" id="mainContainer">
-                <div class="scene" id="scene">
-                    
-                    <div id="zoomContainer" class="pan-zoom-container">
-                        <div id="book" class="book"></div>
-                    </div>
-
-                    <!-- OK YÖNLENDİRMELERİ -->
-                    <div class="nav-overlay-zone left-zone" id="zoneLeft">
-                        <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
-                    </div>
-
-                    <div class="nav-overlay-zone right-zone" id="zoneRight">
-                        <div class="arrow-btn" id="overlayNextBtn">&#10095;</div>
-                    </div>
-
-                </div>
-
-                <div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
-            </div>
-
-            <!-- KONTROLLER -->
-            <div class="bottom-bar-area" id="bottomBarArea">
-                <div class="controls-wrapper">
-                    <div class="controls">
-                        <button id="prevBtn" disabled>◀ Previous</button>
-                        <div class="goto-container">
-                            <input type="text" id="gotoInput" class="goto-input" value="1">
-                            <span id="pageIndicator">/ 0</span>
-                        </div>
-                        <button id="nextBtn">Next ▶</button>
-                        <button id="zoomInBtn">🔍 +</button>
-                        <button id="zoomOutBtn">🔍 -</button>
-                    </div>
-
-                    <!-- SES SWITCH'İ -->
-                    <div class="sound-corner">
-                        <div class="ios-switch-container">
-                            <span class="switch-label">Sound</span>
-                            <label class="ios-switch">
-                                <input type="checkbox" id="audioToggleBtn" checked>
-                                <span class="ios-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="hint">You can zoom in and out with the scroll wheel. On mobile, swipe with your finger.</div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        const presentationData = {
-            catalogues: [
-                { title: "Enza Home", url: "Enza Home.pdf" },
-                { title: "Yataş Bedding", url: "Yataş Bedding.pdf" },
-            ],
-            otherPresentations: [
-                { title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" },
-                { title: "Yataş Projects", url: "Yataş Projects.pdf" },
-                { title: "Yataş Projects References", url: "Yataş Projects References.pdf" }
-            ]
-        };
-
-        const presentations = [...presentationData.catalogues, ...presentationData.otherPresentations];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-        let currentActivePresentationIndex = 0;
-        let currentId = 0; 
-        let pages = [];
-        let thumbElements = [];
-        let pdfDoc = null;
-        let scale = 1; let posX = 0; let posY = 0;
-        let isDragging = false; let startX; let startY;
-        let isSoundOn = true;
-        let pageRenderingStates = {}; 
-
-        const transitionSound = new Audio('glossy_magazine.mp3');
-
-        const zoomContainer = document.getElementById('zoomContainer');
-        const book = document.getElementById('book');
-        const scene = document.getElementById('scene');
-        const sidebarThumbnails = document.getElementById('sidebarThumbnails');
-        const gotoInput = document.getElementById('gotoInput');
-        const cataloguesList = document.getElementById('cataloguesList');
-        const otherList = document.getElementById('otherList');
-        const globalLoading = document.getElementById('globalLoading');
-        const sidebarNav = document.getElementById('sidebarNav');
-        const menuHamburger = document.getElementById('menuHamburger');
-
-        // PWA SERVICE WORKER
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('PWA Service Worker Registered.', reg))
-                    .catch(err => console.log('Service Worker skipped.', err));
-            });
-        }
-
-        // AUDIO UNLOCK
-        function unlockAudioEngine() {
-            transitionSound.play().then(() => {
-                transitionSound.pause();
-                transitionSound.currentTime = 0;
-            }).catch(e => console.log('Audio Engine ready.'));
-            window.removeEventListener('click', unlockAudioEngine);
-            window.removeEventListener('touchstart', unlockAudioEngine);
-        }
-        window.addEventListener('click', unlockAudioEngine);
-        window.addEventListener('touchstart', unlockAudioEngine);
-
-        function playPaperSound() {
-            if (!isSoundOn) return;
-            try {
-                transitionSound.currentTime = 0;
-                transitionSound.play();
-            } catch (e) { console.log("Audio trigger error."); }
-        }
-
-        // FİLİGRAN
-        function injectWatermark(context, width, height) {
-            context.save();
-            context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
-            context.fillStyle = "rgba(255, 255, 255, 0.05)";
-            context.textAlign = "center";
-            context.textBaseline = "middle";
-            context.translate(width / 2, height / 2);
-            context.rotate(-Math.PI / 6);
-            context.fillText("© YATAŞ GROUP - ALL RIGHTS RESERVED", 0, 0);
-            context.restore();
-        }
-
-        // MENU TETİKLEYİCİLERİ
-        function toggleMenu() {
-            sidebarNav.classList.toggle('menu-open');
-        }
-        menuHamburger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMenu();
-        });
-        document.addEventListener('click', (e) => {
-            if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
-                sidebarNav.classList.remove('menu-open');
-            }
-        });
-
-        // SES SWITCH'İ
-        document.getElementById('audioToggleBtn').addEventListener('change', function() {
-            isSoundOn = this.checked;
-        });
-
-        // SIDEBAR MENÜ İNŞASI
-        function buildSidebarMenu() {
-            cataloguesList.innerHTML = "";
-            otherList.innerHTML = "";
-            let globalIdx = 0;
-
-            presentationData.catalogues.forEach((deck) => {
-                const currentIdx = globalIdx;
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = `deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
-                btn.innerText = deck.title;
-                btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => {
-                    switchPresentation(currentIdx);
-                    sidebarNav.classList.remove('menu-open');
-                });
-                li.appendChild(btn);
-                cataloguesList.appendChild(li);
-                globalIdx++;
-            });
-
-            presentationData.otherPresentations.forEach((deck) => {
-                const currentIdx = globalIdx;
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = `deck-btn`;
-                btn.innerText = deck.title;
-                btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => {
-                    switchPresentation(currentIdx);
-                    sidebarNav.classList.remove('menu-open');
-                });
-                li.appendChild(btn);
-                otherList.appendChild(li);
-                globalIdx++;
-            });
-        }
-
-        async function switchPresentation(index, targetSavedPage = 0) {
-            currentActivePresentationIndex = index;
-            localStorage.setItem('corporate_last_presentation', index);
-
-            const buttons = document.querySelectorAll('.deck-btn');
-            buttons.forEach(b => {
-                const bIdx = parseInt(b.getAttribute('data-index'));
-                b.classList.toggle('active-deck', bIdx === index);
-            });
-
-            globalLoading.style.display = 'flex';
-            globalLoading.style.opacity = '1';
-
-            book.innerHTML = '';
-            sidebarThumbnails.innerHTML = '';
-            pages = [];
-            thumbElements = [];
-            currentId = targetSavedPage;
-            pageRenderingStates = {};
-            resetZoom();
-
-            await loadPDF(presentations[index].url);
-        }
-
-        // AKILLI MOBİL BOYUTLANDIRICI VE YEDEK MEKANİZMA
-        function resizeBookToFit(viewport) {
-            if (!viewport) return;
-            let sceneW = scene.clientWidth;
-            let sceneH = scene.clientHeight;
-            
-            // iOS Safari çökmesini engellemek için yedek (fallback) ölçü
-            if (!sceneW || sceneW === 0) sceneW = window.innerWidth;
-            if (!sceneH || sceneH === 0) sceneH = window.innerHeight * 0.55; 
-            
-            const multiplierW = 0.96;
-            const multiplierH = 0.94;
-            
-            const scaleX = (sceneW * multiplierW) / viewport.width;
-            const scaleY = (sceneH * multiplierH) / viewport.height;
-            const idealScale = Math.min(scaleX, scaleY);
-            
-            book.style.width = Math.floor(viewport.width * idealScale) + 'px';
-            book.style.height = Math.floor(viewport.height * idealScale) + 'px';
-        }
-
-        // AKILLI ÖNBELLEK SİSTEMİ
-        async function optimizeAndRenderPage(pageNum) {
-            if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
-            if (pageRenderingStates[pageNum] === 'high-res') return;
-
-            try {
-                const page = await pdfDoc.getPage(pageNum);
-                const distance = Math.abs((pageNum - 1) - currentId);
-                const isHighResTarget = distance <= 2;
-                const renderScale = isHighResTarget ? 2.2 : 1.1;
-
-                let pageDiv = pages[pageNum - 1];
-                if (!pageDiv) {
-                    pageDiv = document.createElement('div');
-                    pageDiv.className = 'page';
-                    const canvas = document.createElement('canvas');
-                    pageDiv.appendChild(canvas);
-                    book.appendChild(pageDiv);
-                    pages[pageNum - 1] = pageDiv;
-                }
-
-                const canvas = pageDiv.querySelector('canvas');
-                const context = canvas.getContext('2d');
-                
-                const sourceThumbBox = document.getElementById(`thumb-box-${pageNum}`);
-                if (sourceThumbBox && !pageRenderingStates[pageNum]) {
-                    const thumbCanvas = sourceThumbBox.querySelector('canvas');
-                    if (thumbCanvas && thumbCanvas.width > 0) {
-                        canvas.width = thumbCanvas.width;
-                        canvas.height = thumbCanvas.height;
-                        context.drawImage(thumbCanvas, 0, 0);
-                        pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-                        if (pageNum - 1 === currentId) updateBookDisplay();
-                    }
-                }
-
-                const viewport = page.getViewport({ scale: renderScale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-                pageRenderingStates[pageNum] = isHighResTarget ? 'high-res' : 'low-res';
-
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
-                injectWatermark(context, canvas.width, canvas.height);
-
-                if (pageNum - 1 === currentId) {
-                    updateBookDisplay();
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        function runPredictiveCachePipeline() {
-            const total = pdfDoc.numPages;
-            const activeIdx = currentId + 1;
-
-            optimizeAndRenderPage(activeIdx);
-            for (let i = 1; i <= 2; i++) {
-                optimizeAndRenderPage(activeIdx + i);
-                optimizeAndRenderPage(activeIdx - i);
-            }
-
-            for (let p = 1; p <= total; p++) {
-                if (Math.abs((p - 1) - currentId) > 3) {
-                    if (pageRenderingStates[p] === 'high-res') {
-                        pageRenderingStates[p] = 'purged'; 
-                        optimizeAndRenderPage(p);
-                    }
-                }
-            }
-        }
-
-        // THUMBNAIL SİSTEMİ
-        function createSequentialThumbContainers(total) {
-            sidebarThumbnails.innerHTML = '';
-            for (let i = 1; i <= total; i++) {
-                const thumbBox = document.createElement('div');
-                thumbBox.className = 'thumb-box';
-                thumbBox.id = `thumb-box-${i}`;
-                
-                const canvas = document.createElement('canvas');
-                thumbBox.appendChild(canvas);
-
-                const label = document.createElement('div');
-                label.className = 'thumb-label'; label.innerText = i;
-                thumbBox.appendChild(label);
-
-                sidebarThumbnails.appendChild(thumbBox);
-                thumbElements[i - 1] = thumbBox;
-
-                thumbBox.addEventListener('click', () => {
-                    if (currentId === i - 1) return;
-                    playPaperSound();
-                    currentId = i - 1;
-                    localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom();
-                    
-                    optimizeAndRenderPage(i); 
-                    updateBookDisplay();
-                    runPredictiveCachePipeline();
-                });
-            }
-        }
-
-        async function renderThumbnail(pageNum) {
-            try {
-                const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.35 }); 
-
-                const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
-                if (!thumbBox) return;
-
-                const canvas = thumbBox.querySelector('canvas');
-                const context = canvas.getContext('2d');
-                canvas.height = viewport.height; canvas.width = viewport.width;
-
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
-            } catch (err) { console.error(err); }
-        }
-
-        async function loadPDF(url) {
-            try {
-                pdfDoc = await pdfjsLib.getDocument(url).promise;
-                const totalPages = pdfDoc.numPages;
-                pages = new Array(totalPages);
-                thumbElements = new Array(totalPages);
-
-                createSequentialThumbContainers(totalPages);
-
-                const thumbPromises = [];
-                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-                    thumbPromises.push(renderThumbnail(pageNum));
-                }
-                await Promise.all(thumbPromises);
-
-                const startRenderPage = currentId + 1;
-                await optimizeAndRenderPage(startRenderPage);
-
-                globalLoading.style.opacity = '0';
-                setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
-                
-                // GÜNCELLEME: Çökmeyi önlemek için artık BLOCK yerine FLEX ile yüklüyoruz
-                zoomContainer.style.display = 'flex';
-                updateBookDisplay();
-                runPredictiveCachePipeline();
-
-                if (thumbElements[currentId]) {
-                    thumbElements[currentId].classList.add('active-thumb');
-                }
-            } catch (error) {
-                globalLoading.style.display = 'flex';
-                let errorMsg = document.getElementById('loadingErrorMsg');
-                if(!errorMsg) {
-                    errorMsg = document.createElement('div');
-                    errorMsg.id = 'loadingErrorMsg';
-                    errorMsg.style.color = '#ff4d4d';
-                    errorMsg.style.fontWeight = 'bold';
-                    errorMsg.style.marginTop = '15px';
-                    globalLoading.appendChild(errorMsg);
-                }
-                errorMsg.innerText = "Hata: PDF dosyası yüklenemedi.";
-                console.error(error);
-            }
-        }
-
-        function updateBookDisplay() {
-            const total = pages.length;
-            if (total === 0) return;
-
-            pages.forEach((page, index) => {
-                if (!page) return;
-                if (index === currentId) {
-                    page.className = 'page active-page';
-                    resizeBookToFit(page.pdfViewport);
-                } else if (index < currentId) {
-                    page.className = 'page turn-next';
-                } else {
-                    page.className = 'page turn-prev';
-                }
-            });
-
-            thumbElements.forEach((thumb, index) => {
-                if (!thumb) return;
-                if (index === currentId) {
-                    thumb.classList.add('active-thumb');
-                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else { thumb.classList.remove('active-thumb'); }
-            });
-
-            document.getElementById('prevBtn').disabled = (currentId === 0);
-            document.getElementById('nextBtn').disabled = (currentId >= total - 1);
-            gotoInput.value = currentId + 1;
-            document.getElementById('pageIndicator').innerText = `/ ${total}`;
-        }
-
-        function flipNext() { 
-            if (currentId < pages.length - 1) { 
-                playPaperSound();
-                currentId++; 
-                localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); 
-                optimizeAndRenderPage(currentId + 1);
-                updateBookDisplay(); 
-                runPredictiveCachePipeline();
-            } 
-        }
-        
-        function flipPrev() { 
-            if (currentId > 0) { 
-                playPaperSound();
-                currentId--; 
-                localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); 
-                optimizeAndRenderPage(currentId + 1);
-                updateBookDisplay(); 
-                runPredictiveCachePipeline();
-            } 
-        }
-        
-        function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
-        function updateTransform() { zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
-
-        document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
-        document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
-
-        // SWIPE JESTLERİ
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        scene.addEventListener('touchstart', (e) => {
-            if (scale > 1) return;
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        scene.addEventListener('touchend', (e) => {
-            if (scale > 1) return;
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
-        }, { passive: true });
-
-        function handleSwipeGesture() {
-            const threshold = 40; 
-            if (touchStartX - touchEndX > threshold) {
-                flipNext(); 
-            } else if (touchEndX - touchStartX > threshold) {
-                flipPrev(); 
-            }
-        }
-
-        gotoInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                let targetPage = parseInt(gotoInput.value);
-                if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
-                    playPaperSound();
-                    currentId = targetPage - 1; 
-                    localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); 
-                    optimizeAndRenderPage(targetPage);
-                    updateBookDisplay(); 
-                    runPredictiveCachePipeline();
-                    gotoInput.blur();
-                } else { gotoInput.value = currentId + 1; }
-            }
-        });
-
-        // ZOOM & SCROLL
-        scene.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            if (e.deltaY < 0) { scale = Math.min(scale + 0.2, 5); } else { scale = Math.max(scale - 0.2, 1); }
-            if (scale === 1) { posX = 0; posY = 0; }
-            updateTransform();
-        }, { passive: false });
-
-        scene.addEventListener('mousedown', (e) => {
-            if (scale === 1 || e.target.closest('.nav-overlay-zone')) return;
-            isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY;
-        });
-
-        window.addEventListener('mousemove', (e) => { if (!isDragging) return; posX = e.clientX - startX; posY = e.clientY - startY; updateTransform(); });
-        window.addEventListener('mouseup', () => { isDragging = false; });
-
-        document.getElementById('zoomInBtn').addEventListener('click', () => { scale = Math.min(scale + 0.5, 5); updateTransform(); });
-        document.getElementById('zoomOutBtn').addEventListener('click', () => { scale = Math.max(scale - 0.5, 1); if(scale===1){posX=0;posY=0;} updateTransform(); });
-        document.getElementById('nextBtn').addEventListener('click', flipNext);
-        document.getElementById('prevBtn').addEventListener('click', flipPrev);
-
-        window.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return; 
-            if (e.key === "ArrowRight" || e.key === " ") flipNext();
-            if (e.key === "ArrowLeft") flipPrev();
-        });
-
-        window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
-
-        window.onload = () => {
-            buildSidebarMenu();
-            
-            const savedPresentation = localStorage.getItem('corporate_last_presentation');
-            const savedPage = localStorage.getItem('corporate_last_page');
-
-            if (savedPresentation !== null && presentations[savedPresentation]) {
-                const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
-                
-                const toast = document.getElementById('resumeToast');
-                toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 4000);
-
-                switchPresentation(parseInt(savedPresentation), targetPageIdx);
-            } else {
-                switchPresentation(0, 0); 
-            }
-        };
-    </script>
+<div class="premium-bg"></div>
+
+<!-- LOADING EKRANI -->
+<div id="globalLoading">
+<img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
+</div>
+
+<!-- SOL ÜST DİKEY YERLEŞİM -->
+<div class="header-column">
+<button class="brand-logo-btn" onclick="toggleMenu()">
+<img src="yatas_grup_logo.png" alt="Yataş Group Logo">
+</button>
+<button class="hamburger-btn" id="menuHamburger">
+<span></span>
+<span></span>
+<span></span>
+</button>
+</div>
+
+<!-- AUTO RESUME TOAST -->
+<div id="resumeToast">Hoş geldiniz! Son kaldığınız sayfaya yönlendiriliyorsunuz.</div>
+
+<div class="portal-wrapper" id="portalWrapper">
+
+<!-- SIDEBAR -->
+<div class="sidebar-nav" id="sidebarNav">
+<div class="brand-subtitle">Corporate Deck Portal</div>
+
+<div class="menu-section-title">Catalogues</div>
+<ul class="deck-list" id="cataloguesList"></ul>
+
+<div class="menu-section-title">Other Presentations</div>
+<ul class="deck-list" id="otherList"></ul>
+</div>
+
+<div class="workspace" id="workspace">
+<div class="main-container" id="mainContainer">
+<div class="scene" id="scene">
+
+<div id="zoomContainer" class="pan-zoom-container">
+<div id="book" class="book"></div>
+</div>
+
+<!-- OK YÖNLENDİRMELERİ -->
+<div class="nav-overlay-zone left-zone" id="zoneLeft">
+<div class="arrow-btn" id="overlayPrevBtn">❮</div>
+</div>
+
+<div class="nav-overlay-zone right-zone" id="zoneRight">
+<div class="arrow-btn" id="overlayNextBtn">❯</div>
+</div>
+
+</div>
+
+<div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
+</div>
+
+<!-- KONTROLLER -->
+<div class="bottom-bar-area" id="bottomBarArea">
+<div class="controls-wrapper">
+<div class="controls">
+<button id="prevBtn" disabled>◀ Previous</button>
+<div class="goto-container">
+<input type="text" id="gotoInput" class="goto-input" value="1">
+<span id="pageIndicator">/ 0</span>
+</div>
+<button id="nextBtn">Next ▶</button>
+<button id="zoomInBtn">🔍 +</button>
+<button id="zoomOutBtn">🔍 -</button>
+</div>
+
+<!-- SES SWITCH'İ -->
+<div class="sound-corner">
+<div class="ios-switch-container">
+<span class="switch-label">Sound</span>
+<label class="ios-switch">
+<input type="checkbox" id="audioToggleBtn" checked>
+<span class="ios-slider"></span>
+</label>
+</div>
+</div>
+</div>
+<div class="hint">Kaydırma tekerleğiyle yakınlaştırabilirsiniz. Mobilde parmağınızla kaydırın.</div>
+</div>
+</div>
+
+</div>
+
+<script>
+const presentationData = {
+catalogues: [
+{ title: "Enza Home", url: "Enza Home.pdf" },
+{ title: "Yataş Bedding", url: "Yataş Bedding.pdf" },
+ ],
+otherPresentations: [
+{ title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" },
+{ title: "Yataş Projects", url: "Yataş Projects.pdf" },
+{ title: "Yataş Projects References", url: "Yataş Projects References.pdf" }
+ ]
+};
+
+const presentations = [...presentationData.catalogues, ...presentationData.otherPresentations];
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+let currentActivePresentationIndex = 0;
+let currentId = 0;
+let pages = [];
+let thumbElements = [];
+let pdfDoc = null;
+let scale = 1; let posX = 0; let posY = 0;
+let isDragging = false; let startX; let startY;
+let isSoundOn = true;
+let pageRenderingStates = {};
+
+const transitionSound = new Audio('glossy_magazine.mp3');
+
+const zoomContainer = document.getElementById('zoomContainer');
+const book = document.getElementById('book');
+const scene = document.getElementById('scene');
+const sidebarThumbnails = document.getElementById('sidebarThumbnails');
+const gotoInput = document.getElementById('gotoInput');
+const cataloguesList = document.getElementById('cataloguesList');
+const otherList = document.getElementById('otherList');
+const globalLoading = document.getElementById('globalLoading');
+const sidebarNav = document.getElementById('sidebarNav');
+const menuHamburger = document.getElementById('menuHamburger');
+
+// PWA SERVICE WORKER
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('service-worker.js')
+.then(reg => console.log('PWA Service Worker Registered.', reg))
+.catch(err => console.log('Service Worker skipped.', err));
+});
+}
+
+// AUDIO UNLOCK
+function unlockAudioEngine() {
+transitionSound.play().then(() => {
+transitionSound.pause();
+transitionSound.currentTime = 0;
+}).catch(e => console.log('Audio Engine ready.'));
+window.removeEventListener('click', unlockAudioEngine);
+window.removeEventListener('touchstart', unlockAudioEngine);
+}
+window.addEventListener('click', unlockAudioEngine);
+window.addEventListener('touchstart', unlockAudioEngine);
+
+function playPaperSound() {
+if (!isSoundOn) return;
+try {
+transitionSound.currentTime = 0;
+transitionSound.play();
+} catch (e) { console.log("Audio trigger error."); }
+}
+
+// FİLİGRAN
+function injectWatermark(context, width, height) {
+context.save();
+context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
+context.fillStyle = "rgba(255, 255, 255, 0.05)";
+context.textAlign = "center";
+context.textBaseline = "middle";
+context.translate(width / 2, height / 2);
+context.rotate(-Math.PI / 6);
+context.fillText("© YATAŞ GROUP - ALL RIGHTS RESERVED", 0, 0);
+context.restore();
+}
+
+// MENU TETİKLEYİCİLERİ
+function toggleMenu() {
+sidebarNav.classList.toggle('menu-open');
+}
+menuHamburger.addEventListener('click', (e) => {
+e.stopPropagation();
+toggleMenu();
+});
+document.addEventListener('click', (e) => {
+if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
+sidebarNav.classList.remove('menu-open');
+}
+});
+
+// SES SWITCH'İ
+document.getElementById('audioToggleBtn').addEventListener('change', function() {
+isSoundOn = this.checked;
+});
+
+// SIDEBAR MENÜ İNŞASI
+function buildSidebarMenu() {
+cataloguesList.innerHTML = "";
+otherList.innerHTML = "";
+let globalIdx = 0;
+
+presentationData.catalogues.forEach((deck) => {
+const currentIdx = globalIdx;
+const li = document.createElement('li');
+const btn = document.createElement('button');
+btn.className = deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
+btn.innerText = deck.title;
+btn.setAttribute('data-index', currentIdx);
+btn.addEventListener('click', () => {
+switchPresentation(currentIdx);
+sidebarNav.classList.remove('menu-open');
+});
+li.appendChild(btn);
+cataloguesList.appendChild(li);
+globalIdx++;
+});
+
+presentationData.otherPresentations.forEach((deck) => {
+const currentIdx = globalIdx;
+const li = document.createElement('li');
+const btn = document.createElement('button');
+btn.className = deck-btn;
+btn.innerText = deck.title;
+btn.setAttribute('data-index', currentIdx);
+btn.addEventListener('click', () => {
+switchPresentation(currentIdx);
+sidebarNav.classList.remove('menu-open');
+});
+li.appendChild(btn);
+otherList.appendChild(li);
+globalIdx++;
+});
+}
+
+async function switchPresentation(index, targetSavedPage = 0) {
+currentActivePresentationIndex = index;
+localStorage.setItem('corporate_last_presentation', index);
+
+const buttons = document.querySelectorAll('.deck-btn');
+buttons.forEach(b => {
+const bIdx = parseInt(b.getAttribute('data-index'));
+b.classList.toggle('active-deck', bIdx === index);
+});
+
+globalLoading.style.display = 'flex';
+globalLoading.style.opacity = '1';
+
+book.innerHTML = '';
+sidebarThumbnails.innerHTML = '';
+pages = [];
+thumbElements = [];
+currentId = targetSavedPage;
+pageRenderingStates = {};
+resetZoom();
+
+await loadPDF(presentations[index].url);
+}
+
+// EN BOY ORANINI KORUYAN VE KIRPILMAYI SIFIRA İNDİREN BOYUTLANDIRICI
+function resizeBookToFit(viewport) {
+if (!viewport) return;
+
+let sceneW = scene.clientWidth;
+let sceneH = scene.clientHeight;
+
+// Mobil ve Safari çökmeleri için yedek genişlik ve yükseklikler
+if (!sceneW || sceneW === 0) sceneW = window.innerWidth;
+if (!sceneH || sceneH === 0) sceneH = window.innerHeight * 0.55;
+
+// PDF'in gerçek oranını yakala (örneğin 16:9 yatay veya 1:2 dikey vb.)
+const pdfRatio = viewport.width / viewport.height;
+
+// Ekranın kaplayabileceği sınır oranları (güvenli marjlar dahil)
+const margin = 0.95;
+const maxAllowedW = sceneW * margin;
+const maxAllowedH = sceneH * margin;
+
+let finalW, finalH;
+
+// PDF oranını ekranın dikey/yatay durumuna göre kilitliyoruz (Aspect-Ratio Fitting)
+if (maxAllowedW / maxAllowedH > pdfRatio) {
+// Ekran fazla geniş (dikey slayt durumu), yüksekliğe göre sınırla
+finalH = maxAllowedH;
+finalW = finalH * pdfRatio;
+} else {
+// Ekran fazla dar (yatay slayt durumu), genişliğe göre sınırla
+finalW = maxAllowedW;
+finalH = finalW / pdfRatio;
+}
+
+// CSS üzerinde kutunun boyutunu piksel olarak ve net oranla sabitliyoruz
+book.style.width = Math.floor(finalW) + 'px';
+book.style.height = Math.floor(finalH) + 'px';
+}
+
+// AKILLI ÖNBELLEK SİSTEMİ
+async function optimizeAndRenderPage(pageNum) {
+if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
+if (pageRenderingStates[pageNum] === 'high-res') return;
+
+try {
+const page = await pdfDoc.getPage(pageNum);
+const distance = Math.abs((pageNum - 1) - currentId);
+const isHighResTarget = distance <= 2;
+const renderScale = isHighResTarget ? 2.2 : 1.1;
+
+let pageDiv = pages[pageNum - 1];
+if (!pageDiv) {
+pageDiv = document.createElement('div');
+pageDiv.className = 'page';
+const canvas = document.createElement('canvas');
+pageDiv.appendChild(canvas);
+book.appendChild(pageDiv);
+pages[pageNum - 1] = pageDiv;
+}
+
+const canvas = pageDiv.querySelector('canvas');
+const context = canvas.getContext('2d');
+
+const sourceThumbBox = document.getElementById(thumb-box-${pageNum}`);
+if (sourceThumbBox && !pageRenderingStates[pageNum]) {
+const thumbCanvas = sourceThumbBox.querySelector('canvas');
+if (thumbCanvas && thumbCanvas.width > 0) {
+canvas.width = thumbCanvas.width;
+canvas.height = thumbCanvas.height;
+context.drawImage(thumbCanvas, 0, 0);
+pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+if (pageNum - 1 === currentId) updateBookDisplay();
+}
+}
+
+const viewport = page.getViewport({ scale: renderScale });
+canvas.height = viewport.height;
+canvas.width = viewport.width;
+
+pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+pageRenderingStates[pageNum] = isHighResTarget ? 'high-res' : 'low-res';
+
+await page.render({ canvasContext: context, viewport: viewport }).promise;
+injectWatermark(context, canvas.width, canvas.height);
+
+if (pageNum - 1 === currentId) {
+updateBookDisplay();
+}
+} catch (err) { console.error(err); }
+}
+
+function runPredictiveCachePipeline() {
+const total = pdfDoc.numPages;
+const activeIdx = currentId + 1;
+
+optimizeAndRenderPage(activeIdx);
+for (let i = 1; i <= 2; i++) {
+optimizeAndRenderPage(activeIdx + i);
+optimizeAndRenderPage(activeIdx - i);
+}
+
+for (let p = 1; p <= total; p++) {
+if (Math.abs((p - 1) - currentId) > 3) {
+if (pageRenderingStates[p] === 'high-res') {
+pageRenderingStates[p] = 'purged';
+optimizeAndRenderPage(p);
+}
+}
+}
+}
+
+// THUMBNAIL SİSTEMİ
+function createSequentialThumbContainers(total) {
+sidebarThumbnails.innerHTML = '';
+for (let i = 1; i <= total; i++) {
+const thumbBox = document.createElement('div');
+thumbBox.className = 'thumb-box';
+thumbBox.id = thumb-box-${i}`;
+
+const canvas = document.createElement('canvas');
+thumbBox.appendChild(canvas);
+
+const label = document.createElement('div');
+label.className = 'thumb-label'; label.innerText = i;
+thumbBox.appendChild(label);
+
+sidebarThumbnails.appendChild(thumbBox);
+thumbElements[i - 1] = thumbBox;
+
+thumbBox.addEventListener('click', () => {
+if (currentId === i - 1) return;
+playPaperSound();
+currentId = i - 1;
+localStorage.setItem('corporate_last_page', currentId);
+resetZoom();
+
+optimizeAndRenderPage(i);
+updateBookDisplay();
+runPredictiveCachePipeline();
+});
+}
+}
+
+async function renderThumbnail(pageNum) {
+try {
+const page = await pdfDoc.getPage(pageNum);
+const viewport = page.getViewport({ scale: 0.35 });
+
+const thumbBox = document.getElementById(thumb-box-${pageNum}`);
+if (!thumbBox) return;
+
+const canvas = thumbBox.querySelector('canvas');
+const context = canvas.getContext('2d');
+canvas.height = viewport.height; canvas.width = viewport.width;
+
+await page.render({ canvasContext: context, viewport: viewport }).promise;
+} catch (err) { console.error(err); }
+}
+
+async function loadPDF(url) {
+try {
+pdfDoc = await pdfjsLib.getDocument(url).promise;
+const totalPages = pdfDoc.numPages;
+pages = new Array(totalPages);
+thumbElements = new Array(totalPages);
+
+createSequentialThumbContainers(totalPages);
+
+const thumbPromises = [];
+for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+thumbPromises.push(renderThumbnail(pageNum));
+}
+await Promise.all(thumbPromises);
+
+const startRenderPage = currentId + 1;
+await optimizeAndRenderPage(startRenderPage);
+
+globalLoading.style.opacity = '0';
+setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
+
+zoomContainer.style.display = 'flex';
+updateBookDisplay();
+runPredictiveCachePipeline();
+
+if (thumbElements[currentId]) {
+thumbElements[currentId].classList.add('active-thumb');
+}
+} catch (error) {
+globalLoading.style.display = 'flex';
+let errorMsg = document.getElementById('loadingErrorMsg');
+if(!errorMsg) {
+errorMsg = document.createElement('div');
+errorMsg.id = 'loadingErrorMsg';
+errorMsg.style.color = '#ff4d4d';
+errorMsg.style.fontWeight = 'bold';
+errorMsg.style.marginTop = '15px';
+globalLoading.appendChild(errorMsg);
+}
+errorMsg.innerText = "Hata: PDF dosyası yüklenemedi.";
+console.error(error);
+}
+}
+
+function updateBookDisplay() {
+const total = pages.length;
+if (total === 0) return;
+
+pages.forEach((page, index) => {
+if (!page) return;
+if (index === currentId) {
+page.className = 'page active-page';
+resizeBookToFit(page.pdfViewport);
+} else if (index < currentId) {
+page.className = 'page turn-next';
+} else {
+page.className = 'page turn-prev';
+}
+});
+
+thumbElements.forEach((thumb, index) => {
+if (!thumb) return;
+if (index === currentId) {
+thumb.classList.add('active-thumb');
+thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+} else { thumb.classList.remove('active-thumb'); }
+});
+
+document.getElementById('prevBtn').disabled = (currentId === 0);
+document.getElementById('nextBtn').disabled = (currentId >= total - 1);
+gotoInput.value = currentId + 1;
+document.getElementById('pageIndicator').innerText = / ${total}`;
+}
+
+function flipNext() {
+if (currentId < pages.length - 1) {
+playPaperSound();
+currentId++;
+localStorage.setItem('corporate_last_page', currentId);
+resetZoom();
+optimizeAndRenderPage(currentId + 1);
+updateBookDisplay();
+runPredictiveCachePipeline();
+}
+}
+
+function flipPrev() {
+if (currentId > 0) {
+playPaperSound();
+currentId--;
+localStorage.setItem('corporate_last_page', currentId);
+resetZoom();
+optimizeAndRenderPage(currentId + 1);
+updateBookDisplay();
+runPredictiveCachePipeline();
+}
+}
+
+function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
+function updateTransform() { zoomContainer.style.transform = translate(${posX}px, {scale})`; }
+
+document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
+document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
+
+// SWIPE JESTLERİ
+let touchStartX = 0;
+let touchEndX = 0;
+
+scene.addEventListener('touchstart', (e) => {
+if (scale > 1) return;
+touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+scene.addEventListener('touchend', (e) => {
+if (scale > 1) return;
+touchEndX = e.changedTouches[0].screenX;
+handleSwipeGesture();
+}, { passive: true });
+
+function handleSwipeGesture() {
+const threshold = 40;
+if (touchStartX - touchEndX > threshold) {
+flipNext();
+} else if (touchEndX - touchStartX > threshold) {
+flipPrev();
+}
+}
+
+gotoInput.addEventListener('keydown', (e) => {
+if (e.key === 'Enter') {
+let targetPage = parseInt(gotoInput.value);
+if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
+playPaperSound();
+currentId = targetPage - 1;
+localStorage.setItem('corporate_last_page', currentId);
+resetZoom();
+optimizeAndRenderPage(targetPage);
+updateBookDisplay();
+runPredictiveCachePipeline();
+gotoInput.blur();
+} else { gotoInput.value = currentId + 1; }
+}
+});
+
+// ZOOM & SCROLL
+scene.addEventListener('wheel', (e) => {
+e.preventDefault();
+if (e.deltaY < 0) { scale = Math.min(scale + 0.2, 5); } else { scale = Math.max(scale - 0.2, 1); }
+if (scale === 1) { posX = 0; posY = 0; }
+updateTransform();
+}, { passive: false });
+
+scene.addEventListener('mousedown', (e) => {
+if (scale === 1 || e.target.closest('.nav-overlay-zone')) return;
+isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY;
+});
+
+window.addEventListener('mousemove', (e) => { if (!isDragging) return; posX = e.clientX - startX; posY = e.clientY - startY; updateTransform(); });
+window.addEventListener('mouseup', () => { isDragging = false; });
+
+document.getElementById('zoomInBtn').addEventListener('click', () => { scale = Math.min(scale + 0.5, 5); updateTransform(); });
+document.getElementById('zoomOutBtn').addEventListener('click', () => { scale = Math.max(scale - 0.5, 1); if(scale===1){posX=0;posY=0;} updateTransform(); });
+document.getElementById('nextBtn').addEventListener('click', flipNext);
+document.getElementById('prevBtn').addEventListener('click', flipPrev);
+
+window.addEventListener('keydown', (e) => {
+if (e.target.tagName === 'INPUT') return;
+if (e.key === "ArrowRight" || e.key === " ") flipNext();
+if (e.key === "ArrowLeft") flipPrev();
+});
+
+window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
+
+window.onload = () => {
+buildSidebarMenu();
+
+const savedPresentation = localStorage.getItem('corporate_last_presentation');
+const savedPage = localStorage.getItem('corporate_last_page');
+
+if (savedPresentation !== null && presentations[savedPresentation]) {
+const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
+
+const toast = document.getElementById('resumeToast');
+toast.classList.add('show');
+setTimeout(() => { toast.classList.remove('show'); }, 4000);
+
+switchPresentation(parseInt(savedPresentation), targetPageIdx);
+} else {
+switchPresentation(0, 0);
+}
+};
+</script>
 </body>
 </html>
