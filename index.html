@@ -354,7 +354,7 @@
             pointer-events: none;
         }
 
-        /* DUAL LAYER CANVAS STYLE FOR MAPS LITE ENGINE */
+        /* CONTAINER FOR RENDER PIECE */
         .canvas-container-layer {
             position: relative;
             width: 100%;
@@ -371,17 +371,6 @@
             height: 100% !important;
             z-index: 1;
             display: block;
-        }
-
-        .highres-tile-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100% !important;
-            height: 100% !important;
-            z-index: 2;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.25s ease-in-out;
         }
 
         /* FLOATING ARROW OVERLAYS */
@@ -888,7 +877,6 @@
         let isPinching = false;
 
         let isSoundOn = true;
-        let lastRenderedScale = 1; 
         let renderTimeout = null;
 
         const transitionSound = new Audio('glossy_magazine.mp3');
@@ -1019,7 +1007,7 @@
             book.style.height = Math.floor(finalH) + 'px';
         }
 
-        // GOOGLE MAPS STYLE TILED RENDER ENGINE (DYNAMIC AREA RENDER)
+        // AKILLI MOBİL ODAKLI ÇÖKMEZ TEK CANVAS MOTORU (Limit: 2048px Genişlik)
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -1027,7 +1015,6 @@
                 const page = await pdfDoc.getPage(pageNum);
                 let pageDiv = pages[pageNum - 1];
                 
-                // Eğer sayfa div'i henüz yoksa, çift katmanlı (Low-Res Base + High-Res Tile) yapıyı kur
                 if (!pageDiv) {
                     pageDiv = document.createElement('div'); 
                     pageDiv.className = 'page';
@@ -1035,116 +1022,63 @@
                     const container = document.createElement('div');
                     container.className = 'canvas-container-layer';
                     
-                    // Sabit alt katman (RAM dostu düşük çözünürlük)
-                    const baseCanvas = document.createElement('canvas');
-                    baseCanvas.className = 'base-lowres-canvas';
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'base-lowres-canvas';
                     
-                    // Dinamik üst katman (Sadece zoom yapılan alanı çizmek için)
-                    const tileCanvas = document.createElement('canvas');
-                    tileCanvas.className = 'highres-tile-canvas';
-                    
-                    container.appendChild(baseCanvas);
-                    container.appendChild(tileCanvas);
+                    container.appendChild(canvas);
                     pageDiv.appendChild(container);
                     book.appendChild(pageDiv); 
                     pages[pageNum - 1] = pageDiv;
                 }
 
-                const baseCanvas = pageDiv.querySelector('.base-lowres-canvas');
-                const tileCanvas = pageDiv.querySelector('.highres-tile-canvas');
+                const canvas = pageDiv.querySelector('.base-lowres-canvas');
+                const context = canvas.getContext('2d');
                 pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
 
-                // 1. ADIM: Low-Res Base Katmanını Çiz (Sadece ilk kez veya zoom yokken çizilir, çok hızlıdır)
-                if (!baseCanvas.dataset.rendered) {
-                    const baseContext = baseCanvas.getContext('2d');
-                    const baseViewport = page.getViewport({ scale: 1.1 }); // Küçük ve hafif scale, RAM harcamaz
-                    baseCanvas.height = baseViewport.height; 
-                    baseCanvas.width = baseViewport.width;
-                    await page.render({ canvasContext: baseContext, viewport: baseViewport }).promise;
-                    injectWatermark(baseContext, baseCanvas.width, baseCanvas.height);
-                    baseCanvas.dataset.rendered = "true";
+                // 1. Ekran Yoğunluğu ve Zoom Oranı Çarpımı
+                const dpr = window.devicePixelRatio || 1;
+                let targetScale = customScale * dpr;
+
+                // 2. ÇÖKME KORUMASI (Genişliği 2048px üzerine çıkartmaz, RAM'i doldurmaz)
+                const sampleViewport = page.getViewport({ scale: targetScale });
+                if (sampleViewport.width > 2048) {
+                    targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
                 }
 
-                // 2. ADIM: Google Maps Tarzı Sadece Görünür Bölgeyi Çizme (Zoom varsa tetiklenir)
-                if (customScale > 1.2) {
-                    const tileContext = tileCanvas.getContext('2d');
-                    const dpr = window.devicePixelRatio || 1;
-                    
-                    // Ekrandaki görünür kutuyu (viewport bounding rect) hesaplıyoruz
-                    const sceneRect = scene.getBoundingClientRect();
-                    const bookRect = book.getBoundingClientRect();
+                const viewport = page.getViewport({ scale: targetScale });
 
-                    // Kitabın ekrana göre taşan/görünen koordinat sınırları
-                    const leftOffset = Math.max(0, sceneRect.left - bookRect.left);
-                    const topOffset = Math.max(0, sceneRect.top - bookRect.top);
-                    const visibleWidth = Math.min(sceneRect.width, bookRect.right - Math.max(sceneRect.left, bookRect.left));
-                    const visibleHeight = Math.min(sceneRect.height, bookRect.bottom - Math.max(sceneRect.top, bookRect.top));
+                // 3. Çizim ve Temizleme
+                canvas.height = viewport.height; 
+                canvas.width = viewport.width;
 
-                    // Orijinal PDF koordinatlarına oranlama yapıyoruz
-                    const ratioX = pageDiv.pdfViewport.width / bookRect.width;
-                    const ratioY = pageDiv.pdfViewport.height / bookRect.height;
+                await page.render({ 
+                    canvasContext: context, 
+                    viewport: viewport 
+                }).promise;
 
-                    const pdfCropX = leftOffset * ratioX;
-                    const pdfCropY = topOffset * ratioY;
-                    const pdfCropW = visibleWidth * ratioX;
-                    const pdfCropH = visibleHeight * ratioY;
-
-                    // Eğer crop alanları sıfır veya geçersizse tüm sayfayı çizmeye zorlama
-                    if (pdfCropW > 0 && pdfCropH > 0) {
-                        // Sadece görünür alanın boyutunu yüksek çözünürlükte (DPR ile çarparak) ayarlıyoruz
-                        tileCanvas.width = pdfCropW * dpr * 2.2; // 2.2x kalite çarpanı, sadece kesit olduğu için RAM'i şişirmez
-                        tileCanvas.height = pdfCropH * dpr * 2.2;
-
-                        // PDF.js görünüm alanını sadece bu kırpılmış bölgeye odaklıyoruz (transform matrix)
-                        const tileViewport = page.getViewport({
-                            scale: dpr * 2.2,
-                            dontFlip: false
-                        }).clone({
-                            viewBox: [pdfCropX, pdfCropY, pdfCropX + pdfCropW, pdfCropY + pdfCropH]
-                        });
-
-                        // Eski çizimi iptal edip temizle
-                        tileContext.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
-                        
-                        await page.render({ canvasContext: tileContext, viewport: tileViewport }).promise;
-                        injectWatermark(tileContext, tileCanvas.width, tileCanvas.height);
-
-                        // Sadece kırpılmış olan yüksek çözünürlüklü parçayı tam üzerine oturt
-                        tileCanvas.style.left = `${(pdfCropX / pageDiv.pdfViewport.width) * 100}%`;
-                        tileCanvas.style.top = `${(pdfCropY / pageDiv.pdfViewport.height) * 100}%`;
-                        tileCanvas.style.width = `${(pdfCropW / pageDiv.pdfViewport.width) * 100}%`;
-                        tileCanvas.style.height = `${(pdfCropH / pageDiv.pdfViewport.height) * 100}%`;
-                        tileCanvas.style.opacity = "1";
-                    }
-                } else {
-                    // Zoom yoksa yüksek çözünürlüklü tile'ı gizle ve RAM'den düşür (Gereksiz bellek harcamasını önle)
-                    tileCanvas.style.opacity = "0";
-                    tileCanvas.width = 0;
-                    tileCanvas.height = 0;
-                }
+                injectWatermark(context, canvas.width, canvas.height);
 
                 if (pageNum - 1 === currentId) {
                     resizeBookToFit(pageDiv.pdfViewport);
                 }
             } catch (err) {
-                console.error("Maps Engine Render hatası:", err);
+                console.error("Render hatası:", err);
             }
         }
 
-        // DYNAMIC VIEWPORT SCROLL & PAN TRIGGER (Maps motoru için kritik tetikleyici)
+        // Gecikmeli Netleştirme Tetikleyicisi
         function triggerDynamicZoomRender() {
             if (renderTimeout) clearTimeout(renderTimeout);
-
             renderTimeout = setTimeout(() => {
-                // Sadece aktif sayfayı ve sadece o an ekranda görünen koordinatları çizdirir
                 renderHighQualityPage(currentId + 1, scale);
-            }, 180); // Düşük gecikmeyle akıcı render geçişi
+            }, 300); 
         }
 
         function runPredictiveCachePipeline() {
             const activeIdx = currentId + 1;
             renderHighQualityPage(activeIdx, scale);
-            // Yan sayfalar arka planda sadece düşük çözünürlüklü (RAM dostu) olarak ön belleğe alınır
+            
+            // Yan sayfalar arka planda RAM'i korumak için 1.0 scale ile saklanır
             const nextIdx = activeIdx + 1;
             const prevIdx = activeIdx - 1;
             if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
@@ -1173,7 +1107,7 @@
         async function renderThumbnail(pageNum) {
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.25 }); // Thumbnail kalitesini iyice düşürdük (RAM koruması)
+                const viewport = page.getViewport({ scale: 0.2 }); // Düşük boyutlu thumbnail RAM tüketimini azaltır
                 const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
                 if (!thumbBox) return;
                 const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
@@ -1236,7 +1170,7 @@
             } 
         }
         
-        function resetZoom() { scale = 1; posX = 0; posY = 0; lastRenderedScale = 1; updateTransform(); }
+        function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
         function updateTransform() { 
             zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; 
         }
@@ -1247,7 +1181,7 @@
             if (e.deltaY < 0) { scale = Math.min(scale + 0.25, 5); } else { scale = Math.max(scale - 0.25, 1); }
             if (scale === 1) { posX = 0; posY = 0; }
             updateTransform();
-            triggerDynamicZoomRender(); // Görünür kutu değiştiği için yeniden çiz
+            triggerDynamicZoomRender();
         }, { passive: false });
 
         scene.addEventListener('mousedown', (e) => {
@@ -1259,11 +1193,10 @@
             posX = e.clientX - startX; 
             posY = e.clientY - startY; 
             updateTransform(); 
-            triggerDynamicZoomRender(); // Sürükledikçe yeni görünen alanı çiz
         });
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // NATIVE TOUCH INTELLIGENCE (SWIPE AND PINCH HANDLER)
+        // TOUCH INTELLIGENCE (PINCH-TO-ZOOM / SWIPE WITH NO COLLISION)
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPinching = true;
@@ -1300,7 +1233,6 @@
                 posX = e.touches[0].clientX - startX;
                 posY = e.touches[0].clientY - startY;
                 updateTransform();
-                triggerDynamicZoomRender(); // Sürüklerken de anlık görünen alanı güncelle
             }
         }, { passive: false });
 
@@ -1323,7 +1255,7 @@
             }
         }, { passive: true });
 
-        // HARDWARE BUTTON TRIGGERS
+        // BUTTON EVENTS
         document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
         document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
         document.getElementById('zoomInBtn').addEventListener('click', () => { 
