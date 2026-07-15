@@ -33,7 +33,7 @@
             background: #020617;
             display: flex;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height to bypass mobile browser address bar bugs */
+            height: 100dvh;
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             color: #fff;
@@ -261,7 +261,7 @@
             color: #002870;
         }
 
-        /* WORKSPACE AREA (ISOLATED WORKSPACE HEIGHTS) */
+        /* WORKSPACE AREA */
         .workspace {
             flex: 1;
             display: flex;
@@ -294,6 +294,7 @@
             height: 100%;
             min-height: 0;
             perspective: 2000px;
+            background: transparent;
         }
 
         .pan-zoom-container {
@@ -310,7 +311,7 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D BOOK ENGINE (FIXED STABLE CENTERED ORIGIN) */
+        /* 3D BOOK ENGINE */
         .book {
             position: relative;
             transform-style: preserve-3d;
@@ -362,12 +363,13 @@
             object-fit: contain;
         }
 
-        /* FLOATING OVERLAYS */
+        /* FLOATING ARROW OVERLAYS (CRITICAL FIX: pointer-events: none) */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 100px;
+            top: 0; height: 100%; width: 80px;
             z-index: 99;
             display: flex; align-items: center; justify-content: center;
+            pointer-events: none; /* Allows swipe / touch gestures to pass right through to canvas */
         }
         .nav-overlay-zone.left-zone { left: 0; }
         .nav-overlay-zone.right-zone { right: 0; }
@@ -384,6 +386,7 @@
             backdrop-filter: blur(8px);
             user-select: none;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            pointer-events: auto; /* Buttons remain responsive */
         }
         .arrow-btn:hover {
             opacity: 1; 
@@ -477,7 +480,7 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* SOUND CONTROLLER WRAPPER (DYNAMIC PLACEMENT) */
+        /* SOUND CONTROLLER WRAPPER */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -489,7 +492,7 @@
             z-index: 105;
         }
 
-        /* HEADER INTEGRATED SOUND TOGGLE (Used for mobile portrait) */
+        /* HEADER INTEGRATED SOUND TOGGLE */
         .header-sound-container {
             display: none;
             align-items: center;
@@ -604,26 +607,24 @@
            RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
            ========================================================================== */
 
-        /* PORTRAIT DEVICING (Dikey Mobil Görünüm) */
+        /* PORTRAIT VIEW (Dikey Mobil Görünüm) */
         @media (max-width: 1024px) and (orientation: portrait) {
             .workspace {
                 height: 100%;
-                padding-top: 90px; /* Space for brand logo and toggles */
+                padding-top: 90px;
             }
             .main-container {
                 flex-direction: column;
                 padding: 10px;
                 gap: 10px;
-                height: calc(100% - 130px); /* Strictly reserve remaining area */
+                height: calc(100% - 130px);
             }
             .scene {
                 flex: 1;
                 width: 100%;
-                height: 0; /* Clear baseline heights to let CSS compute dynamic heights */
+                height: 0;
                 min-height: 0;
             }
-            
-            /* Squeeze bottom slider to fit without taking up viewport space */
             .sidebar-thumbnails {
                 width: 100% !important;
                 height: 65px !important;
@@ -647,16 +648,12 @@
             .nav-overlay-zone {
                 width: 50px;
             }
-            
-            /* HIDE BOTTOM BAR SOUND ON PORTRAIT to avoid page scroll */
             .sound-corner {
                 display: none !important;
             }
-            /* SHOW COMFORTABLE SOUND SWITCH AT TOP LEFT UNDER LOGO */
             .header-sound-container {
                 display: flex;
             }
-
             .bottom-bar-area {
                 padding: 10px 0;
             }
@@ -666,26 +663,24 @@
             }
         }
 
-        /* LANDSCAPE DEVICING (Yatay Mobil Görünüm) */
+        /* LANDSCAPE VIEW (Yatay Mobil Görünüm) */
         @media (max-width: 1024px) and (orientation: landscape) {
             .workspace {
                 height: 100%;
-                padding-top: 0; /* Keep header strictly absolute floating */
+                padding-top: 0;
             }
             .main-container {
-                flex-direction: row; /* Layout landscape side by side */
+                flex-direction: row;
                 padding: 10px;
                 gap: 10px;
-                height: calc(100% - 70px); /* Leave exactly 70px for bottom docks */
+                height: calc(100% - 70px);
             }
             .scene {
                 flex: 1;
                 height: 100%;
-                width: 0; /* Fixes absolute width flex grow issue */
+                width: 0;
                 min-width: 0;
             }
-
-            /* Thumbnails on the right side in landscape views */
             .sidebar-thumbnails {
                 width: 90px !important;
                 height: 100% !important;
@@ -702,7 +697,6 @@
                 width: 100% !important; 
                 height: 50px !important;
             }
-
             .arrow-btn {
                 width: 38px; height: 38px;
                 font-size: 14px;
@@ -710,7 +704,6 @@
             .nav-overlay-zone {
                 width: 40px;
             }
-
             .bottom-bar-area {
                 padding: 8px 0;
                 height: 60px;
@@ -720,9 +713,8 @@
                 gap: 10px;
             }
             .hint {
-                display: none; /* Hide helper hints on tight landscape heights */
+                display: none;
             }
-            /* Sound corner layout on bottom right of the landscape bar */
             .sound-corner {
                 display: flex !important;
                 position: absolute;
@@ -756,7 +748,7 @@
             <span></span>
         </button>
 
-        <!-- Dynamic Header Switch (Will appear only on Mobile Portrait under hamburger) -->
+        <!-- Dynamic Header Switch for Portrait Mobile -->
         <div class="header-sound-container" id="headerSoundContainer">
             <div class="ios-switch-container">
                 <span class="switch-label">Sound</span>
@@ -821,7 +813,7 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Mobile Landscape view) -->
+                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
                     <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
@@ -832,14 +824,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="hint">Scroll or pinch-to-zoom presentation canvas. Swipe horizontally on mobile views.</div>
+                <div class="hint">Scroll mouse or pinch screens to zoom. Swipe to change slides.</div>
             </div>
         </div>
 
     </div>
 
     <script>
-        // PRESENTATION RESOURCE LIST
         const presentationData = {
             catalogues: [
                 { title: "Enza Home", url: "Enza Home.pdf" },
@@ -860,18 +851,27 @@
         let pages = [];
         let thumbElements = [];
         let pdfDoc = null;
+        
+        // ZOOM / PAN STATE CONTROL
         let scale = 1; 
         let posX = 0; 
         let posY = 0;
         let isDragging = false; 
         let startX; 
         let startY;
+        
+        // TOUCH ENGINE MULTI-TOUCH TRACKING
+        let initialPinchDist = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isPinching = false;
+
         let isSoundOn = true;
         let pageRenderingStates = {}; 
 
         const transitionSound = new Audio('glossy_magazine.mp3');
 
-        // CACHED ELEMENT SELECTORS
+        // CACHED ELEMENTS
         const zoomContainer = document.getElementById('zoomContainer');
         const book = document.getElementById('book');
         const scene = document.getElementById('scene');
@@ -883,21 +883,17 @@
         const sidebarNav = document.getElementById('sidebarNav');
         const menuHamburger = document.getElementById('menuHamburger');
 
-        // SERVICE WORKER INTEGRATION FOR OFFLINE COMPATIBILITY
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker Successfully Registered.', reg))
-                    .catch(err => console.log('Service Worker registration failed.', err));
+                navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
             });
         }
 
-        // UNLOCK AUDIO ENGINE ON USER INTERACTION
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
                 transitionSound.pause();
                 transitionSound.currentTime = 0;
-            }).catch(e => console.log('Audio engine unlock pending.'));
+            }).catch(e => {});
             window.removeEventListener('click', unlockAudioEngine);
             window.removeEventListener('touchstart', unlockAudioEngine);
         }
@@ -909,10 +905,9 @@
             try {
                 transitionSound.currentTime = 0;
                 transitionSound.play();
-            } catch (e) { console.log("Audio trigger blocked by sandbox policy."); }
+            } catch (e) {}
         }
 
-        // DYNAMIC WATERMARK OVERLAY INJECTION
         function injectWatermark(context, width, height) {
             context.save();
             context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
@@ -925,34 +920,23 @@
             context.restore();
         }
 
-        // SIDEBAR DRAWER TOGGLE LOGIC
-        function toggleMenu() {
-            sidebarNav.classList.toggle('menu-open');
-        }
-        menuHamburger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMenu();
-        });
+        function toggleMenu() { sidebarNav.classList.toggle('menu-open'); }
+        menuHamburger.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
         document.addEventListener('click', (e) => {
             if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
                 sidebarNav.classList.remove('menu-open');
             }
         });
 
-        // SYNC MUTUAL SOUND SWITCHES (Header Sound Toggle & Footer Sound Toggle)
         document.querySelectorAll('.audioToggleBtnClass').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 isSoundOn = this.checked;
-                document.querySelectorAll('.audioToggleBtnClass').forEach(other => {
-                    other.checked = isSoundOn;
-                });
+                document.querySelectorAll('.audioToggleBtnClass').forEach(other => { other.checked = isSoundOn; });
             });
         });
 
-        // POPULATING THE PRESENTATION MENU DRAWER
         function buildSidebarMenu() {
-            cataloguesList.innerHTML = "";
-            otherList.innerHTML = "";
+            cataloguesList.innerHTML = ""; otherList.innerHTML = "";
             let globalIdx = 0;
 
             presentationData.catalogues.forEach((deck) => {
@@ -962,13 +946,8 @@
                 btn.className = `deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
                 btn.innerText = deck.title;
                 btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => {
-                    switchPresentation(currentIdx);
-                    sidebarNav.classList.remove('menu-open');
-                });
-                li.appendChild(btn);
-                cataloguesList.appendChild(li);
-                globalIdx++;
+                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
+                li.appendChild(btn); cataloguesList.appendChild(li); globalIdx++;
             });
 
             presentationData.otherPresentations.forEach((deck) => {
@@ -978,74 +957,46 @@
                 btn.className = `deck-btn`;
                 btn.innerText = deck.title;
                 btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => {
-                    switchPresentation(currentIdx);
-                    sidebarNav.classList.remove('menu-open');
-                });
-                li.appendChild(btn);
-                otherList.appendChild(li);
-                globalIdx++;
+                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
+                li.appendChild(btn); otherList.appendChild(li); globalIdx++;
             });
         }
 
-        // PRESENTATION SWITCHER
         async function switchPresentation(index, targetSavedPage = 0) {
             currentActivePresentationIndex = index;
             localStorage.setItem('corporate_last_presentation', index);
 
-            const buttons = document.querySelectorAll('.deck-btn');
-            buttons.forEach(b => {
-                const bIdx = parseInt(b.getAttribute('data-index'));
-                b.classList.toggle('active-deck', bIdx === index);
+            document.querySelectorAll('.deck-btn').forEach(b => {
+                b.classList.toggle('active-deck', parseInt(b.getAttribute('data-index')) === index);
             });
 
-            globalLoading.style.display = 'flex';
-            globalLoading.style.opacity = '1';
-
-            book.innerHTML = '';
-            sidebarThumbnails.innerHTML = '';
-            pages = [];
-            thumbElements = [];
-            currentId = targetSavedPage;
-            pageRenderingStates = {};
+            globalLoading.style.display = 'flex'; globalLoading.style.opacity = '1';
+            book.innerHTML = ''; sidebarThumbnails.innerHTML = '';
+            pages = []; thumbElements = [];
+            currentId = targetSavedPage; pageRenderingStates = {};
             resetZoom();
-
             await loadPDF(presentations[index].url);
         }
 
-        // PRESERVES ASPECT RATIO TO FIT PRESENTATION INTO THE VIEWPORT WITHOUT ANY CLIPPING
         function resizeBookToFit(viewport) {
             if (!viewport) return;
-            
-            // Measure actual remaining scene width and height (ignoring other elements)
-            const sceneW = scene.clientWidth;
-            const sceneH = scene.clientHeight;
-
+            const sceneW = scene.clientWidth; const sceneH = scene.clientHeight;
             if (!sceneW || !sceneH) return;
 
             const pdfRatio = viewport.width / viewport.height;
-
             const margin = 0.95; 
-            const maxAllowedW = sceneW * margin;
-            const maxAllowedH = sceneH * margin;
-
+            const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
             let finalW, finalH;
 
             if (maxAllowedW / maxAllowedH > pdfRatio) {
-                // Screen layout is wider than the document aspect-ratio -> bound by height
-                finalH = maxAllowedH;
-                finalW = finalH * pdfRatio;
+                finalH = maxAllowedH; finalW = finalH * pdfRatio;
             } else {
-                // Screen layout is narrower than the document aspect-ratio -> bound by width
-                finalW = maxAllowedW;
-                finalH = finalW / pdfRatio;
+                finalW = maxAllowedW; finalH = finalW / pdfRatio;
             }
-
             book.style.width = Math.floor(finalW) + 'px';
             book.style.height = Math.floor(finalH) + 'px';
         }
 
-        // ON-DEMAND AND LOW-LATENCY PREEMPTIVE RENDERING ENGINE
         async function optimizeAndRenderPage(pageNum) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
             if (pageRenderingStates[pageNum] === 'high-res') return;
@@ -1053,270 +1004,127 @@
             try {
                 const page = await pdfDoc.getPage(pageNum);
                 const distance = Math.abs((pageNum - 1) - currentId);
-                const isHighResTarget = distance <= 2;
-                const renderScale = isHighResTarget ? 2.2 : 1.1;
+                const renderScale = distance <= 2 ? 2.2 : 1.1;
 
                 let pageDiv = pages[pageNum - 1];
                 if (!pageDiv) {
-                    pageDiv = document.createElement('div');
-                    pageDiv.className = 'page';
-                    const canvas = document.createElement('canvas');
-                    pageDiv.appendChild(canvas);
-                    book.appendChild(pageDiv);
-                    pages[pageNum - 1] = pageDiv;
+                    pageDiv = document.createElement('div'); pageDiv.className = 'page';
+                    const canvas = document.createElement('canvas'); pageDiv.appendChild(canvas);
+                    book.appendChild(pageDiv); pages[pageNum - 1] = pageDiv;
                 }
 
                 const canvas = pageDiv.querySelector('canvas');
                 const context = canvas.getContext('2d');
-                
-                const sourceThumbBox = document.getElementById(`thumb-box-${pageNum}`);
-                if (sourceThumbBox && !pageRenderingStates[pageNum]) {
-                    const thumbCanvas = sourceThumbBox.querySelector('canvas');
-                    if (thumbCanvas && thumbCanvas.width > 0) {
-                        canvas.width = thumbCanvas.width;
-                        canvas.height = thumbCanvas.height;
-                        context.drawImage(thumbCanvas, 0, 0);
-                        pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-                        if (pageNum - 1 === currentId) updateBookDisplay();
-                    }
-                }
-
                 const viewport = page.getViewport({ scale: renderScale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
+                
+                canvas.height = viewport.height; canvas.width = viewport.width;
                 pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-                pageRenderingStates[pageNum] = isHighResTarget ? 'high-res' : 'low-res';
+                pageRenderingStates[pageNum] = distance <= 2 ? 'high-res' : 'low-res';
 
                 await page.render({ canvasContext: context, viewport: viewport }).promise;
                 injectWatermark(context, canvas.width, canvas.height);
 
-                if (pageNum - 1 === currentId) {
-                    updateBookDisplay();
-                }
-            } catch (err) { console.error("Rendering system error: ", err); }
+                if (pageNum - 1 === currentId) updateBookDisplay();
+            } catch (err) {}
         }
 
-        // NEIGHBORING PAGES BUFFER PIPELINE
         function runPredictiveCachePipeline() {
-            const total = pdfDoc.numPages;
             const activeIdx = currentId + 1;
-
             optimizeAndRenderPage(activeIdx);
             for (let i = 1; i <= 2; i++) {
-                optimizeAndRenderPage(activeIdx + i);
-                optimizeAndRenderPage(activeIdx - i);
-            }
-
-            for (let p = 1; p <= total; p++) {
-                if (Math.abs((p - 1) - currentId) > 3) {
-                    if (pageRenderingStates[p] === 'high-res') {
-                        pageRenderingStates[p] = 'purged'; 
-                        optimizeAndRenderPage(p);
-                    }
-                }
+                optimizeAndRenderPage(activeIdx + i); optimizeAndRenderPage(activeIdx - i);
             }
         }
 
-        // CONSTRUCT THUMBNAIL PANELS INSTANTLY
         function createSequentialThumbContainers(total) {
             sidebarThumbnails.innerHTML = '';
             for (let i = 1; i <= total; i++) {
                 const thumbBox = document.createElement('div');
-                thumbBox.className = 'thumb-box';
-                thumbBox.id = `thumb-box-${i}`;
-                
-                const canvas = document.createElement('canvas');
-                thumbBox.appendChild(canvas);
-
-                const label = document.createElement('div');
-                label.className = 'thumb-label'; label.innerText = i;
-                thumbBox.appendChild(label);
-
-                sidebarThumbnails.appendChild(thumbBox);
+                thumbBox.className = 'thumb-box'; thumbBox.id = `thumb-box-${i}`;
+                const canvas = document.createElement('canvas'); thumbBox.appendChild(canvas);
+                const label = document.createElement('div'); label.className = 'thumb-label'; label.innerText = i;
+                thumbBox.appendChild(label); sidebarThumbnails.appendChild(thumbBox);
                 thumbElements[i - 1] = thumbBox;
 
                 thumbBox.addEventListener('click', () => {
                     if (currentId === i - 1) return;
-                    playPaperSound();
-                    currentId = i - 1;
+                    playPaperSound(); currentId = i - 1;
                     localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom();
-                    
-                    optimizeAndRenderPage(i); 
-                    updateBookDisplay();
-                    runPredictiveCachePipeline();
+                    resetZoom(); optimizeAndRenderPage(i); updateBookDisplay(); runPredictiveCachePipeline();
                 });
             }
         }
 
-        // BACKGROUND THUMBNAIL RENDERER
         async function renderThumbnail(pageNum) {
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.35 }); 
-
+                const viewport = page.getViewport({ scale: 0.35 });
                 const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
                 if (!thumbBox) return;
-
-                const canvas = thumbBox.querySelector('canvas');
-                const context = canvas.getContext('2d');
+                const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
                 canvas.height = viewport.height; canvas.width = viewport.width;
-
                 await page.render({ canvasContext: context, viewport: viewport }).promise;
-            } catch (err) { console.error("Thumbnail pipeline error: ", err); }
+            } catch (err) {}
         }
 
-        // LOAD PDF MAIN FUNCTION
         async function loadPDF(url) {
             try {
                 pdfDoc = await pdfjsLib.getDocument(url).promise;
                 const totalPages = pdfDoc.numPages;
-                pages = new Array(totalPages);
-                thumbElements = new Array(totalPages);
-
+                pages = new Array(totalPages); thumbElements = new Array(totalPages);
                 createSequentialThumbContainers(totalPages);
 
                 const thumbPromises = [];
-                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-                    thumbPromises.push(renderThumbnail(pageNum));
-                }
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) { thumbPromises.push(renderThumbnail(pageNum)); }
                 await Promise.all(thumbPromises);
 
-                const startRenderPage = currentId + 1;
-                await optimizeAndRenderPage(startRenderPage);
-
-                globalLoading.style.opacity = '0';
-                setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
-                
+                await optimizeAndRenderPage(currentId + 1);
+                globalLoading.style.opacity = '0'; setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
                 zoomContainer.style.display = 'flex';
-                updateBookDisplay();
-                runPredictiveCachePipeline();
-
-                if (thumbElements[currentId]) {
-                    thumbElements[currentId].classList.add('active-thumb');
-                }
-            } catch (error) {
-                globalLoading.style.display = 'flex';
-                let errorMsg = document.getElementById('loadingErrorMsg');
-                if(!errorMsg) {
-                    errorMsg = document.createElement('div');
-                    errorMsg.id = 'loadingErrorMsg';
-                    errorMsg.style.color = '#ff4d4d';
-                    errorMsg.style.fontWeight = 'bold';
-                    errorMsg.style.marginTop = '15px';
-                    globalLoading.appendChild(errorMsg);
-                }
-                errorMsg.innerText = "Error: Failed to fetch and load presentation PDF.";
-                console.error(error);
-            }
+                updateBookDisplay(); runPredictiveCachePipeline();
+            } catch (error) { console.error(error); }
         }
 
-        // RE-LAYOUT THE VIEWS AND TRANSITIONS (STABILIZED HEIGHT/WIDTH ALIGNMENT)
         function updateBookDisplay() {
-            const total = pages.length;
-            if (total === 0) return;
-
+            if (pages.length === 0) return;
             pages.forEach((page, index) => {
                 if (!page) return;
                 if (index === currentId) {
-                    page.className = 'page active-page';
-                    resizeBookToFit(page.pdfViewport);
-                } else if (index < currentId) {
-                    page.className = 'page turn-next';
-                } else {
-                    page.className = 'page turn-prev';
-                }
+                    page.className = 'page active-page'; resizeBookToFit(page.pdfViewport);
+                } else if (index < currentId) { page.className = 'page turn-next'; } 
+                else { page.className = 'page turn-prev'; }
             });
 
             thumbElements.forEach((thumb, index) => {
                 if (!thumb) return;
                 if (index === currentId) {
-                    thumb.classList.add('active-thumb');
-                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    thumb.classList.add('active-thumb'); thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 } else { thumb.classList.remove('active-thumb'); }
             });
 
             document.getElementById('prevBtn').disabled = (currentId === 0);
-            document.getElementById('nextBtn').disabled = (currentId >= total - 1);
+            document.getElementById('nextBtn').disabled = (currentId >= pages.length - 1);
             gotoInput.value = currentId + 1;
-            document.getElementById('pageIndicator').innerText = `/ ${total}`;
+            document.getElementById('pageIndicator').innerText = `/ ${pages.length}`;
         }
 
-        // SLIDE CONTROLS (NEXT/PREV)
         function flipNext() { 
             if (currentId < pages.length - 1) { 
-                playPaperSound();
-                currentId++; 
-                localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); 
-                optimizeAndRenderPage(currentId + 1);
-                updateBookDisplay(); 
-                runPredictiveCachePipeline();
+                playPaperSound(); currentId++; localStorage.setItem('corporate_last_page', currentId);
+                resetZoom(); optimizeAndRenderPage(currentId + 1); updateBookDisplay(); runPredictiveCachePipeline();
             } 
         }
-        
         function flipPrev() { 
             if (currentId > 0) { 
-                playPaperSound();
-                currentId--; 
-                localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); 
-                optimizeAndRenderPage(currentId + 1);
-                updateBookDisplay(); 
-                runPredictiveCachePipeline();
+                playPaperSound(); currentId--; localStorage.setItem('corporate_last_page', currentId);
+                resetZoom(); optimizeAndRenderPage(currentId + 1); updateBookDisplay(); runPredictiveCachePipeline();
             } 
         }
         
-        // ZOOM CONTROLLER ENGINE
         function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
         function updateTransform() { zoomContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
 
-        document.getElementById('zoneLeft').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipPrev(); });
-        document.getElementById('zoneRight').addEventListener('click', (e) => { if (scale > 1) return; e.stopPropagation(); flipNext(); });
-
-        // SWIPE INTERACTIVE GESTURES
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        scene.addEventListener('touchstart', (e) => {
-            if (scale > 1) return;
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        scene.addEventListener('touchend', (e) => {
-            if (scale > 1) return;
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
-        }, { passive: true });
-
-        function handleSwipeGesture() {
-            const threshold = 40; 
-            if (touchStartX - touchEndX > threshold) {
-                flipNext(); 
-            } else if (touchEndX - touchStartX > threshold) {
-                flipPrev(); 
-            }
-        }
-
-        // DIRECT GO-TO PAGE NAVIGATION ENTER TRIGGER
-        gotoInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                let targetPage = parseInt(gotoInput.value);
-                if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
-                    playPaperSound();
-                    currentId = targetPage - 1; 
-                    localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); 
-                    optimizeAndRenderPage(targetPage);
-                    updateBookDisplay(); 
-                    runPredictiveCachePipeline();
-                    gotoInput.blur();
-                } else { gotoInput.value = currentId + 1; }
-            }
-        });
-
-        // WHEEL MOUSE SCROLL ZOOM BINDING
+        // MOUSE AND CAPTURED INPUT DRAGGING / ZOOM SYSTEM
         scene.addEventListener('wheel', (e) => {
             e.preventDefault();
             if (e.deltaY < 0) { scale = Math.min(scale + 0.2, 5); } else { scale = Math.max(scale - 0.2, 1); }
@@ -1324,49 +1132,112 @@
             updateTransform();
         }, { passive: false });
 
-        // DRAG AND PAN SYSTEM
         scene.addEventListener('mousedown', (e) => {
-            if (scale === 1 || e.target.closest('.nav-overlay-zone')) return;
+            if (scale === 1 || e.target.closest('.arrow-btn')) return;
             isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY;
         });
-
         window.addEventListener('mousemove', (e) => { if (!isDragging) return; posX = e.clientX - startX; posY = e.clientY - startY; updateTransform(); });
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // ZOOM BUTTON SIGNALS
+        // NATIVE TOUCH INTELLIGENCE (SWIPE AND PINCH HANDLER)
+        scene.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                // Two fingers detected: init pinch engine
+                isPinching = true;
+                initialPinchDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            } else if (e.touches.length === 1) {
+                isPinching = false;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                if (scale > 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX - posX;
+                    startY = e.touches[0].clientY - posY;
+                }
+            }
+        }, { passive: true });
+
+        scene.addEventListener('touchmove', (e) => {
+            if (isPinching && e.touches.length === 2) {
+                e.preventDefault();
+                const currentDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                const factor = currentDist / initialPinchDist;
+                if(factor > 1) { scale = Math.min(scale + 0.05, 5); }
+                else if(factor < 1) { scale = Math.max(scale - 0.05, 1); }
+                if (scale === 1) { posX = 0; posY = 0; }
+                updateTransform();
+            } else if (isDragging && e.touches.length === 1 && scale > 1) {
+                posX = e.touches[0].clientX - startX;
+                posY = e.touches[0].clientY - startY;
+                updateTransform();
+            }
+        }, { passive: false });
+
+        scene.addEventListener('touchend', (e) => {
+            if (isPinching) {
+                if (e.touches.length < 2) isPinching = false;
+                return;
+            }
+            if (isDragging) { isDragging = false; return; }
+
+            // Handle pure slide swipe triggers when layout scale is perfectly flat (scale === 1)
+            if (scale === 1 && e.changedTouches.length > 0) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const diffX = touchStartX - touchEndX;
+                const diffY = touchStartY - touchEndY;
+
+                // Restrict horizontal bounds vs vertical scrolling
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+                    if (diffX > 0) flipNext(); else flipPrev();
+                }
+            }
+        }, { passive: true });
+
+        // HARDWARE BUTTON TRIGGERS
+        document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
+        document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
         document.getElementById('zoomInBtn').addEventListener('click', () => { scale = Math.min(scale + 0.5, 5); updateTransform(); });
         document.getElementById('zoomOutBtn').addEventListener('click', () => { scale = Math.max(scale - 0.5, 1); if(scale===1){posX=0;posY=0;} updateTransform(); });
         document.getElementById('nextBtn').addEventListener('click', flipNext);
         document.getElementById('prevBtn').addEventListener('click', flipPrev);
 
-        // SYSTEM KEYBOARD BINDINGS
+        gotoInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                let targetPage = parseInt(gotoInput.value);
+                if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
+                    playPaperSound(); currentId = targetPage - 1; localStorage.setItem('corporate_last_page', currentId);
+                    resetZoom(); optimizeAndRenderPage(targetPage); updateBookDisplay(); runPredictiveCachePipeline();
+                    gotoInput.blur();
+                } else { gotoInput.value = currentId + 1; }
+            }
+        });
+
         window.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return; 
             if (e.key === "ArrowRight" || e.key === " ") flipNext();
             if (e.key === "ArrowLeft") flipPrev();
         });
 
-        // VIEWPORT RESIZE LISTENERS
         window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
 
-        // APPLICATION INITIALIZATION
         window.onload = () => {
             buildSidebarMenu();
-            
             const savedPresentation = localStorage.getItem('corporate_last_presentation');
             const savedPage = localStorage.getItem('corporate_last_page');
 
             if (savedPresentation !== null && presentations[savedPresentation]) {
                 const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
-                
                 const toast = document.getElementById('resumeToast');
-                toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 4000);
-
+                toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000);
                 switchPresentation(parseInt(savedPresentation), targetPageIdx);
-            } else {
-                switchPresentation(0, 0); 
-            }
+            } else { switchPresentation(0, 0); }
         };
     </script>
 </body>
