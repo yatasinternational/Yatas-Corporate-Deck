@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Yataş Group - Premium Corporate Portal</title>
     
-    <!-- PWA Infrastructure -->
+    <!-- PWA Altyapısı -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#020617">
-    <link rel="manifest" href="manifest.json" id="pwaManifest">
 
-    <!-- PDF.js Engine -->
+    <!-- PDF.js Kütüphanesi -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
     <style>
@@ -27,6 +26,7 @@
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -34,7 +34,7 @@
             display: flex;
             height: 100vh;
             height: 100dvh;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             overflow: hidden;
             color: #fff;
             touch-action: none;
@@ -273,7 +273,7 @@
             z-index: 5;
         }
 
-        /* CONTAINER GRID RESTRICTING OVERFLOWS */
+        /* CONTAINER GRID */
         .main-container {
             display: flex;
             width: 100%;
@@ -312,10 +312,11 @@
             will-change: transform;
             z-index: 10;
             touch-action: none;
+            transition: transform 0.05s ease-out; /* Akıcı ve yumuşak geçiş */
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D COVERFLOW ENGINE CONTAINER */
+        /* BOOK CONTAINER */
         .book {
             position: relative;
             display: flex;
@@ -337,7 +338,7 @@
             pointer-events: none;
         }
         
-        /* 1. AKTİF SAYFA (Düz, 2D - iOS GPU Belleğini yormayan ve Siyah Ekranı Bitiren Katman) */
+        /* AKTİF SAYFA (Düz ve Net) */
         .page.active-page {
             opacity: 1;
             pointer-events: auto;
@@ -345,7 +346,7 @@
             transform: translate3d(0, 0, 10px) scale(1);
         }
         
-        /* 2. SOLDAKİ SAYFA (Sola Kaymış ve Geriye Yatmış) */
+        /* SOLDAKİ SAYFA ARKA KATMAN */
         .page.turn-next {
             opacity: 0.35;
             z-index: 5;
@@ -354,7 +355,7 @@
             -webkit-backface-visibility: hidden;
         }
         
-        /* 3. SAĞDAKİ SAYFA (Sağa Kaymış ve Geriye Yatmış) */
+        /* SAĞDAKİ SAYFA ARKA KATMAN */
         .page.turn-prev {
             opacity: 0.35;
             z-index: 5;
@@ -363,9 +364,9 @@
             -webkit-backface-visibility: hidden;
         }
 
-        /* 4. DİĞER TÜM GİZLİ SAYFALAR */
+        /* GİZLENEN ESKİ SAYFALAR (iOS VRAM dostu) */
         .page.hidden-page {
-            display: none; /* iOS VRAM kurtarıcı display: none tetiklemesi */
+            display: none;
             opacity: 0;
             z-index: 1;
         }
@@ -427,7 +428,7 @@
             box-shadow: 0 10px 25px rgba(255,255,255,0.25);
         }
         
-        /* DESKTOP SIDEBAR THUMBNAILS */
+        /* SLIDABLE PREVIEW THUMBNAILS PANEL */
         .sidebar-thumbnails {
             width: 180px;
             background: rgba(0, 40, 112, 0.15);
@@ -633,10 +634,7 @@
             opacity: 1;
         }
 
-        /* ==========================================================================
-           RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
-           ========================================================================== */
-
+        /* RESPONSIVE LAYOUTS */
         @media (max-width: 1024px) and (orientation: portrait) {
             .workspace {
                 height: 100%;
@@ -776,7 +774,7 @@
             <span></span>
         </button>
 
-        <!-- Dynamic Header Switch for Portrait Mobile -->
+        <!-- PORTRAIT MODE SWITCH -->
         <div class="header-sound-container" id="headerSoundContainer">
             <div class="ios-switch-container">
                 <span class="switch-label">Sound</span>
@@ -841,7 +839,7 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
+                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE -->
                     <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
@@ -885,14 +883,15 @@
         let posX = 0; 
         let posY = 0;
         let isDragging = false; 
-        let startX; 
-        let startY;
+        let startX = 0; 
+        let startY = 0;
         
         // TOUCH ENGINE MULTI-TOUCH TRACKING
         let initialPinchDist = 0;
         let touchStartX = 0;
         let touchStartY = 0;
         let isPinching = false;
+        let initialScale = 1;
 
         let isSoundOn = true;
         let renderTimeout = null;
@@ -910,12 +909,6 @@
         const globalLoading = document.getElementById('globalLoading');
         const sidebarNav = document.getElementById('sidebarNav');
         const menuHamburger = document.getElementById('menuHamburger');
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
-            });
-        }
 
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
@@ -1026,6 +1019,9 @@
             updateTransform();
         }
 
+        // =============================================================================
+        // AKILLI BÜYÜTME VE YÜKSEK ÇÖZÜNÜRLÜK (HQ) RENDER MOTORU
+        // =============================================================================
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -1051,54 +1047,71 @@
 
                 const canvas = pageDiv.querySelector('.base-lowres-canvas');
                 const context = canvas.getContext('2d');
-                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+                
+                const rawViewport = page.getViewport({ scale: 1.0 });
+                pageDiv.pdfViewport = rawViewport;
 
+                // Ekrana sığdırma (Fit-to-screen) boyutlarını hesapla
+                const sceneW = scene.clientWidth;
+                const sceneH = scene.clientHeight;
+                const pdfRatio = rawViewport.width / rawViewport.height;
+                const margin = 0.90;
+                const maxAllowedW = sceneW * margin;
+                const maxAllowedH = sceneH * margin;
+                
+                let displayW, displayH;
+                if (maxAllowedW / maxAllowedH > pdfRatio) {
+                    displayH = maxAllowedH;
+                    displayW = displayH * pdfRatio;
+                } else {
+                    displayW = maxAllowedW;
+                    displayH = displayW / pdfRatio;
+                }
+
+                // Cihazın ekran yoğunluğu (DPR)
                 const dpr = window.devicePixelRatio || 1;
-                // Google Maps Dinamik Çözünürlük Motoru: customScale (yakınlaştırma miktarı) ile dpr çarpılarak cam gibi netlik elde edilir.
-                let targetScale = customScale * dpr;
+                
+                // iOS WebKit çökme limitini aşmamak için maks çözünürlük katsayısını 3.0 ile sınırlıyoruz
+                let targetScale = Math.min(customScale * dpr, 3.0); 
 
-                // iOS GPU stabilitesi için tavan çözünürlüğü 4096px seviyesine çektik (Bulanıklık sorununu çözen anahtar limit).
-                const sampleViewport = page.getViewport({ scale: targetScale });
-                if (sampleViewport.width > 4096) {
-                    targetScale = 4096 / page.getViewport({ scale: 1.0 }).width;
-                }
+                // PDF'i ekrandaki sığdırılmış yerleşim boyutu (displayW) üzerinden ölçeklendiriyoruz
+                const renderScale = (displayW / rawViewport.width) * targetScale;
+                const viewport = page.getViewport({ scale: renderScale });
 
-                const viewport = page.getViewport({ scale: targetScale });
-                const newWidth = Math.floor(viewport.width);
-                const newHeight = Math.floor(viewport.height);
+                // Canvas'ın dahili piksel (Backing Store) hafızasını arttırıyoruz
+                canvas.width = Math.floor(viewport.width);
+                canvas.height = Math.floor(viewport.height);
 
-                const offscreenCanvas = document.createElement('canvas');
-                offscreenCanvas.width = newWidth;
-                offscreenCanvas.height = newHeight;
-                const offscreenContext = offscreenCanvas.getContext('2d');
+                // KRİTİK DEĞİŞİKLİK: DOM üzerindeki boyutu hep sabit kalır, bellek şişmesini önler!
+                canvas.style.width = Math.floor(displayW) + 'px';
+                canvas.style.height = Math.floor(displayH) + 'px';
 
-                await page.render({ 
-                    canvasContext: offscreenContext, 
-                    viewport: viewport 
-                }).promise;
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
 
-                injectWatermark(offscreenContext, newWidth, newHeight);
-
-                if (canvas.width !== newWidth || canvas.height !== newHeight) {
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                }
-                context.drawImage(offscreenCanvas, 0, 0);
+                await page.render(renderContext).promise;
+                injectWatermark(context, canvas.width, canvas.height);
 
                 if (pageNum - 1 === currentId) {
-                    resizeBookToFit(pageDiv.pdfViewport);
+                    resizeBookToFit(rawViewport);
                 }
             } catch (err) {
                 console.error("Render hatası:", err);
             }
         }
 
-        // Debounce Gecikmeli Render Tetikleyici (Zoom hareketinde tıkanmayı önleyip, bırakınca cam gibi yapan motor)
+        // =============================================================================
+        // DYNAMIC DEBOUNCE HAREKET YÖNETİMİ
+        // =============================================================================
         function triggerDynamicZoomRender() {
             if (renderTimeout) clearTimeout(renderTimeout);
+            
+            // Kullanıcı hareketi bitirdikten 250ms sonra HQ çizim tetiklenir
             renderTimeout = setTimeout(() => {
                 renderHighQualityPage(currentId + 1, scale);
-            }, 300);
+            }, 250);
         }
 
         function runPredictiveCachePipeline() {
@@ -1160,7 +1173,7 @@
             } catch (error) { console.error(error); }
         }
 
-        // iOS PERFORMANS VE SİYAH EKRAN ENGELLEYİCİ GÖRÜNÜM MOTORU
+        // iOS SİYAH EKRAN ENGELLEYİCİ GÖRÜNÜM MOTORU
         function updateBookDisplay() {
             if (pages.length === 0) return;
             pages.forEach((page, index) => {
@@ -1179,7 +1192,6 @@
                     page.className = 'page turn-prev'; 
                 } else {
                     page.className = 'page hidden-page';
-                    // Sayfa geçiş animasyonu tamamlanınca render ağacından atıyoruz (VRAM tasarrufu)
                     setTimeout(() => {
                         if (page.classList.contains('hidden-page')) {
                             page.style.display = 'none';
@@ -1282,7 +1294,7 @@
 
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // iOS PINCH TO ZOOM ENGINE (İki parmakla kıstırma motoru)
+        // iOS PINCH TO ZOOM ENGINE
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPinching = true;
@@ -1290,7 +1302,7 @@
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
-                
+                initialScale = scale;
                 touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
                 touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
@@ -1336,10 +1348,15 @@
                 if (e.touches.length < 2) {
                     isPinching = false;
                     isDragging = false;
+                    triggerDynamicZoomRender(); // Pinch bittiğinde HQ çizdir
                 }
                 return;
             }
-            if (isDragging) { isDragging = false; return; }
+            if (isDragging) { 
+                isDragging = false; 
+                triggerDynamicZoomRender(); // Drag bittiğinde HQ çizdir
+                return; 
+            }
 
             if (scale === 1 && e.changedTouches.length > 0) {
                 const touchEndX = e.changedTouches[0].clientX;
