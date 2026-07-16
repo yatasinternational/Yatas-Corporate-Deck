@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -17,8 +17,8 @@
         :root {
             --primary-blue: #002870;
             --neon-blue: #00d2ff;
-            --book-shadow: 0 25px 55px rgba(0,0,0,0.6);
-            --glass-bg: rgba(2, 6, 23, 0.88);
+            --book-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            --glass-bg: rgba(2, 6, 23, 0.9);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
 
@@ -53,16 +53,10 @@
             position: absolute;
             top: -20%; left: -20%; width: 140%; height: 140%;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
-                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
+                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.3) 0%, transparent 50%);
             filter: blur(60px);
-            animation: elegantBgMotion 25s ease-in-out infinite alternate;
-        }
-        @keyframes elegantBgMotion {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(2%, -4%) scale(1.05); }
-            100% { transform: translate(-2%, 4%) scale(0.98); }
         }
         
         /* PULSE LOADING SCREEN */
@@ -109,7 +103,7 @@
             z-index: 2;
         }
 
-        /* HEADER LEFT COLUMN CONTROL PANEL */
+        /* CONTROL PANEL */
         .header-column {
             position: absolute;
             top: 20px;
@@ -170,7 +164,7 @@
             transition: 0.3s;
         }
 
-        /* SIDEBAR NAVIGATION Drawer */
+        /* SIDEBAR NAVIGATION */
         .sidebar-nav {
             position: fixed;
             left: -340px;
@@ -187,7 +181,7 @@
             z-index: 1000;
             overflow-y: auto;
             backdrop-filter: blur(30px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .sidebar-nav.menu-open {
             left: 0;
@@ -237,14 +231,13 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .deck-btn:hover {
             background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.2);
             transform: translateX(5px);
         }
         .deck-btn.active-deck {
@@ -252,14 +245,6 @@
             border-color: #ffffff;
             color: #002870; 
             box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-        }
-        .deck-btn::before {
-            content: "•";
-            color: var(--neon-blue);
-            font-size: 14px;
-        }
-        .deck-btn.active-deck::before {
-            color: #002870;
         }
 
         /* WORKSPACE AREA */
@@ -284,7 +269,7 @@
             padding: 20px;
         }
         
-        /* SCENE ZONE (3D Perspective Base) */
+        /* SCENE ZONE */
         .scene {
             flex: 1;
             display: flex;
@@ -294,12 +279,11 @@
             position: relative;
             height: 100%;
             min-height: 0;
-            perspective: 1200px;
             background: transparent;
             touch-action: none;
         }
 
-        /* DYNAMIC SCALING WRAPPER */
+        /* DYNAMIC SCALING PAN-ZOOM CONTAINER */
         .pan-zoom-container {
             position: absolute;
             width: 100%;
@@ -312,11 +296,10 @@
             will-change: transform;
             z-index: 10;
             touch-action: none;
-            transition: transform 0.05s ease-out; /* Akıcı ve yumuşak geçiş */
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* BOOK CONTAINER */
+        /* BOOK CONTAINER (Düz Slide Mantığı) */
         .book {
             position: relative;
             display: flex;
@@ -327,57 +310,51 @@
             will-change: transform;
         }
         
-        /* iOS-OPTIMIZED 3D SAYFA ALTYAPISI */
+        /* KARARLI DÜZ SAYFA GEÇİŞLERİ (3D İPTAL EDİLDİ) */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             margin: auto;
             width: 100%; height: 100%;
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s, z-index 0.5s;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
             opacity: 0;
             pointer-events: none;
         }
         
-        /* AKTİF SAYFA (Düz ve Net) */
+        /* AKTİF SAYFA */
         .page.active-page {
             opacity: 1;
             pointer-events: auto;
             z-index: 10;
-            transform: translate3d(0, 0, 10px) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
         }
         
-        /* SOLDAKİ SAYFA ARKA KATMAN */
+        /* YANDAKİ SAYFALAR (Sadece düz kayma hareketi) */
         .page.turn-next {
-            opacity: 0.35;
+            opacity: 0;
             z-index: 5;
-            transform: translate3d(-40%, 0, 0) rotateY(45deg) scale(0.82);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+            transform: translate3d(-100%, 0, 0);
         }
         
-        /* SAĞDAKİ SAYFA ARKA KATMAN */
         .page.turn-prev {
-            opacity: 0.35;
+            opacity: 0;
             z-index: 5;
-            transform: translate3d(40%, 0, 0) rotateY(-45deg) scale(0.82);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+            transform: translate3d(100%, 0, 0);
         }
 
-        /* GİZLENEN ESKİ SAYFALAR (iOS VRAM dostu) */
         .page.hidden-page {
             display: none;
             opacity: 0;
             z-index: 1;
         }
 
-        /* CONTAINER FOR RENDER PIECE */
+        /* CANVAS LAYER */
         .canvas-container-layer {
             position: relative;
             width: 100%;
             height: 100%;
             box-shadow: var(--book-shadow);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             background: #020617; 
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -390,14 +367,12 @@
             height: 100% !important;
             z-index: 1;
             display: block;
-            will-change: transform, opacity;
-            transition: opacity 0.15s ease-in-out;
         }
 
         /* FLOATING ARROW OVERLAYS */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 100px;
+            top: 0; height: 100%; width: 80px;
             z-index: 99;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none;
@@ -406,32 +381,28 @@
         .nav-overlay-zone.right-zone { right: 0; }
 
         .arrow-btn {
-            width: 54px; height: 54px;
-            background: rgba(0, 40, 112, 0.5);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            width: 50px; height: 50px;
+            background: rgba(0, 40, 112, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer;
+            color: #fff; font-size: 18px; cursor: pointer;
             opacity: 0.65;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.2s ease;
             backdrop-filter: blur(8px);
-            user-select: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             pointer-events: auto;
         }
         .arrow-btn:hover {
             opacity: 1; 
-            transform: scale(1.15);
+            transform: scale(1.1);
             background: #ffffff; 
             color: #002870;
-            border-color: #ffffff;
-            box-shadow: 0 10px 25px rgba(255,255,255,0.25);
         }
         
-        /* SLIDABLE PREVIEW THUMBNAILS PANEL */
+        /* PREVIEW THUMBNAILS PANEL */
         .sidebar-thumbnails {
             width: 180px;
-            background: rgba(0, 40, 112, 0.15);
+            background: rgba(0, 40, 112, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow-y: auto;
@@ -464,7 +435,7 @@
             font-weight: bold; padding: 1px 5px; border-radius: 3px;
         }
         
-        /* BOTTOM DOCK SYSTEM */
+        /* BOTTOM DOCK */
         .bottom-bar-area {
             width: 100%; 
             display: flex; 
@@ -492,7 +463,6 @@
             display: flex; align-items: center; gap: 12px; 
             background: rgba(0, 40, 112, 0.85); padding: 10px 24px; border-radius: 50px;
             backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         
         .bottom-bar-area button {
@@ -511,7 +481,6 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* SOUND CONTROLLER WRAPPER */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -523,7 +492,6 @@
             z-index: 105;
         }
 
-        /* HEADER INTEGRATED SOUND TOGGLE */
         .header-sound-container {
             display: none;
             align-items: center;
@@ -539,7 +507,6 @@
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(15px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         }
 
         .switch-label {
@@ -548,7 +515,6 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.8);
-            user-select: none;
         }
 
         .ios-switch {
@@ -558,15 +524,10 @@
             height: 24px;
         }
 
-        .ios-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .ios-switch input { opacity: 0; width: 0; height: 0; }
 
         .ios-slider {
-            position: absolute;
-            cursor: pointer;
+            position: absolute; cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(255, 255, 255, 0.2);
             transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -574,35 +535,17 @@
         }
 
         .ios-slider:before {
-            position: absolute;
-            content: "🔊";
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
+            position: absolute; content: "🔊";
+            font-size: 10px; display: flex; align-items: center; justify-content: center;
+            height: 18px; width: 18px; left: 3px; bottom: 3px;
             background-color: white;
             transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
             border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        input:checked + .ios-slider {
-            background-color: var(--neon-blue);
-        }
-
-        input:checked + .ios-slider:before {
-            transform: translateX(18px);
-            content: "🔊";
-        }
-
-        input:not(:checked) + .ios-slider:before {
-            content: "🔇";
-            background-color: #f3f4f6;
-        }
+        input:checked + .ios-slider { background-color: var(--neon-blue); }
+        input:checked + .ios-slider:before { transform: translateX(18px); content: "🔊"; }
+        input:not(:checked) + .ios-slider:before { content: "🔇"; background-color: #f3f4f6; }
         
         .hint { 
             font-size: 11px; 
@@ -610,7 +553,6 @@
             font-weight: 500;
         }
 
-        /* AUTO RESUME SESSION TOAST */
         #resumeToast {
             position: fixed;
             bottom: 30px;
@@ -636,121 +578,42 @@
 
         /* RESPONSIVE LAYOUTS */
         @media (max-width: 1024px) and (orientation: portrait) {
-            .workspace {
-                height: 100%;
-                padding-top: 90px;
-            }
-            .main-container {
-                flex-direction: column;
-                padding: 10px;
-                gap: 10px;
-                height: calc(100% - 130px);
-            }
-            .scene {
-                flex: 1;
-                width: 100%;
-                height: 0;
-                min-height: 0;
-            }
+            .workspace { height: 100%; padding-top: 90px; }
+            .main-container { flex-direction: column; padding: 10px; gap: 10px; height: calc(100% - 130px); }
+            .scene { flex: 1; width: 100%; height: 0; min-height: 0; }
             .sidebar-thumbnails {
-                width: 100% !important;
-                height: 65px !important;
-                flex-direction: row !important;
-                padding: 4px 8px !important;
-                gap: 6px !important;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                border-radius: 8px;
-                flex-shrink: 0;
+                width: 100% !important; height: 65px !important;
+                flex-direction: row !important; padding: 4px 8px !important; gap: 6px !important;
+                overflow-x: auto !important; overflow-y: hidden !important;
+                background: rgba(0, 40, 112, 0.3) !important; border-radius: 8px;
             }
-            .thumb-box {
-                width: 70px !important; 
-                height: 48px !important;
-            }
-            .arrow-btn {
-                width: 44px; height: 44px;
-                opacity: 0.7;
-            }
-            .nav-overlay-zone {
-                width: 50px;
-            }
-            .sound-corner {
-                display: none !important;
-            }
-            .header-sound-container {
-                display: flex;
-            }
-            .bottom-bar-area {
-                padding: 10px 0;
-            }
-            .controls {
-                padding: 8px 18px;
-                gap: 8px;
-            }
+            .thumb-box { width: 70px !important; height: 48px !important; }
+            .arrow-btn { width: 44px; height: 44px; opacity: 0.7; }
+            .nav-overlay-zone { width: 50px; }
+            .sound-corner { display: none !important; }
+            .header-sound-container { display: flex; }
+            .bottom-bar-area { padding: 10px 0; }
+            .controls { padding: 8px 18px; gap: 8px; }
         }
 
         @media (max-width: 1024px) and (orientation: landscape) {
-            .workspace {
-                height: 100%;
-                padding-top: 0;
-            }
-            .main-container {
-                flex-direction: row;
-                padding: 10px;
-                gap: 10px;
-                height: calc(100% - 70px);
-            }
-            .scene {
-                flex: 1;
-                height: 100%;
-                width: 0;
-                min-width: 0;
-            }
+            .workspace { height: 100%; padding-top: 0; }
+            .main-container { flex-direction: row; padding: 10px; gap: 10px; height: calc(100% - 70px); }
+            .scene { flex: 1; height: 100%; width: 0; min-width: 0; }
             .sidebar-thumbnails {
-                width: 90px !important;
-                height: 100% !important;
-                flex-direction: column !important;
-                padding: 6px 4px !important;
-                gap: 8px !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                border-radius: 8px;
-                flex-shrink: 0;
+                width: 90px !important; height: 100% !important;
+                flex-direction: column !important; padding: 6px 4px !important; gap: 8px !important;
+                overflow-y: auto !important; overflow-x: hidden !important;
+                background: rgba(0, 40, 112, 0.3) !important; border-radius: 8px;
             }
-            .thumb-box {
-                width: 100% !important; 
-                height: 50px !important;
-            }
-            .arrow-btn {
-                width: 38px; height: 38px;
-                font-size: 14px;
-            }
-            .nav-overlay-zone {
-                width: 40px;
-            }
-            .bottom-bar-area {
-                padding: 8px 0;
-                height: 60px;
-            }
-            .controls {
-                padding: 6px 15px;
-                gap: 10px;
-            }
-            .hint {
-                display: none;
-            }
-            .sound-corner {
-                display: flex !important;
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .header-sound-container {
-                display: none !important;
-            }
+            .thumb-box { width: 100% !important; height: 50px !important; }
+            .arrow-btn { width: 38px; height: 38px; font-size: 14px; }
+            .nav-overlay-zone { width: 40px; }
+            .bottom-bar-area { padding: 8px 0; height: 60px; }
+            .controls { padding: 6px 15px; gap: 10px; }
+            .hint { display: none; }
+            .sound-corner { display: flex !important; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
+            .header-sound-container { display: none !important; }
         }
     </style>
 </head>
@@ -758,12 +621,12 @@
 
     <div class="premium-bg"></div>
 
-    <!-- GLOBAL LOADING PULSE SCREEN -->
+    <!-- LOADING SCREEN -->
     <div id="globalLoading">
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
 
-    <!-- UPPER LEFT CONTROL BUTTONS -->
+    <!-- CONTROL PANEL BUTTONS -->
     <div class="header-column">
         <button class="brand-logo-btn" onclick="toggleMenu()">
             <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
@@ -774,7 +637,6 @@
             <span></span>
         </button>
 
-        <!-- PORTRAIT MODE SWITCH -->
         <div class="header-sound-container" id="headerSoundContainer">
             <div class="ios-switch-container">
                 <span class="switch-label">Sound</span>
@@ -786,12 +648,12 @@
         </div>
     </div>
 
-    <!-- RESUME LAST SESSION TOAST -->
+    <!-- RESUME TOAST -->
     <div id="resumeToast">Welcome back! Restoring your last active session page.</div>
     
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- MAIN DRAWER NAVIGATION SIDEBAR -->
+        <!-- DRAWER SIDEBAR -->
         <div class="sidebar-nav" id="sidebarNav">
             <div class="brand-subtitle">Corporate Deck Portal</div>
             
@@ -810,7 +672,7 @@
                         <div id="book" class="book"></div>
                     </div>
 
-                    <!-- FLOATING ARROW OVERLAYS -->
+                    <!-- ARROW OVERLAYS -->
                     <div class="nav-overlay-zone left-zone" id="zoneLeft">
                         <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
                     </div>
@@ -821,7 +683,7 @@
 
                 </div>
 
-                <!-- SLIDABLE PREVIEW THUMBNAILS PANEL -->
+                <!-- PREVIEW THUMBNAILS PANEL -->
                 <div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
             </div>
 
@@ -839,7 +701,6 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE -->
                     <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
@@ -1020,7 +881,7 @@
         }
 
         // =============================================================================
-        // AKILLI BÜYÜTME VE YÜKSEK ÇÖZÜNÜRLÜK (HQ) RENDER MOTORU
+        // %100 KARARLI VE GERÇEK ZAMANLI NETLEŞTİRME YAPAN ENJEKTÖR
         // =============================================================================
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
@@ -1051,7 +912,7 @@
                 const rawViewport = page.getViewport({ scale: 1.0 });
                 pageDiv.pdfViewport = rawViewport;
 
-                // Ekrana sığdırma (Fit-to-screen) boyutlarını hesapla
+                // Ekrana sığdırma boyutlarını hesapla
                 const sceneW = scene.clientWidth;
                 const sceneH = scene.clientHeight;
                 const pdfRatio = rawViewport.width / rawViewport.height;
@@ -1068,21 +929,21 @@
                     displayH = displayW / pdfRatio;
                 }
 
-                // Cihazın ekran yoğunluğu (DPR)
+                // Cihaz ekran kalitesi çarpanı (Retina ekran desteği)
                 const dpr = window.devicePixelRatio || 1;
                 
-                // iOS WebKit çökme limitini aşmamak için maks çözünürlük katsayısını 3.0 ile sınırlıyoruz
-                let targetScale = Math.min(customScale * dpr, 3.0); 
+                // GÜVENLİ LİMİT: Ölçeği dpr ve zoom oranıyla çarpıp maksimum 2.5 kat ile sınırlıyoruz (Bellek ve netlik optimizasyonu)
+                let targetScale = Math.min(customScale * dpr, 2.5); 
 
-                // PDF'i ekrandaki sığdırılmış yerleşim boyutu (displayW) üzerinden ölçeklendiriyoruz
+                // PDF'i ekrandaki boyut (displayW) üzerinden piksel kalitesine göre render ediyoruz
                 const renderScale = (displayW / rawViewport.width) * targetScale;
                 const viewport = page.getViewport({ scale: renderScale });
 
-                // Canvas'ın dahili piksel (Backing Store) hafızasını arttırıyoruz
+                // Canvas dahili hafıza boyutları (VRAM dostu piksel)
                 canvas.width = Math.floor(viewport.width);
                 canvas.height = Math.floor(viewport.height);
 
-                // KRİTİK DEĞİŞİKLİK: DOM üzerindeki boyutu hep sabit kalır, bellek şişmesini önler!
+                // DOM CSS boyutlarını her zaman sabit tutarak donmaları önlüyoruz
                 canvas.style.width = Math.floor(displayW) + 'px';
                 canvas.style.height = Math.floor(displayH) + 'px';
 
@@ -1102,16 +963,13 @@
             }
         }
 
-        // =============================================================================
-        // DYNAMIC DEBOUNCE HAREKET YÖNETİMİ
-        // =============================================================================
+        // AKILLI TETİKLEYİCİ (Zoom hareketi bittiğinde netlik kazandırır)
         function triggerDynamicZoomRender() {
             if (renderTimeout) clearTimeout(renderTimeout);
-            
-            // Kullanıcı hareketi bitirdikten 250ms sonra HQ çizim tetiklenir
             renderTimeout = setTimeout(() => {
+                // Sadece aktif sayfayı ulaşılan yakınlık derecesine göre tekrar keskinleştirerek çizer
                 renderHighQualityPage(currentId + 1, scale);
-            }, 250);
+            }, 200);
         }
 
         function runPredictiveCachePipeline() {
@@ -1146,7 +1004,7 @@
         async function renderThumbnail(pageNum) {
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.2 }); 
+                const viewport = page.getViewport({ scale: 0.15 }); 
                 const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
                 if (!thumbBox) return;
                 const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
@@ -1173,7 +1031,7 @@
             } catch (error) { console.error(error); }
         }
 
-        // iOS SİYAH EKRAN ENGELLEYİCİ GÖRÜNÜM MOTORU
+        // TEMİZ VE KARARLI SAYFA GEÇİŞ MOTORU
         function updateBookDisplay() {
             if (pages.length === 0) return;
             pages.forEach((page, index) => {
@@ -1196,7 +1054,7 @@
                         if (page.classList.contains('hidden-page')) {
                             page.style.display = 'none';
                         }
-                    }, 500);
+                    }, 300);
                 }
             });
 
@@ -1256,7 +1114,7 @@
             const targetY = clientY - rect.top - rect.height / 2;
 
             const oldScale = scale;
-            scale = Math.max(1, Math.min(scale + zoomStep, 5));
+            scale = Math.max(1, Math.min(scale + zoomStep, 4)); // Üst sınırı güvenli seviye olan 4x yapıyoruz.
 
             if (scale > 1) {
                 posX = targetX - (targetX - posX) * (scale / oldScale);
@@ -1329,7 +1187,7 @@
                 const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
                 const factor = currentDist / initialPinchDist;
-                const step = (factor - 1) * 1.8;
+                const step = (factor - 1) * 1.5;
 
                 if (Math.abs(step) > 0.02) {
                     zoomToPoint(currentMidX, currentMidY, step);
@@ -1348,13 +1206,13 @@
                 if (e.touches.length < 2) {
                     isPinching = false;
                     isDragging = false;
-                    triggerDynamicZoomRender(); // Pinch bittiğinde HQ çizdir
+                    triggerDynamicZoomRender();
                 }
                 return;
             }
             if (isDragging) { 
                 isDragging = false; 
-                triggerDynamicZoomRender(); // Drag bittiğinde HQ çizdir
+                triggerDynamicZoomRender();
                 return; 
             }
 
