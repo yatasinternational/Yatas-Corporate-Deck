@@ -37,6 +37,8 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             color: #fff;
+            /* Tüm sayfanın tarayıcı tarafından zoomlanmasını engellemek için kritik */
+            touch-action: none; 
         }
 
         /* PREMIUM MESH GRADIENT BACKGROUND */
@@ -295,6 +297,8 @@
             min-height: 0;
             perspective: 2000px;
             background: transparent;
+            /* Dokunmatik kaydırma çakışmalarını önlemek için native touch gesture'ları devre dışı bırakıyoruz */
+            touch-action: none;
         }
 
         /* DYNAMIC SCALING WRAPPER */
@@ -306,9 +310,10 @@
             justify-content: center;
             align-items: center;
             cursor: grab;
-            transform-origin: 0 0;
+            transform-origin: center center;
             will-change: transform;
             z-index: 10;
+            touch-action: none;
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
@@ -323,18 +328,18 @@
             will-change: transform;
         }
         
-        /* GERÇEKÇİ 3D SAYFA GEÇİŞ VE VİSİBİLİTY ALTYAPISI (SIFIR BEYAZLAMA) */
+        /* GERÇEKÇİ 3D SAYFA GEÇİŞ VE VİSİBİLİTY ALTYAPISI */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             margin: auto;
             width: 100%; height: 100%;
-            transform-origin: left center; /* Sol kenardan gerçekçi kitap açılışı */
+            transform-origin: left center;
             transform-style: preserve-3d;
             transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-in-out, visibility 0.7s;
             backface-visibility: hidden;
             opacity: 0;
-            visibility: hidden; /* display: none KALDIRILDI - Animasyon kesintisini önler */
+            visibility: hidden;
             will-change: transform, opacity;
         }
         
@@ -1019,7 +1024,6 @@
             updateTransform();
         }
 
-        // AKILLI SIFIR KIPRAŞMA / DOUBLE-BUFFER RENDER ENGINE
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -1057,7 +1061,6 @@
 
                 const viewport = page.getViewport({ scale: targetScale });
 
-                // SESSİZ ARKA PLAN CANVAS (Çift katman çizimi başlatılıyor)
                 const newWidth = Math.floor(viewport.width);
                 const newHeight = Math.floor(viewport.height);
 
@@ -1066,7 +1069,6 @@
                 offscreenCanvas.height = newHeight;
                 const offscreenContext = offscreenCanvas.getContext('2d');
 
-                // Görseli görünmeyen sanal tuvalde üret
                 await page.render({ 
                     canvasContext: offscreenContext, 
                     viewport: viewport 
@@ -1074,7 +1076,6 @@
 
                 injectWatermark(offscreenContext, newWidth, newHeight);
 
-                // ÇİZİM BİTTİĞİ SALİSE BOYUTU SET ET (Bembeyaz parlamayı engelleyen can alıcı nokta)
                 if (canvas.width !== newWidth || canvas.height !== newHeight) {
                     canvas.width = newWidth;
                     canvas.height = newHeight;
@@ -1194,7 +1195,7 @@
             } 
         }
         
-        // GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU
+        // AKILLI GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU (APPLE PORTFOLIO STANDARDINDA)
         function resetZoom() { 
             scale = 1; 
             posX = 0; 
@@ -1205,15 +1206,14 @@
         function updateTransform() { 
             if (scale <= 1) {
                 scale = 1; posX = 0; posY = 0;
-                zoomContainer.style.left = '0px';
-                zoomContainer.style.top = '0px';
                 zoomContainer.style.transform = `translate3d(0px, 0px, 0px) scale(1)`;
             } else {
-                const maxPanX = (scale - 1) * scene.clientWidth / 2;
-                const maxPanY = (scale - 1) * scene.clientHeight / 2;
+                // Taşıyıcı sınır hesaplaması (Viewport dışına taşmayı milimetrik engeller)
+                const boundW = (scale - 1) * scene.clientWidth / 2;
+                const boundH = (scale - 1) * scene.clientHeight / 2;
                 
-                posX = Math.max(-maxPanX * 2, Math.min(posX, maxPanX * 0.5));
-                posY = Math.max(-maxPanY * 2, Math.min(posY, maxPanY * 0.5));
+                posX = Math.max(-boundW * 1.5, Math.min(posX, boundW * 1.5));
+                posY = Math.max(-boundH * 1.5, Math.min(posY, boundH * 1.5));
 
                 zoomContainer.style.transform = `translate3d(${posX}px, ${posY}px, 0px) scale(${scale})`;
             }
@@ -1222,15 +1222,17 @@
         function zoomToPoint(clientX, clientY, zoomStep) {
             const rect = scene.getBoundingClientRect();
             
-            const mouseX = clientX - rect.left;
-            const mouseY = clientY - rect.top;
+            // Zoom merkez noktasını hesaplama
+            const targetX = clientX - rect.left - rect.width / 2;
+            const targetY = clientY - rect.top - rect.height / 2;
 
             const oldScale = scale;
             scale = Math.max(1, Math.min(scale + zoomStep, 5));
 
             if (scale > 1) {
-                posX = mouseX - (mouseX - posX) * (scale / oldScale);
-                posY = mouseY - (mouseY - posY) * (scale / oldScale);
+                // İmlecin veya parmakların odaklandığı noktayı koruyarak pan koordinatlarını güncelle
+                posX = targetX - (targetX - posX) * (scale / oldScale);
+                posY = targetY - (targetY - posY) * (scale / oldScale);
             } else {
                 posX = 0;
                 posY = 0;
@@ -1240,13 +1242,14 @@
             triggerDynamicZoomRender();
         }
 
-        // MOUSE EVENTS
+        // MOUSE WHEEL ZOOM
         scene.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const step = e.deltaY < 0 ? 0.3 : -0.3;
+            const step = e.deltaY < 0 ? 0.4 : -0.4;
             zoomToPoint(e.clientX, e.clientY, step);
         }, { passive: false });
 
+        // MOUSE DRAG (PANNING)
         scene.addEventListener('mousedown', (e) => {
             if (scale === 1 || e.target.closest('.arrow-btn')) return;
             isDragging = true; 
@@ -1263,7 +1266,7 @@
 
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // TOUCH CONTROLS WITH DIRECT PINCH-CENTER POINT
+        // iOS VE MOBILE SAFARI İÇİN GELİŞTİRİLMİŞ ÇOKLU DOKUNMATİK (MULTI-TOUCH PINCH) MOTORU
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPinching = true;
@@ -1289,7 +1292,7 @@
 
         scene.addEventListener('touchmove', (e) => {
             if (isPinching && e.touches.length === 2) {
-                e.preventDefault();
+                e.preventDefault(); // Tarayıcı düzeyinde genel zoom'u ez
                 const currentDist = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
@@ -1298,31 +1301,32 @@
                 const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
                 const factor = currentDist / initialPinchDist;
-                const step = factor > 1 ? 0.12 : -0.12;
+                // Parmak hareket hassasiyetini ve ivmesini ayarlayan katman
+                const step = (factor - 1) * 1.8;
 
-                zoomToPoint(currentMidX, currentMidY, step);
-                initialPinchDist = currentDist; 
-
+                if (Math.abs(step) > 0.02) {
+                    zoomToPoint(currentMidX, currentMidY, step);
+                    initialPinchDist = currentDist; 
+                }
             } else if (isDragging && e.touches.length === 1 && scale > 1) {
+                e.preventDefault();
                 posX = e.touches[0].clientX - startX;
                 posY = e.touches[0].clientY - startY;
                 updateTransform();
             }
         }, { passive: false });
 
-        scene.addEventListener('touchmove', (e) => {
-            if (isPinching && e.touches.length === 2) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
         scene.addEventListener('touchend', (e) => {
             if (isPinching) {
-                if (e.touches.length < 2) isPinching = false;
+                if (e.touches.length < 2) {
+                    isPinching = false;
+                    isDragging = false;
+                }
                 return;
             }
             if (isDragging) { isDragging = false; return; }
 
+            // Eğer zoom yapılmamışsa, stabil sayfa geçişleri için yatay kaydırma (swipe) kontrolü
             if (scale === 1 && e.changedTouches.length > 0) {
                 const touchEndX = e.changedTouches[0].clientX;
                 const touchEndY = e.changedTouches[0].clientY;
@@ -1340,11 +1344,11 @@
         document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
         
         document.getElementById('zoomInBtn').addEventListener('click', () => { 
-            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.5);
+            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.6);
         });
         
         document.getElementById('zoomOutBtn').addEventListener('click', () => { 
-            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, -0.5);
+            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, -0.6);
         });
 
         document.getElementById('nextBtn').addEventListener('click', flipNext);
