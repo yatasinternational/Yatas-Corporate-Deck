@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Yataş Group - Premium Corporate Portal</title>
     
-    <!-- PWA Altyapısı -->
+    <!-- PWA Infrastructure -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#020617">
+    <link rel="manifest" href="manifest.json" id="pwaManifest">
 
-    <!-- PDF.js Kütüphanesi -->
+    <!-- PDF.js Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
     <style>
         :root {
             --primary-blue: #002870;
             --neon-blue: #00d2ff;
-            --book-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            --glass-bg: rgba(2, 6, 23, 0.9);
+            --book-shadow: 0 25px 55px rgba(0,0,0,0.6);
+            --glass-bg: rgba(2, 6, 23, 0.88);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
 
@@ -26,7 +27,6 @@
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
-            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -34,10 +34,10 @@
             display: flex;
             height: 100vh;
             height: 100dvh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             color: #fff;
-            touch-action: none;
+            touch-action: none; /* Sayfa düzeyinde tarayıcı zoomunu ve kaydırmasını kilitler */
         }
 
         /* PREMIUM MESH GRADIENT BACKGROUND */
@@ -53,10 +53,16 @@
             position: absolute;
             top: -20%; left: -20%; width: 140%; height: 140%;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.4) 0%, transparent 45%),
-                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.3) 0%, transparent 50%);
+                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
+                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
             filter: blur(60px);
+            animation: elegantBgMotion 25s ease-in-out infinite alternate;
+        }
+        @keyframes elegantBgMotion {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(2%, -4%) scale(1.05); }
+            100% { transform: translate(-2%, 4%) scale(0.98); }
         }
         
         /* PULSE LOADING SCREEN */
@@ -103,7 +109,7 @@
             z-index: 2;
         }
 
-        /* CONTROL PANEL */
+        /* HEADER LEFT COLUMN CONTROL PANEL */
         .header-column {
             position: absolute;
             top: 20px;
@@ -164,7 +170,7 @@
             transition: 0.3s;
         }
 
-        /* SIDEBAR NAVIGATION */
+        /* SIDEBAR NAVIGATION Drawer */
         .sidebar-nav {
             position: fixed;
             left: -340px;
@@ -181,7 +187,7 @@
             z-index: 1000;
             overflow-y: auto;
             backdrop-filter: blur(30px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .sidebar-nav.menu-open {
             left: 0;
@@ -231,13 +237,14 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .deck-btn:hover {
             background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
             transform: translateX(5px);
         }
         .deck-btn.active-deck {
@@ -245,6 +252,14 @@
             border-color: #ffffff;
             color: #002870; 
             box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        }
+        .deck-btn::before {
+            content: "•";
+            color: var(--neon-blue);
+            font-size: 14px;
+        }
+        .deck-btn.active-deck::before {
+            color: #002870;
         }
 
         /* WORKSPACE AREA */
@@ -258,7 +273,7 @@
             z-index: 5;
         }
 
-        /* CONTAINER GRID */
+        /* CONTAINER GRID RESTRICTING OVERFLOWS */
         .main-container {
             display: flex;
             width: 100%;
@@ -269,7 +284,7 @@
             padding: 20px;
         }
         
-        /* SCENE ZONE */
+        /* SCENE ZONE (3D Perspective Base) */
         .scene {
             flex: 1;
             display: flex;
@@ -279,11 +294,12 @@
             position: relative;
             height: 100%;
             min-height: 0;
+            perspective: 1200px; /* 3D derinliği sağlayan kritik değer */
             background: transparent;
             touch-action: none;
         }
 
-        /* DYNAMIC SCALING PAN-ZOOM CONTAINER */
+        /* DYNAMIC SCALING WRAPPER (Zoom/Pan Sınırlandırıcı) */
         .pan-zoom-container {
             position: absolute;
             width: 100%;
@@ -299,7 +315,7 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* BOOK CONTAINER (Düz Slide Mantığı) */
+        /* 3D COVERFLOW ENGINE CONTAINER */
         .book {
             position: relative;
             display: flex;
@@ -310,51 +326,60 @@
             will-change: transform;
         }
         
-        /* KARARLI DÜZ SAYFA GEÇİŞLERİ (3D İPTAL EDİLDİ) */
+        /* iOS-OPTIMIZED 3D SAYFA ALTYAPISI */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             margin: auto;
             width: 100%; height: 100%;
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
+            /* Geçişleri yumuşatan CSS3 animasyonları */
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s, z-index 0.5s;
             opacity: 0;
             pointer-events: none;
+            /* iOS bellek şişmesini ve titremeleri önlemek için will-change CSS'ten kaldırıldı */
         }
         
-        /* AKTİF SAYFA */
+        /* 1. AKTİF SAYFA (Düz, 2D - iOS GPU Belleğini yormayan ve Siyah Ekranı Bitiren Katman) */
         .page.active-page {
             opacity: 1;
             pointer-events: auto;
             z-index: 10;
-            transform: translate3d(0, 0, 0) scale(1);
+            /* Aktif okunan sayfayı 3D döndürmüyoruz, düz tutuyoruz ki iOS render'ı bozmasın */
+            transform: translate3d(0, 0, 10px) scale(1);
         }
         
-        /* YANDAKİ SAYFALAR (Sadece düz kayma hareketi) */
+        /* 2. SOLDAKİ SAYFA (Sola Kaymış ve Geriye Yatmış) */
         .page.turn-next {
-            opacity: 0;
+            opacity: 0.35;
             z-index: 5;
-            transform: translate3d(-100%, 0, 0);
+            transform: translate3d(-40%, 0, 0) rotateY(45deg) scale(0.82);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         
+        /* 3. SAĞDAKİ SAYFA (Sağa Kaymış ve Geriye Yatmış) */
         .page.turn-prev {
-            opacity: 0;
+            opacity: 0.35;
             z-index: 5;
-            transform: translate3d(100%, 0, 0);
+            transform: translate3d(40%, 0, 0) rotateY(-45deg) scale(0.82);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
+        /* 4. DİĞER TÜM GİZLİ SAYFALAR */
         .page.hidden-page {
-            display: none;
+            display: none; /* iOS için cankurtaran adımı: VRAM tüketimini sıfırlıyoruz */
             opacity: 0;
             z-index: 1;
         }
 
-        /* CANVAS LAYER */
+        /* CONTAINER FOR RENDER PIECE */
         .canvas-container-layer {
             position: relative;
             width: 100%;
             height: 100%;
             box-shadow: var(--book-shadow);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             background: #020617; 
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -367,12 +392,14 @@
             height: 100% !important;
             z-index: 1;
             display: block;
+            will-change: transform, opacity;
+            transition: opacity 0.15s ease-in-out;
         }
 
         /* FLOATING ARROW OVERLAYS */
         .nav-overlay-zone {
             position: absolute;
-            top: 0; height: 100%; width: 80px;
+            top: 0; height: 100%; width: 100px;
             z-index: 99;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none;
@@ -381,28 +408,32 @@
         .nav-overlay-zone.right-zone { right: 0; }
 
         .arrow-btn {
-            width: 50px; height: 50px;
-            background: rgba(0, 40, 112, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 54px; height: 54px;
+            background: rgba(0, 40, 112, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 18px; cursor: pointer;
+            color: #fff; font-size: 20px; cursor: pointer;
             opacity: 0.65;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(8px);
+            user-select: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             pointer-events: auto;
         }
         .arrow-btn:hover {
             opacity: 1; 
-            transform: scale(1.1);
+            transform: scale(1.15);
             background: #ffffff; 
             color: #002870;
+            border-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(255,255,255,0.25);
         }
         
-        /* PREVIEW THUMBNAILS PANEL */
+        /* DESKTOP SIDEBAR THUMBNAILS */
         .sidebar-thumbnails {
             width: 180px;
-            background: rgba(0, 40, 112, 0.1);
+            background: rgba(0, 40, 112, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow-y: auto;
@@ -435,7 +466,7 @@
             font-weight: bold; padding: 1px 5px; border-radius: 3px;
         }
         
-        /* BOTTOM DOCK */
+        /* BOTTOM DOCK SYSTEM */
         .bottom-bar-area {
             width: 100%; 
             display: flex; 
@@ -463,6 +494,7 @@
             display: flex; align-items: center; gap: 12px; 
             background: rgba(0, 40, 112, 0.85); padding: 10px 24px; border-radius: 50px;
             backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         
         .bottom-bar-area button {
@@ -481,6 +513,7 @@
         }
         #pageIndicator { color: #ffffff; }
 
+        /* SOUND CONTROLLER WRAPPER */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -492,6 +525,7 @@
             z-index: 105;
         }
 
+        /* HEADER INTEGRATED SOUND TOGGLE */
         .header-sound-container {
             display: none;
             align-items: center;
@@ -507,6 +541,7 @@
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(15px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         }
 
         .switch-label {
@@ -515,6 +550,7 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.8);
+            user-select: none;
         }
 
         .ios-switch {
@@ -524,10 +560,15 @@
             height: 24px;
         }
 
-        .ios-switch input { opacity: 0; width: 0; height: 0; }
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
         .ios-slider {
-            position: absolute; cursor: pointer;
+            position: absolute;
+            cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(255, 255, 255, 0.2);
             transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -535,17 +576,35 @@
         }
 
         .ios-slider:before {
-            position: absolute; content: "🔊";
-            font-size: 10px; display: flex; align-items: center; justify-content: center;
-            height: 18px; width: 18px; left: 3px; bottom: 3px;
+            position: absolute;
+            content: "🔊";
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
             background-color: white;
             transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
             border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        input:checked + .ios-slider { background-color: var(--neon-blue); }
-        input:checked + .ios-slider:before { transform: translateX(18px); content: "🔊"; }
-        input:not(:checked) + .ios-slider:before { content: "🔇"; background-color: #f3f4f6; }
+        input:checked + .ios-slider {
+            background-color: var(--neon-blue);
+        }
+
+        input:checked + .ios-slider:before {
+            transform: translateX(18px);
+            content: "🔊";
+        }
+
+        input:not(:checked) + .ios-slider:before {
+            content: "🔇";
+            background-color: #f3f4f6;
+        }
         
         .hint { 
             font-size: 11px; 
@@ -553,6 +612,7 @@
             font-weight: 500;
         }
 
+        /* AUTO RESUME SESSION TOAST */
         #resumeToast {
             position: fixed;
             bottom: 30px;
@@ -576,44 +636,126 @@
             opacity: 1;
         }
 
-        /* RESPONSIVE LAYOUTS */
+        /* ==========================================================================
+           RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
+           ========================================================================== */
+
         @media (max-width: 1024px) and (orientation: portrait) {
-            .workspace { height: 100%; padding-top: 90px; }
-            .main-container { flex-direction: column; padding: 10px; gap: 10px; height: calc(100% - 130px); }
-            .scene { flex: 1; width: 100%; height: 0; min-height: 0; }
-            .sidebar-thumbnails {
-                width: 100% !important; height: 65px !important;
-                flex-direction: row !important; padding: 4px 8px !important; gap: 6px !important;
-                overflow-x: auto !important; overflow-y: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important; border-radius: 8px;
+            .workspace {
+                height: 100%;
+                padding-top: 90px;
             }
-            .thumb-box { width: 70px !important; height: 48px !important; }
-            .arrow-btn { width: 44px; height: 44px; opacity: 0.7; }
-            .nav-overlay-zone { width: 50px; }
-            .sound-corner { display: none !important; }
-            .header-sound-container { display: flex; }
-            .bottom-bar-area { padding: 10px 0; }
-            .controls { padding: 8px 18px; gap: 8px; }
+            .main-container {
+                flex-direction: column;
+                padding: 10px;
+                gap: 10px;
+                height: calc(100% - 130px);
+            }
+            .scene {
+                flex: 1;
+                width: 100%;
+                height: 0;
+                min-height: 0;
+            }
+            .sidebar-thumbnails {
+                width: 100% !important;
+                height: 65px !important;
+                flex-direction: row !important;
+                padding: 4px 8px !important;
+                gap: 6px !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                background: rgba(0, 40, 112, 0.3) !important;
+                border-radius: 8px;
+                flex-shrink: 0;
+            }
+            .thumb-box {
+                width: 70px !important; 
+                height: 48px !important;
+            }
+            .arrow-btn {
+                width: 44px; height: 44px;
+                opacity: 0.7;
+            }
+            .nav-overlay-zone {
+                width: 50px;
+            }
+            .sound-corner {
+                display: none !important;
+            }
+            .header-sound-container {
+                display: flex;
+            }
+            .bottom-bar-area {
+                padding: 10px 0;
+            }
+            .controls {
+                padding: 8px 18px;
+                gap: 8px;
+            }
         }
 
         @media (max-width: 1024px) and (orientation: landscape) {
-            .workspace { height: 100%; padding-top: 0; }
-            .main-container { flex-direction: row; padding: 10px; gap: 10px; height: calc(100% - 70px); }
-            .scene { flex: 1; height: 100%; width: 0; min-width: 0; }
-            .sidebar-thumbnails {
-                width: 90px !important; height: 100% !important;
-                flex-direction: column !important; padding: 6px 4px !important; gap: 8px !important;
-                overflow-y: auto !important; overflow-x: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important; border-radius: 8px;
+            .workspace {
+                height: 100%;
+                padding-top: 0;
             }
-            .thumb-box { width: 100% !important; height: 50px !important; }
-            .arrow-btn { width: 38px; height: 38px; font-size: 14px; }
-            .nav-overlay-zone { width: 40px; }
-            .bottom-bar-area { padding: 8px 0; height: 60px; }
-            .controls { padding: 6px 15px; gap: 10px; }
-            .hint { display: none; }
-            .sound-corner { display: flex !important; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
-            .header-sound-container { display: none !important; }
+            .main-container {
+                flex-direction: row;
+                padding: 10px;
+                gap: 10px;
+                height: calc(100% - 70px);
+            }
+            .scene {
+                flex: 1;
+                height: 100%;
+                width: 0;
+                min-width: 0;
+            }
+            .sidebar-thumbnails {
+                width: 90px !important;
+                height: 100% !important;
+                flex-direction: column !important;
+                padding: 6px 4px !important;
+                gap: 8px !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                background: rgba(0, 40, 112, 0.3) !important;
+                border-radius: 8px;
+                flex-shrink: 0;
+            }
+            .thumb-box {
+                width: 100% !important; 
+                height: 50px !important;
+            }
+            .arrow-btn {
+                width: 38px; height: 38px;
+                font-size: 14px;
+            }
+            .nav-overlay-zone {
+                width: 40px;
+            }
+            .bottom-bar-area {
+                padding: 8px 0;
+                height: 60px;
+            }
+            .controls {
+                padding: 6px 15px;
+                gap: 10px;
+            }
+            .hint {
+                display: none;
+            }
+            .sound-corner {
+                display: flex !important;
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .header-sound-container {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -621,12 +763,12 @@
 
     <div class="premium-bg"></div>
 
-    <!-- LOADING SCREEN -->
+    <!-- GLOBAL LOADING PULSE SCREEN -->
     <div id="globalLoading">
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
 
-    <!-- CONTROL PANEL BUTTONS -->
+    <!-- UPPER LEFT CONTROL BUTTONS -->
     <div class="header-column">
         <button class="brand-logo-btn" onclick="toggleMenu()">
             <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
@@ -637,6 +779,7 @@
             <span></span>
         </button>
 
+        <!-- Dynamic Header Switch for Portrait Mobile -->
         <div class="header-sound-container" id="headerSoundContainer">
             <div class="ios-switch-container">
                 <span class="switch-label">Sound</span>
@@ -648,12 +791,12 @@
         </div>
     </div>
 
-    <!-- RESUME TOAST -->
+    <!-- RESUME LAST SESSION TOAST -->
     <div id="resumeToast">Welcome back! Restoring your last active session page.</div>
     
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- DRAWER SIDEBAR -->
+        <!-- MAIN DRAWER NAVIGATION SIDEBAR -->
         <div class="sidebar-nav" id="sidebarNav">
             <div class="brand-subtitle">Corporate Deck Portal</div>
             
@@ -672,7 +815,7 @@
                         <div id="book" class="book"></div>
                     </div>
 
-                    <!-- ARROW OVERLAYS -->
+                    <!-- FLOATING ARROW OVERLAYS -->
                     <div class="nav-overlay-zone left-zone" id="zoneLeft">
                         <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
                     </div>
@@ -683,7 +826,7 @@
 
                 </div>
 
-                <!-- PREVIEW THUMBNAILS PANEL -->
+                <!-- SLIDABLE PREVIEW THUMBNAILS PANEL -->
                 <div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
             </div>
 
@@ -701,6 +844,7 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
+                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
                     <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
@@ -744,15 +888,14 @@
         let posX = 0; 
         let posY = 0;
         let isDragging = false; 
-        let startX = 0; 
-        let startY = 0;
+        let startX; 
+        let startY;
         
         // TOUCH ENGINE MULTI-TOUCH TRACKING
         let initialPinchDist = 0;
         let touchStartX = 0;
         let touchStartY = 0;
         let isPinching = false;
-        let initialScale = 1;
 
         let isSoundOn = true;
         let renderTimeout = null;
@@ -770,6 +913,12 @@
         const globalLoading = document.getElementById('globalLoading');
         const sidebarNav = document.getElementById('sidebarNav');
         const menuHamburger = document.getElementById('menuHamburger');
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
+            });
+        }
 
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
@@ -865,7 +1014,7 @@
             if (!sceneW || !sceneH) return;
 
             const pdfRatio = viewport.width / viewport.height;
-            const margin = 0.90; 
+            const margin = 0.90; // Coverflow derinliği için pay bırakıyoruz
             const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
             let finalW, finalH;
 
@@ -880,9 +1029,6 @@
             updateTransform();
         }
 
-        // =============================================================================
-        // %100 KARARLI VE GERÇEK ZAMANLI NETLEŞTİRME YAPAN ENJEKTÖR
-        // =============================================================================
         async function renderHighQualityPage(pageNum, customScale = 1) {
             if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
 
@@ -908,68 +1054,52 @@
 
                 const canvas = pageDiv.querySelector('.base-lowres-canvas');
                 const context = canvas.getContext('2d');
-                
-                const rawViewport = page.getViewport({ scale: 1.0 });
-                pageDiv.pdfViewport = rawViewport;
+                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
 
-                // Ekrana sığdırma boyutlarını hesapla
-                const sceneW = scene.clientWidth;
-                const sceneH = scene.clientHeight;
-                const pdfRatio = rawViewport.width / rawViewport.height;
-                const margin = 0.90;
-                const maxAllowedW = sceneW * margin;
-                const maxAllowedH = sceneH * margin;
-                
-                let displayW, displayH;
-                if (maxAllowedW / maxAllowedH > pdfRatio) {
-                    displayH = maxAllowedH;
-                    displayW = displayH * pdfRatio;
-                } else {
-                    displayW = maxAllowedW;
-                    displayH = displayW / pdfRatio;
+                const dpr = window.devicePixelRatio || 1;
+                let targetScale = customScale * dpr;
+
+                const sampleViewport = page.getViewport({ scale: targetScale });
+                if (sampleViewport.width > 2048) {
+                    targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
                 }
 
-                // Cihaz ekran kalitesi çarpanı (Retina ekran desteği)
-                const dpr = window.devicePixelRatio || 1;
-                
-                // GÜVENLİ LİMİT: Ölçeği dpr ve zoom oranıyla çarpıp maksimum 2.5 kat ile sınırlıyoruz (Bellek ve netlik optimizasyonu)
-                let targetScale = Math.min(customScale * dpr, 2.5); 
+                const viewport = page.getViewport({ scale: targetScale });
 
-                // PDF'i ekrandaki boyut (displayW) üzerinden piksel kalitesine göre render ediyoruz
-                const renderScale = (displayW / rawViewport.width) * targetScale;
-                const viewport = page.getViewport({ scale: renderScale });
+                const newWidth = Math.floor(viewport.width);
+                const newHeight = Math.floor(viewport.height);
 
-                // Canvas dahili hafıza boyutları (VRAM dostu piksel)
-                canvas.width = Math.floor(viewport.width);
-                canvas.height = Math.floor(viewport.height);
+                const offscreenCanvas = document.createElement('canvas');
+                offscreenCanvas.width = newWidth;
+                offscreenCanvas.height = newHeight;
+                const offscreenContext = offscreenCanvas.getContext('2d');
 
-                // DOM CSS boyutlarını her zaman sabit tutarak donmaları önlüyoruz
-                canvas.style.width = Math.floor(displayW) + 'px';
-                canvas.style.height = Math.floor(displayH) + 'px';
+                await page.render({ 
+                    canvasContext: offscreenContext, 
+                    viewport: viewport 
+                }).promise;
 
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
+                injectWatermark(offscreenContext, newWidth, newHeight);
 
-                await page.render(renderContext).promise;
-                injectWatermark(context, canvas.width, canvas.height);
+                if (canvas.width !== newWidth || canvas.height !== newHeight) {
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                }
+                context.drawImage(offscreenCanvas, 0, 0);
 
                 if (pageNum - 1 === currentId) {
-                    resizeBookToFit(rawViewport);
+                    resizeBookToFit(pageDiv.pdfViewport);
                 }
             } catch (err) {
                 console.error("Render hatası:", err);
             }
         }
 
-        // AKILLI TETİKLEYİCİ (Zoom hareketi bittiğinde netlik kazandırır)
         function triggerDynamicZoomRender() {
             if (renderTimeout) clearTimeout(renderTimeout);
             renderTimeout = setTimeout(() => {
-                // Sadece aktif sayfayı ulaşılan yakınlık derecesine göre tekrar keskinleştirerek çizer
                 renderHighQualityPage(currentId + 1, scale);
-            }, 200);
+            }, 300); 
         }
 
         function runPredictiveCachePipeline() {
@@ -1004,7 +1134,7 @@
         async function renderThumbnail(pageNum) {
             try {
                 const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.15 }); 
+                const viewport = page.getViewport({ scale: 0.2 }); 
                 const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
                 if (!thumbBox) return;
                 const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
@@ -1031,15 +1161,17 @@
             } catch (error) { console.error(error); }
         }
 
-        // TEMİZ VE KARARLI SAYFA GEÇİŞ MOTORU
+        // AKILLI MEDIA FLOW (COVERFLOW) - iOS PERFORMANS SENSÖRÜ
         function updateBookDisplay() {
             if (pages.length === 0) return;
             pages.forEach((page, index) => {
                 if (!page) return;
                 
                 if (index === currentId) {
+                    // Aktif sayfa - display blok olmalı
                     page.style.display = 'block';
-                    page.offsetHeight; // Force reflow
+                    // iOS force reflow
+                    page.offsetHeight; 
                     page.className = 'page active-page'; 
                     resizeBookToFit(page.pdfViewport);
                 } else if (index === currentId - 1) {
@@ -1049,12 +1181,14 @@
                     page.style.display = 'block';
                     page.className = 'page turn-prev'; 
                 } else {
+                    // Diğerlerini "hidden-page" yapıyoruz
                     page.className = 'page hidden-page';
+                    // Animasyon sürerken sayfa çat diye kaybolmasın diye 500ms ertelemeli saklıyoruz
                     setTimeout(() => {
                         if (page.classList.contains('hidden-page')) {
                             page.style.display = 'none';
                         }
-                    }, 300);
+                    }, 500);
                 }
             });
 
@@ -1114,7 +1248,7 @@
             const targetY = clientY - rect.top - rect.height / 2;
 
             const oldScale = scale;
-            scale = Math.max(1, Math.min(scale + zoomStep, 4)); // Üst sınırı güvenli seviye olan 4x yapıyoruz.
+            scale = Math.max(1, Math.min(scale + zoomStep, 5));
 
             if (scale > 1) {
                 posX = targetX - (targetX - posX) * (scale / oldScale);
@@ -1160,7 +1294,7 @@
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
-                initialScale = scale;
+                
                 touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
                 touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
@@ -1187,7 +1321,7 @@
                 const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
 
                 const factor = currentDist / initialPinchDist;
-                const step = (factor - 1) * 1.5;
+                const step = (factor - 1) * 1.8;
 
                 if (Math.abs(step) > 0.02) {
                     zoomToPoint(currentMidX, currentMidY, step);
@@ -1206,15 +1340,10 @@
                 if (e.touches.length < 2) {
                     isPinching = false;
                     isDragging = false;
-                    triggerDynamicZoomRender();
                 }
                 return;
             }
-            if (isDragging) { 
-                isDragging = false; 
-                triggerDynamicZoomRender();
-                return; 
-            }
+            if (isDragging) { isDragging = false; return; }
 
             if (scale === 1 && e.changedTouches.length > 0) {
                 const touchEndX = e.changedTouches[0].clientX;
