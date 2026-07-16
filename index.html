@@ -37,7 +37,7 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             color: #fff;
-            touch-action: none; /* Sayfa düzeyinde tarayıcı zoomunu ve kaydırmasını kilitler */
+            touch-action: none;
         }
 
         /* PREMIUM MESH GRADIENT BACKGROUND */
@@ -284,7 +284,7 @@
             padding: 20px;
         }
         
-        /* SCENE ZONE (3D Perspective Base) */
+        /* SCENE ZONE */
         .scene {
             flex: 1;
             display: flex;
@@ -294,12 +294,12 @@
             position: relative;
             height: 100%;
             min-height: 0;
-            perspective: 1200px; /* 3D derinliği sağlayan kritik değer */
+            perspective: 1200px;
             background: transparent;
             touch-action: none;
         }
 
-        /* DYNAMIC SCALING WRAPPER (Zoom/Pan Sınırlandırıcı) */
+        /* DYNAMIC SCALING WRAPPER */
         .pan-zoom-container {
             position: absolute;
             width: 100%;
@@ -326,29 +326,24 @@
             will-change: transform;
         }
         
-        /* iOS-OPTIMIZED 3D SAYFA ALTYAPISI */
+        /* STANDARD (ANDROID & DESKTOP) 3D PAGE SETUP */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             margin: auto;
             width: 100%; height: 100%;
-            /* Geçişleri yumuşatan CSS3 animasyonları */
             transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s, z-index 0.5s;
             opacity: 0;
             pointer-events: none;
-            /* iOS bellek şişmesini ve titremeleri önlemek için will-change CSS'ten kaldırıldı */
         }
         
-        /* 1. AKTİF SAYFA (Düz, 2D - iOS GPU Belleğini yormayan ve Siyah Ekranı Bitiren Katman) */
         .page.active-page {
             opacity: 1;
             pointer-events: auto;
             z-index: 10;
-            /* Aktif okunan sayfayı 3D döndürmüyoruz, düz tutuyoruz ki iOS render'ı bozmasın */
             transform: translate3d(0, 0, 10px) scale(1);
         }
         
-        /* 2. SOLDAKİ SAYFA (Sola Kaymış ve Geriye Yatmış) */
         .page.turn-next {
             opacity: 0.35;
             z-index: 5;
@@ -357,7 +352,6 @@
             -webkit-backface-visibility: hidden;
         }
         
-        /* 3. SAĞDAKİ SAYFA (Sağa Kaymış ve Geriye Yatmış) */
         .page.turn-prev {
             opacity: 0.35;
             z-index: 5;
@@ -366,11 +360,37 @@
             -webkit-backface-visibility: hidden;
         }
 
-        /* 4. DİĞER TÜM GİZLİ SAYFALAR */
         .page.hidden-page {
-            display: none; /* iOS için cankurtaran adımı: VRAM tüketimini sıfırlıyoruz */
+            display: none;
             opacity: 0;
             z-index: 1;
+        }
+
+        /* ==========================================================================
+           iOS SAFARI LITE SYSTEM - ANIMATIONLESS & OPTIMIZED FOR ZOOM & STABILITY
+           ========================================================================== */
+        body.is-ios-lite .page {
+            transition: none !important; /* Animasyonları kapatarak gecikmeyi sıfırlıyoruz */
+            transform: none !important;  /* 3D döndürmeleri iptal ediyoruz */
+            backface-visibility: visible !important;
+            -webkit-backface-visibility: visible !important;
+        }
+
+        body.is-ios-lite .page.active-page {
+            opacity: 1 !important;
+            display: block !important;
+            pointer-events: auto !important;
+            z-index: 100 !important;
+            transform: translate3d(0,0,0) scale(1) !important;
+        }
+
+        body.is-ios-lite .page.turn-next,
+        body.is-ios-lite .page.turn-prev,
+        body.is-ios-lite .page.hidden-page {
+            display: none !important; /* Tamamen gizleyerek VRAM tüketimini sıfırlıyoruz */
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: 1 !important;
         }
 
         /* CONTAINER FOR RENDER PIECE */
@@ -862,6 +882,15 @@
     </div>
 
     <script>
+        // Tarayıcının iOS (iPhone, iPad, iPod veya Apple WebKit tabanlı Safari) olup olmadığını kontrol et
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        
+        if (isIOS) {
+            document.body.classList.add('is-ios-lite');
+            console.log("iOS LITE Engine Activated - High Quality Rendering Enabled without 3D Transformations");
+        }
+
         const presentationData = {
             catalogues: [
                 { title: "Enza Home", url: "Enza Home.pdf" },
@@ -1014,7 +1043,7 @@
             if (!sceneW || !sceneH) return;
 
             const pdfRatio = viewport.width / viewport.height;
-            const margin = 0.90; // Coverflow derinliği için pay bırakıyoruz
+            const margin = isIOS ? 0.95 : 0.90; // iOS LITE modunda alanı biraz daha geniş tutuyoruz
             const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
             let finalW, finalH;
 
@@ -1106,10 +1135,13 @@
             const activeIdx = currentId + 1;
             renderHighQualityPage(activeIdx, scale);
             
-            const nextIdx = activeIdx + 1;
-            const prevIdx = activeIdx - 1;
-            if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
-            if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
+            // iOS değilse pre-render çalışsın (iOS LITE modunda ram tasarrufu için önbelleğe almayı sınırlıyoruz)
+            if (!isIOS) {
+                const nextIdx = activeIdx + 1;
+                const prevIdx = activeIdx - 1;
+                if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
+                if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
+            }
         }
 
         function createSequentialThumbContainers(total) {
@@ -1161,34 +1193,35 @@
             } catch (error) { console.error(error); }
         }
 
-        // AKILLI MEDIA FLOW (COVERFLOW) - iOS PERFORMANS SENSÖRÜ
+        // DİNAMİK ARAYÜZ GÜNCELLEME (COVERFLOW vs iOS LITE)
         function updateBookDisplay() {
             if (pages.length === 0) return;
+            
             pages.forEach((page, index) => {
                 if (!page) return;
                 
                 if (index === currentId) {
-                    // Aktif sayfa - display blok olmalı
                     page.style.display = 'block';
-                    // iOS force reflow
-                    page.offsetHeight; 
+                    page.offsetHeight; // Force Layout Reflow
                     page.className = 'page active-page'; 
                     resizeBookToFit(page.pdfViewport);
-                } else if (index === currentId - 1) {
+                } else if (!isIOS && index === currentId - 1) {
                     page.style.display = 'block';
                     page.className = 'page turn-next'; 
-                } else if (index === currentId + 1) {
+                } else if (!isIOS && index === currentId + 1) {
                     page.style.display = 'block';
                     page.className = 'page turn-prev'; 
                 } else {
-                    // Diğerlerini "hidden-page" yapıyoruz
                     page.className = 'page hidden-page';
-                    // Animasyon sürerken sayfa çat diye kaybolmasın diye 500ms ertelemeli saklıyoruz
-                    setTimeout(() => {
-                        if (page.classList.contains('hidden-page')) {
-                            page.style.display = 'none';
-                        }
-                    }, 500);
+                    if (isIOS) {
+                        page.style.display = 'none'; // iOS'ta aktif olmayanları anında sakla (CPU/RAM dostu)
+                    } else {
+                        setTimeout(() => {
+                            if (page.classList.contains('hidden-page')) {
+                                page.style.display = 'none';
+                            }
+                        }, 500);
+                    }
                 }
             });
 
@@ -1286,7 +1319,7 @@
 
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // iOS PINCH TO ZOOM ENGINE
+        // PINCH TO ZOOM ENGINE
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPinching = true;
