@@ -1,1390 +1,2740 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Yataş Group - Premium Corporate Portal</title>
-    
-    <!-- PWA Infrastructure -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#020617">
-    <link rel="manifest" href="manifest.json" id="pwaManifest">
 
-    <!-- PDF.js Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<meta charset="UTF-8">
 
-    <style>
-        :root {
-            --primary-blue: #002870;
-            --neon-blue: #00d2ff;
-            --book-shadow: 0 15px 45px rgba(0,0,0,0.6);
-            --glass-bg: rgba(2, 6, 23, 0.88);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
-        
-        body {
-            background: #020617;
-            display: flex;
-            height: 100vh;
-            height: 100dvh;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden;
-            color: #fff;
-            /* Tüm sayfanın tarayıcı tarafından zoomlanmasını engellemek için kritik */
-            touch-action: none; 
-        }
+<title>Yataş Group - Premium Corporate Portal</title>
 
-        /* PREMIUM MESH GRADIENT BACKGROUND */
-        .premium-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-            background: #020617;
-            overflow: hidden;
-        }
-        .premium-bg::before {
-            content: "";
-            position: absolute;
-            top: -20%; left: -20%; width: 140%; height: 140%;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
-                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
-            filter: blur(60px);
-            animation: elegantBgMotion 25s ease-in-out infinite alternate;
-        }
-        @keyframes elegantBgMotion {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(2%, -4%) scale(1.05); }
-            100% { transform: translate(-2%, 4%) scale(0.98); }
-        }
-        
-        /* PULSE LOADING SCREEN */
-        #globalLoading { 
-            position: fixed; 
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #002870; 
-            z-index: 10000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            gap: 20px;
-            transition: opacity 0.5s ease;
-        }
 
-        .loading-pulse-logo {
-            width: 180px;
-            height: auto;
-            background: #ffffff;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            animation: yatasHeartbeat 1.4s ease-in-out infinite;
-        }
+<!-- PWA Infrastructure -->
 
-        @keyframes yatasHeartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.08); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.13); }
-            70% { transform: scale(1); }
-            100% { transform: scale(1); }
-        }
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-        /* PORTAL WRAPPER */
-        .portal-wrapper {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-            position: relative;
-            z-index: 2;
-        }
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-        /* HEADER LEFT COLUMN CONTROL PANEL */
-        .header-column {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-            z-index: 1001;
-        }
+<meta name="theme-color" content="#020617">
 
-        .brand-logo-btn {
-            background: #ffffff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .brand-logo-btn:hover {
-            transform: translateY(-2px);
-        }
-        .brand-logo-btn img {
-            height: 24px;
-            width: auto;
-        }
+<link rel="manifest" href="manifest.json" id="pwaManifest">
 
-        .hamburger-btn {
-            width: 46px;
-            height: 46px;
-            background: rgba(0, 40, 112, 0.85);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 5px;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .hamburger-btn:hover {
-            background: rgba(255,255,255,0.15);
-            transform: scale(1.05);
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #ffffff;
-            transition: 0.3s;
-        }
 
-        /* SIDEBAR NAVIGATION Drawer */
-        .sidebar-nav {
-            position: fixed;
-            left: -340px;
-            top: 0;
-            height: 100vh;
-            height: 100dvh;
-            width: 320px;
-            background: var(--glass-bg); 
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            padding: 150px 24px 24px 24px;
-            box-shadow: 25px 0 50px rgba(0,0,0,0.6);
-            z-index: 1000;
-            overflow-y: auto;
-            backdrop-filter: blur(30px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .sidebar-nav.menu-open {
-            left: 0;
-        }
 
-        .sidebar-nav::-webkit-scrollbar { width: 4px; }
-        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+<!-- PDF.js Engine -->
 
-        .brand-subtitle {
-            font-size: 11px;
-            color: #a4c2f4;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 12px;
-            font-weight: 700;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
-        .menu-section-title {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 20px;
-            margin-bottom: 12px;
-            padding-left: 5px;
-            border-left: 3px solid var(--neon-blue);
-        }
 
-        .deck-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
 
-        .deck-btn {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            color: #ffffff;
-            text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .deck-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-        .deck-btn.active-deck {
-            background: #ffffff;
-            border-color: #ffffff;
-            color: #002870; 
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-        }
-        .deck-btn::before {
-            content: "•";
-            color: var(--neon-blue);
-            font-size: 14px;
-        }
-        .deck-btn.active-deck::before {
-            color: #002870;
-        }
+<style>
 
-        /* WORKSPACE AREA */
-        .workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-            z-index: 5;
-        }
+:root {
 
-        /* CONTAINER GRID RESTRICTING OVERFLOWS */
-        .main-container {
-            display: flex;
-            width: 100%;
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            gap: 20px;
-            padding: 20px;
-        }
-        
-        /* SCENE ZONE */
-        .scene {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            height: 100%;
-            min-height: 0;
-            perspective: 2000px;
-            background: transparent;
-            /* Dokunmatik kaydırma çakışmalarını önlemek için native touch gesture'ları devre dışı bırakıyoruz */
-            touch-action: none;
-        }
+--primary-blue: #002870;
 
-        /* DYNAMIC SCALING WRAPPER */
-        .pan-zoom-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            cursor: grab;
-            transform-origin: center center;
-            will-change: transform;
-            z-index: 10;
-            touch-action: none;
-        }
-        .pan-zoom-container:active { cursor: grabbing; }
-        
-        /* 3D BOOK ENGINE */
-        .book {
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            will-change: transform;
-        }
-        
-        /* GERÇEKÇİ 3D SAYFA GEÇİŞ VE VİSİBİLİTY ALTYAPISI */
-        .page {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            margin: auto;
-            width: 100%; height: 100%;
-            transform-origin: left center;
-            transform-style: preserve-3d;
-            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-in-out, visibility 0.7s;
-            backface-visibility: hidden;
-            opacity: 0;
-            visibility: hidden;
-            will-change: transform, opacity;
-        }
-        
-        /* Aktif olan ana sayfa */
-        .page.active-page {
-            visibility: visible;
-            opacity: 1;
-            transform: rotateY(0deg) scale(1) translate3d(0, 0, 0);
-            z-index: 5;
-        }
-        
-        /* Sola doğru çevrilen sayfa efekti */
-        .page.turn-next {
-            visibility: visible;
-            opacity: 0;
-            transform: rotateY(-90deg) scale(0.9) translate3d(-100px, 0, 0);
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        /* Sağa doğru geri açılan sayfa efekti */
-        .page.turn-prev {
-            visibility: visible;
-            opacity: 0;
-            transform: rotateY(90deg) scale(0.9) translate3d(100px, 0, 0);
-            z-index: 1;
-            pointer-events: none;
-        }
+--neon-blue: #00d2ff;
 
-        /* CONTAINER FOR RENDER PIECE */
-        .canvas-container-layer {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            box-shadow: var(--book-shadow);
-            border-radius: 8px;
-            overflow: hidden;
-            background: #020617; 
-        }
+--book-shadow: 0 15px 45px rgba(0,0,0,0.6);
 
-        .base-lowres-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100% !important;
-            height: 100% !important;
-            z-index: 1;
-            display: block;
-            will-change: transform, opacity;
-            transition: opacity 0.15s ease-in-out;
-        }
+--glass-bg: rgba(2, 6, 23, 0.88);
 
-        /* FLOATING ARROW OVERLAYS */
-        .nav-overlay-zone {
-            position: absolute;
-            top: 0; height: 100%; width: 80px;
-            z-index: 99;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none;
-        }
-        .nav-overlay-zone.left-zone { left: 0; }
-        .nav-overlay-zone.right-zone { right: 0; }
+--glass-border: rgba(255, 255, 255, 0.08);
 
-        .arrow-btn {
-            width: 54px; height: 54px;
-            background: rgba(0, 40, 112, 0.5);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer;
-            opacity: 0.65;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(8px);
-            user-select: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            pointer-events: auto;
-        }
-        .arrow-btn:hover {
-            opacity: 1; 
-            transform: scale(1.15);
-            background: #ffffff; 
-            color: #002870;
-            border-color: #ffffff;
-            box-shadow: 0 10px 25px rgba(255,255,255,0.25);
-        }
-        
-        /* DESKTOP SIDEBAR THUMBNAILS */
-        .sidebar-thumbnails {
-            width: 180px;
-            background: rgba(0, 40, 112, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 8px;
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            transition: all 0.5s ease;
-            flex-shrink: 0;
-        }
-        .sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
-        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+}
 
-        .thumb-box {
-            position: relative; width: 94%; cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
-            overflow: hidden; transition: all 0.3s ease; opacity: 0.5;
-            background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
-        }
-        .thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.3); }
-        .thumb-box.active-thumb { border-color: var(--neon-blue); opacity: 1; box-shadow: 0 0 12px rgba(0, 210, 255, 0.3); }
-        .thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
 
-        .thumb-label {
-            position: absolute; bottom: 4px; right: 6px;
-            background: rgba(0,0,0,0.8); color: var(--neon-blue); font-size: 9px;
-            font-weight: bold; padding: 1px 5px; border-radius: 3px;
-        }
-        
-        /* BOTTOM DOCK SYSTEM */
-        .bottom-bar-area {
-            width: 100%; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px;
-            padding: 15px 0; 
-            flex-shrink: 0; 
-            z-index: 101;
-            position: relative;
-            background: rgba(2, 6, 23, 0.85);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
 
-        .controls-wrapper {
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
-            justify-content: center;
-        }
+* {
 
-        .controls {
-            display: flex; align-items: center; gap: 12px; 
-            background: rgba(0, 40, 112, 0.85); padding: 10px 24px; border-radius: 50px;
-            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-        
-        .bottom-bar-area button {
-            padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
-            background: #fff; color: #002870; border: none; border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-        .bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
-        .bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
-        
-        .goto-container { display: flex; align-items: center; gap: 4px; font-size: 12px; }
-        .goto-input {
-            width: 40px; padding: 3px 5px; border-radius: 5px;
-            border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
-            color: #fff; text-align: center; font-weight: bold;
-        }
-        #pageIndicator { color: #ffffff; }
+box-sizing: border-box;
 
-        /* SOUND CONTROLLER WRAPPER */
-        .sound-corner {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 105;
-        }
+margin: 0;
 
-        /* HEADER INTEGRATED SOUND TOGGLE */
-        .header-sound-container {
-            display: none;
-            align-items: center;
-            z-index: 1001;
-        }
+padding: 0;
 
-        .ios-switch-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 40, 112, 0.85);
-            padding: 8px 12px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-        }
+}
 
-        .switch-label {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.8);
-            user-select: none;
-        }
 
-        .ios-switch {
-            position: relative;
-            display: inline-block;
-            width: 42px;
-            height: 24px;
-        }
+body {
 
-        .ios-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+background: #020617;
 
-        .ios-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 34px;
-        }
+display: flex;
 
-        .ios-slider:before {
-            position: absolute;
-            content: "🔊";
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
+height: 100vh;
 
-        input:checked + .ios-slider {
-            background-color: var(--neon-blue);
-        }
+height: 100dvh;
 
-        input:checked + .ios-slider:before {
-            transform: translateX(18px);
-            content: "🔊";
-        }
+font-family: 'Segoe UI', Arial, sans-serif;
 
-        input:not(:checked) + .ios-slider:before {
-            content: "🔇";
-            background-color: #f3f4f6;
-        }
-        
-        .hint { 
-            font-size: 11px; 
-            color: rgba(255,255,255,0.4) !important; 
-            font-weight: 500;
-        }
+overflow: hidden;
 
-        /* AUTO RESUME SESSION TOAST */
-        #resumeToast {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: rgba(0, 40, 112, 0.95);
-            border-left: 4px solid var(--neon-blue);
-            padding: 15px 25px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 10005;
-            display: none;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #resumeToast.show {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
+color: #fff;
 
-        /* ==========================================================================
-           RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
-           ========================================================================== */
+}
 
-        @media (max-width: 1024px) and (orientation: portrait) {
-            .workspace {
-                height: 100%;
-                padding-top: 90px;
-            }
-            .main-container {
-                flex-direction: column;
-                padding: 10px;
-                gap: 10px;
-                height: calc(100% - 130px);
-            }
-            .scene {
-                flex: 1;
-                width: 100%;
-                height: 0;
-                min-height: 0;
-            }
-            .sidebar-thumbnails {
-                width: 100% !important;
-                height: 65px !important;
-                flex-direction: row !important;
-                padding: 4px 8px !important;
-                gap: 6px !important;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                border-radius: 8px;
-                flex-shrink: 0;
-            }
-            .thumb-box {
-                width: 70px !important; 
-                height: 48px !important;
-            }
-            .arrow-btn {
-                width: 44px; height: 44px;
-                opacity: 0.7;
-            }
-            .nav-overlay-zone {
-                width: 50px;
-            }
-            .sound-corner {
-                display: none !important;
-            }
-            .header-sound-container {
-                display: flex;
-            }
-            .bottom-bar-area {
-                padding: 10px 0;
-            }
-            .controls {
-                padding: 8px 18px;
-                gap: 8px;
-            }
-        }
 
-        @media (max-width: 1024px) and (orientation: landscape) {
-            .workspace {
-                height: 100%;
-                padding-top: 0;
-            }
-            .main-container {
-                flex-direction: row;
-                padding: 10px;
-                gap: 10px;
-                height: calc(100% - 70px);
-            }
-            .scene {
-                flex: 1;
-                height: 100%;
-                width: 0;
-                min-width: 0;
-            }
-            .sidebar-thumbnails {
-                width: 90px !important;
-                height: 100% !important;
-                flex-direction: column !important;
-                padding: 6px 4px !important;
-                gap: 8px !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                border-radius: 8px;
-                flex-shrink: 0;
-            }
-            .thumb-box {
-                width: 100% !important; 
-                height: 50px !important;
-            }
-            .arrow-btn {
-                width: 38px; height: 38px;
-                font-size: 14px;
-            }
-            .nav-overlay-zone {
-                width: 40px;
-            }
-            .bottom-bar-area {
-                padding: 8px 0;
-                height: 60px;
-            }
-            .controls {
-                padding: 6px 15px;
-                gap: 10px;
-            }
-            .hint {
-                display: none;
-            }
-            .sound-corner {
-                display: flex !important;
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .header-sound-container {
-                display: none !important;
-            }
-        }
-    </style>
+
+/* PREMIUM MESH GRADIENT BACKGROUND */
+
+.premium-bg {
+
+position: absolute;
+
+top: 0; left: 0; width: 100%; height: 100%;
+
+z-index: 1;
+
+background: #020617;
+
+overflow: hidden;
+
+}
+
+.premium-bg::before {
+
+content: "";
+
+position: absolute;
+
+top: -20%; left: -20%; width: 140%; height: 140%;
+
+background-image:
+
+radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
+
+radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
+
+radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
+
+filter: blur(60px);
+
+animation: elegantBgMotion 25s ease-in-out infinite alternate;
+
+}
+
+@keyframes elegantBgMotion {
+
+0% { transform: translate(0, 0) scale(1); }
+
+50% { transform: translate(2%, -4%) scale(1.05); }
+
+100% { transform: translate(-2%, 4%) scale(0.98); }
+
+}
+
+
+/* PULSE LOADING SCREEN */
+
+#globalLoading {
+
+position: fixed;
+
+top: 0; left: 0; width: 100vw; height: 100vh;
+
+background: #002870;
+
+z-index: 10000;
+
+display: flex;
+
+flex-direction: column;
+
+justify-content: center;
+
+align-items: center;
+
+gap: 20px;
+
+transition: opacity 0.5s ease;
+
+}
+
+
+
+.loading-pulse-logo {
+
+width: 180px;
+
+height: auto;
+
+background: #ffffff;
+
+padding: 15px 20px;
+
+border-radius: 8px;
+
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+animation: yatasHeartbeat 1.4s ease-in-out infinite;
+
+}
+
+
+
+@keyframes yatasHeartbeat {
+
+0% { transform: scale(1); }
+
+14% { transform: scale(1.08); }
+
+28% { transform: scale(1); }
+
+42% { transform: scale(1.13); }
+
+70% { transform: scale(1); }
+
+100% { transform: scale(1); }
+
+}
+
+
+
+/* PORTAL WRAPPER */
+
+.portal-wrapper {
+
+display: flex;
+
+width: 100vw;
+
+height: 100vh;
+
+height: 100dvh;
+
+overflow: hidden;
+
+position: relative;
+
+z-index: 2;
+
+}
+
+
+
+/* HEADER LEFT COLUMN CONTROL PANEL */
+
+.header-column {
+
+position: absolute;
+
+top: 20px;
+
+left: 20px;
+
+display: flex;
+
+flex-direction: column;
+
+align-items: flex-start;
+
+gap: 12px;
+
+z-index: 1001;
+
+}
+
+
+
+.brand-logo-btn {
+
+background: #ffffff;
+
+padding: 8px 15px;
+
+border-radius: 8px;
+
+box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+
+height: 46px;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+border: none;
+
+cursor: pointer;
+
+transition: transform 0.3s ease;
+
+}
+
+.brand-logo-btn:hover {
+
+transform: translateY(-2px);
+
+}
+
+.brand-logo-btn img {
+
+height: 24px;
+
+width: auto;
+
+}
+
+
+
+.hamburger-btn {
+
+width: 46px;
+
+height: 46px;
+
+background: rgba(0, 40, 112, 0.85);
+
+border: 1px solid var(--glass-border);
+
+border-radius: 8px;
+
+cursor: pointer;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+flex-direction: column;
+
+gap: 5px;
+
+backdrop-filter: blur(15px);
+
+transition: all 0.3s ease;
+
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+
+}
+
+.hamburger-btn:hover {
+
+background: rgba(255,255,255,0.15);
+
+transform: scale(1.05);
+
+}
+
+.hamburger-btn span {
+
+display: block;
+
+width: 20px;
+
+height: 2px;
+
+background: #ffffff;
+
+transition: 0.3s;
+
+}
+
+
+
+/* SIDEBAR NAVIGATION Drawer */
+
+.sidebar-nav {
+
+position: fixed;
+
+left: -340px;
+
+top: 0;
+
+height: 100vh;
+
+height: 100dvh;
+
+width: 320px;
+
+background: var(--glass-bg);
+
+border-right: 1px solid var(--glass-border);
+
+display: flex;
+
+flex-direction: column;
+
+padding: 150px 24px 24px 24px;
+
+box-shadow: 25px 0 50px rgba(0,0,0,0.6);
+
+z-index: 1000;
+
+overflow-y: auto;
+
+backdrop-filter: blur(30px);
+
+transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+
+}
+
+.sidebar-nav.menu-open {
+
+left: 0;
+
+}
+
+
+
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+
+
+
+.brand-subtitle {
+
+font-size: 11px;
+
+color: #a4c2f4;
+
+text-transform: uppercase;
+
+letter-spacing: 2px;
+
+margin-bottom: 20px;
+
+border-bottom: 1px solid rgba(255,255,255,0.15);
+
+padding-bottom: 12px;
+
+font-weight: 700;
+
+}
+
+
+
+.menu-section-title {
+
+font-size: 11px;
+
+color: rgba(255, 255, 255, 0.6);
+
+font-weight: 700;
+
+text-transform: uppercase;
+
+letter-spacing: 2px;
+
+margin-top: 20px;
+
+margin-bottom: 12px;
+
+padding-left: 5px;
+
+border-left: 3px solid var(--neon-blue);
+
+}
+
+
+
+.deck-list {
+
+list-style: none;
+
+display: flex;
+
+flex-direction: column;
+
+gap: 8px;
+
+}
+
+
+
+.deck-btn {
+
+width: 100%;
+
+padding: 12px 15px;
+
+background: rgba(255, 255, 255, 0.04);
+
+border: 1px solid rgba(255, 255, 255, 0.06);
+
+border-radius: 8px;
+
+color: #ffffff;
+
+text-align: left;
+
+font-size: 13px;
+
+font-weight: 600;
+
+cursor: pointer;
+
+transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+display: flex;
+
+align-items: center;
+
+gap: 8px;
+
+}
+
+.deck-btn:hover {
+
+background: rgba(255, 255, 255, 0.12);
+
+border-color: rgba(255, 255, 255, 0.2);
+
+transform: translateX(5px);
+
+}
+
+.deck-btn.active-deck {
+
+background: #ffffff;
+
+border-color: #ffffff;
+
+color: #002870;
+
+box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+
+}
+
+.deck-btn::before {
+
+content: "•";
+
+color: var(--neon-blue);
+
+font-size: 14px;
+
+}
+
+.deck-btn.active-deck::before {
+
+color: #002870;
+
+}
+
+
+
+/* WORKSPACE AREA */
+
+.workspace {
+
+flex: 1;
+
+display: flex;
+
+flex-direction: column;
+
+height: 100%;
+
+overflow: hidden;
+
+position: relative;
+
+z-index: 5;
+
+}
+
+
+
+/* CONTAINER GRID RESTRICTING OVERFLOWS */
+
+.main-container {
+
+display: flex;
+
+width: 100%;
+
+flex: 1;
+
+min-height: 0;
+
+overflow: hidden;
+
+gap: 20px;
+
+padding: 20px;
+
+}
+
+
+/* SCENE ZONE */
+
+.scene {
+
+flex: 1;
+
+display: flex;
+
+justify-content: center;
+
+align-items: center;
+
+overflow: hidden;
+
+position: relative;
+
+height: 100%;
+
+min-height: 0;
+
+perspective: 2000px;
+
+background: transparent;
+
+}
+
+
+
+/* DYNAMIC SCALING WRAPPER */
+
+.pan-zoom-container {
+
+position: absolute;
+
+width: 100%;
+
+height: 100%;
+
+display: none;
+
+justify-content: center;
+
+align-items: center;
+
+cursor: grab;
+
+transform-origin: 0 0;
+
+will-change: transform;
+
+z-index: 10;
+
+}
+
+.pan-zoom-container:active { cursor: grabbing; }
+
+
+/* 3D BOOK ENGINE */
+
+.book {
+
+position: relative;
+
+transform-style: preserve-3d;
+
+transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.45, 1);
+
+display: flex;
+
+justify-content: center;
+
+align-items: center;
+
+will-change: transform;
+
+}
+
+
+/* GERÇEKÇİ 3D SAYFA GEÇİŞ VE VİSİBİLİTY ALTYAPISI (SIFIR BEYAZLAMA) */
+
+.page {
+
+position: absolute;
+
+top: 0; left: 0; right: 0; bottom: 0;
+
+margin: auto;
+
+width: 100%; height: 100%;
+
+transform-origin: left center; /* Sol kenardan gerçekçi kitap açılışı */
+
+transform-style: preserve-3d;
+
+transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-in-out, visibility 0.7s;
+
+backface-visibility: hidden;
+
+opacity: 0;
+
+visibility: hidden; /* display: none KALDIRILDI - Animasyon kesintisini önler */
+
+will-change: transform, opacity;
+
+}
+
+
+/* Aktif olan ana sayfa */
+
+.page.active-page {
+
+visibility: visible;
+
+opacity: 1;
+
+transform: rotateY(0deg) scale(1) translate3d(0, 0, 0);
+
+z-index: 5;
+
+}
+
+
+/* Sola doğru çevrilen sayfa efekti */
+
+.page.turn-next {
+
+visibility: visible;
+
+opacity: 0;
+
+transform: rotateY(-90deg) scale(0.9) translate3d(-100px, 0, 0);
+
+z-index: 1;
+
+pointer-events: none;
+
+}
+
+
+/* Sağa doğru geri açılan sayfa efekti */
+
+.page.turn-prev {
+
+visibility: visible;
+
+opacity: 0;
+
+transform: rotateY(90deg) scale(0.9) translate3d(100px, 0, 0);
+
+z-index: 1;
+
+pointer-events: none;
+
+}
+
+
+
+/* CONTAINER FOR RENDER PIECE */
+
+.canvas-container-layer {
+
+position: relative;
+
+width: 100%;
+
+height: 100%;
+
+box-shadow: var(--book-shadow);
+
+border-radius: 8px;
+
+overflow: hidden;
+
+background: #020617;
+
+}
+
+
+
+.base-lowres-canvas {
+
+position: absolute;
+
+top: 0; left: 0;
+
+width: 100% !important;
+
+height: 100% !important;
+
+z-index: 1;
+
+display: block;
+
+will-change: transform, opacity;
+
+transition: opacity 0.15s ease-in-out;
+
+}
+
+
+
+/* FLOATING ARROW OVERLAYS */
+
+.nav-overlay-zone {
+
+position: absolute;
+
+top: 0; height: 100%; width: 80px;
+
+z-index: 99;
+
+display: flex; align-items: center; justify-content: center;
+
+pointer-events: none;
+
+}
+
+.nav-overlay-zone.left-zone { left: 0; }
+
+.nav-overlay-zone.right-zone { right: 0; }
+
+
+
+.arrow-btn {
+
+width: 54px; height: 54px;
+
+background: rgba(0, 40, 112, 0.5);
+
+border: 1.5px solid rgba(255, 255, 255, 0.2);
+
+border-radius: 50%;
+
+display: flex; align-items: center; justify-content: center;
+
+color: #fff; font-size: 20px; cursor: pointer;
+
+opacity: 0.65;
+
+transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+backdrop-filter: blur(8px);
+
+user-select: none;
+
+box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+
+pointer-events: auto;
+
+}
+
+.arrow-btn:hover {
+
+opacity: 1;
+
+transform: scale(1.15);
+
+background: #ffffff;
+
+color: #002870;
+
+border-color: #ffffff;
+
+box-shadow: 0 10px 25px rgba(255,255,255,0.25);
+
+}
+
+
+/* DESKTOP SIDEBAR THUMBNAILS */
+
+.sidebar-thumbnails {
+
+width: 180px;
+
+background: rgba(0, 40, 112, 0.15);
+
+border: 1px solid rgba(255, 255, 255, 0.05);
+
+border-radius: 12px;
+
+overflow-y: auto;
+
+display: flex;
+
+flex-direction: column;
+
+align-items: center;
+
+gap: 12px;
+
+padding: 12px 8px;
+
+backdrop-filter: blur(20px);
+
+z-index: 100;
+
+transition: all 0.5s ease;
+
+flex-shrink: 0;
+
+}
+
+.sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
+
+.sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+
+
+
+.thumb-box {
+
+position: relative; width: 94%; cursor: pointer;
+
+border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
+
+overflow: hidden; transition: all 0.3s ease; opacity: 0.5;
+
+background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
+
+}
+
+.thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.3); }
+
+.thumb-box.active-thumb { border-color: var(--neon-blue); opacity: 1; box-shadow: 0 0 12px rgba(0, 210, 255, 0.3); }
+
+.thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
+
+
+
+.thumb-label {
+
+position: absolute; bottom: 4px; right: 6px;
+
+background: rgba(0,0,0,0.8); color: var(--neon-blue); font-size: 9px;
+
+font-weight: bold; padding: 1px 5px; border-radius: 3px;
+
+}
+
+
+/* BOTTOM DOCK SYSTEM */
+
+.bottom-bar-area {
+
+width: 100%;
+
+display: flex;
+
+flex-direction: column;
+
+align-items: center;
+
+justify-content: center;
+
+gap: 6px;
+
+padding: 15px 0;
+
+flex-shrink: 0;
+
+z-index: 101;
+
+position: relative;
+
+background: rgba(2, 6, 23, 0.85);
+
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+}
+
+
+
+.controls-wrapper {
+
+display: flex;
+
+align-items: center;
+
+position: relative;
+
+width: 100%;
+
+justify-content: center;
+
+}
+
+
+
+.controls {
+
+display: flex; align-items: center; gap: 12px;
+
+background: rgba(0, 40, 112, 0.85); padding: 10px 24px; border-radius: 50px;
+
+backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
+
+box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+
+}
+
+
+.bottom-bar-area button {
+
+padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
+
+background: #fff; color: #002870; border: none; border-radius: 20px;
+
+transition: all 0.3s ease;
+
+}
+
+.bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
+
+.bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
+
+
+.goto-container { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+
+.goto-input {
+
+width: 40px; padding: 3px 5px; border-radius: 5px;
+
+border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
+
+color: #fff; text-align: center; font-weight: bold;
+
+}
+
+#pageIndicator { color: #ffffff; }
+
+
+
+/* SOUND CONTROLLER WRAPPER */
+
+.sound-corner {
+
+position: absolute;
+
+right: 25px;
+
+top: 50%;
+
+transform: translateY(-50%);
+
+display: flex;
+
+align-items: center;
+
+gap: 10px;
+
+z-index: 105;
+
+}
+
+
+
+/* HEADER INTEGRATED SOUND TOGGLE */
+
+.header-sound-container {
+
+display: none;
+
+align-items: center;
+
+z-index: 1001;
+
+}
+
+
+
+.ios-switch-container {
+
+display: flex;
+
+align-items: center;
+
+gap: 8px;
+
+background: rgba(0, 40, 112, 0.85);
+
+padding: 8px 12px;
+
+border-radius: 30px;
+
+border: 1px solid rgba(255, 255, 255, 0.12);
+
+backdrop-filter: blur(15px);
+
+box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+
+}
+
+
+
+.switch-label {
+
+font-size: 10px;
+
+font-weight: 800;
+
+letter-spacing: 1px;
+
+text-transform: uppercase;
+
+color: rgba(255, 255, 255, 0.8);
+
+user-select: none;
+
+}
+
+
+
+.ios-switch {
+
+position: relative;
+
+display: inline-block;
+
+width: 42px;
+
+height: 24px;
+
+}
+
+
+
+.ios-switch input {
+
+opacity: 0;
+
+width: 0;
+
+height: 0;
+
+}
+
+
+
+.ios-slider {
+
+position: absolute;
+
+cursor: pointer;
+
+top: 0; left: 0; right: 0; bottom: 0;
+
+background-color: rgba(255, 255, 255, 0.2);
+
+transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
+
+border-radius: 34px;
+
+}
+
+
+
+.ios-slider:before {
+
+position: absolute;
+
+content: "🔊";
+
+font-size: 10px;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+height: 18px;
+
+width: 18px;
+
+left: 3px;
+
+bottom: 3px;
+
+background-color: white;
+
+transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
+
+border-radius: 50%;
+
+box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+
+}
+
+
+
+input:checked + .ios-slider {
+
+background-color: var(--neon-blue);
+
+}
+
+
+
+input:checked + .ios-slider:before {
+
+transform: translateX(18px);
+
+content: "🔊";
+
+}
+
+
+
+input:not(:checked) + .ios-slider:before {
+
+content: "🔇";
+
+background-color: #f3f4f6;
+
+}
+
+
+.hint {
+
+font-size: 11px;
+
+color: rgba(255,255,255,0.4) !important;
+
+font-weight: 500;
+
+}
+
+
+
+/* AUTO RESUME SESSION TOAST */
+
+#resumeToast {
+
+position: fixed;
+
+bottom: 30px;
+
+left: 30px;
+
+background: rgba(0, 40, 112, 0.95);
+
+border-left: 4px solid var(--neon-blue);
+
+padding: 15px 25px;
+
+border-radius: 6px;
+
+font-size: 13px;
+
+font-weight: 600;
+
+box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
+z-index: 10005;
+
+display: none;
+
+transform: translateY(100px);
+
+opacity: 0;
+
+transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+
+}
+
+#resumeToast.show {
+
+display: block;
+
+transform: translateY(0);
+
+opacity: 1;
+
+}
+
+
+
+/* ==========================================================================
+
+RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS
+
+========================================================================== */
+
+
+
+@media (max-width: 1024px) and (orientation: portrait) {
+
+.workspace {
+
+height: 100%;
+
+padding-top: 90px;
+
+}
+
+.main-container {
+
+flex-direction: column;
+
+padding: 10px;
+
+gap: 10px;
+
+height: calc(100% - 130px);
+
+}
+
+.scene {
+
+flex: 1;
+
+width: 100%;
+
+height: 0;
+
+min-height: 0;
+
+}
+
+.sidebar-thumbnails {
+
+width: 100% !important;
+
+height: 65px !important;
+
+flex-direction: row !important;
+
+padding: 4px 8px !important;
+
+gap: 6px !important;
+
+overflow-x: auto !important;
+
+overflow-y: hidden !important;
+
+background: rgba(0, 40, 112, 0.3) !important;
+
+border-radius: 8px;
+
+flex-shrink: 0;
+
+}
+
+.thumb-box {
+
+width: 70px !important;
+
+height: 48px !important;
+
+}
+
+.arrow-btn {
+
+width: 44px; height: 44px;
+
+opacity: 0.7;
+
+}
+
+.nav-overlay-zone {
+
+width: 50px;
+
+}
+
+.sound-corner {
+
+display: none !important;
+
+}
+
+.header-sound-container {
+
+display: flex;
+
+}
+
+.bottom-bar-area {
+
+padding: 10px 0;
+
+}
+
+.controls {
+
+padding: 8px 18px;
+
+gap: 8px;
+
+}
+
+}
+
+
+
+@media (max-width: 1024px) and (orientation: landscape) {
+
+.workspace {
+
+height: 100%;
+
+padding-top: 0;
+
+}
+
+.main-container {
+
+flex-direction: row;
+
+padding: 10px;
+
+gap: 10px;
+
+height: calc(100% - 70px);
+
+}
+
+.scene {
+
+flex: 1;
+
+height: 100%;
+
+width: 0;
+
+min-width: 0;
+
+}
+
+.sidebar-thumbnails {
+
+width: 90px !important;
+
+height: 100% !important;
+
+flex-direction: column !important;
+
+padding: 6px 4px !important;
+
+gap: 8px !important;
+
+overflow-y: auto !important;
+
+overflow-x: hidden !important;
+
+background: rgba(0, 40, 112, 0.3) !important;
+
+border-radius: 8px;
+
+flex-shrink: 0;
+
+}
+
+.thumb-box {
+
+width: 100% !important;
+
+height: 50px !important;
+
+}
+
+.arrow-btn {
+
+width: 38px; height: 38px;
+
+font-size: 14px;
+
+}
+
+.nav-overlay-zone {
+
+width: 40px;
+
+}
+
+.bottom-bar-area {
+
+padding: 8px 0;
+
+height: 60px;
+
+}
+
+.controls {
+
+padding: 6px 15px;
+
+gap: 10px;
+
+}
+
+.hint {
+
+display: none;
+
+}
+
+.sound-corner {
+
+display: flex !important;
+
+position: absolute;
+
+right: 15px;
+
+top: 50%;
+
+transform: translateY(-50%);
+
+}
+
+.header-sound-container {
+
+display: none !important;
+
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-    <div class="premium-bg"></div>
-
-    <!-- GLOBAL LOADING PULSE SCREEN -->
-    <div id="globalLoading">
-        <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
-    </div>
-
-    <!-- UPPER LEFT CONTROL BUTTONS -->
-    <div class="header-column">
-        <button class="brand-logo-btn" onclick="toggleMenu()">
-            <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
-        </button>
-        <button class="hamburger-btn" id="menuHamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <!-- Dynamic Header Switch for Portrait Mobile -->
-        <div class="header-sound-container" id="headerSoundContainer">
-            <div class="ios-switch-container">
-                <span class="switch-label">Sound</span>
-                <label class="ios-switch">
-                    <input type="checkbox" class="audioToggleBtnClass" checked>
-                    <span class="ios-slider"></span>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- RESUME LAST SESSION TOAST -->
-    <div id="resumeToast">Welcome back! Restoring your last active session page.</div>
-    
-    <div class="portal-wrapper" id="portalWrapper">
-        
-        <!-- MAIN DRAWER NAVIGATION SIDEBAR -->
-        <div class="sidebar-nav" id="sidebarNav">
-            <div class="brand-subtitle">Corporate Deck Portal</div>
-            
-            <div class="menu-section-title">Catalogues</div>
-            <ul class="deck-list" id="cataloguesList"></ul>
-
-            <div class="menu-section-title">Other Presentations</div>
-            <ul class="deck-list" id="otherList"></ul>
-        </div>
-
-        <div class="workspace" id="workspace">
-            <div class="main-container" id="mainContainer">
-                <div class="scene" id="scene">
-                    
-                    <div id="zoomContainer" class="pan-zoom-container">
-                        <div id="book" class="book"></div>
-                    </div>
-
-                    <!-- FLOATING ARROW OVERLAYS -->
-                    <div class="nav-overlay-zone left-zone" id="zoneLeft">
-                        <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
-                    </div>
-
-                    <div class="nav-overlay-zone right-zone" id="zoneRight">
-                        <div class="arrow-btn" id="overlayNextBtn">&#10095;</div>
-                    </div>
-
-                </div>
-
-                <!-- SLIDABLE PREVIEW THUMBNAILS PANEL -->
-                <div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
-            </div>
-
-            <!-- LOWER DOCK CONTROL SYSTEM -->
-            <div class="bottom-bar-area" id="bottomBarArea">
-                <div class="controls-wrapper">
-                    <div class="controls">
-                        <button id="prevBtn" disabled>◀ Prev</button>
-                        <div class="goto-container">
-                            <input type="text" id="gotoInput" class="goto-input" value="1">
-                            <span id="pageIndicator">/ 0</span>
-                        </div>
-                        <button id="nextBtn">Next ▶</button>
-                        <button id="zoomInBtn">🔍 +</button>
-                        <button id="zoomOutBtn">🔍 -</button>
-                    </div>
-
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
-                    <div class="sound-corner" id="footerSoundContainer">
-                        <div class="ios-switch-container">
-                            <span class="switch-label">Sound FX</span>
-                            <label class="ios-switch">
-                                <input type="checkbox" class="audioToggleBtnClass" checked>
-                                <span class="ios-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="hint">Scroll mouse or pinch screens to zoom. Swipe to change slides.</div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        const presentationData = {
-            catalogues: [
-                { title: "Enza Home", url: "Enza Home.pdf" },
-                { title: "Yataş Bedding", url: "Yataş Bedding.pdf" },
-            ],
-            otherPresentations: [
-                { title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" },
-                { title: "Yataş Projects", url: "Yataş Projects.pdf" },
-                { title: "Yataş Projects References", url: "Yataş Projects References.pdf" }
-            ]
-        };
-
-        const presentations = [...presentationData.catalogues, ...presentationData.otherPresentations];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-        let currentActivePresentationIndex = 0;
-        let currentId = 0; 
-        let pages = [];
-        let thumbElements = [];
-        let pdfDoc = null;
-        
-        // ZOOM / PAN STATE CONTROL
-        let scale = 1; 
-        let posX = 0; 
-        let posY = 0;
-        let isDragging = false; 
-        let startX; 
-        let startY;
-        
-        // TOUCH ENGINE MULTI-TOUCH TRACKING
-        let initialPinchDist = 0;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isPinching = false;
-
-        let isSoundOn = true;
-        let renderTimeout = null;
-
-        const transitionSound = new Audio('glossy_magazine.mp3');
-
-        // CACHED ELEMENTS
-        const zoomContainer = document.getElementById('zoomContainer');
-        const book = document.getElementById('book');
-        const scene = document.getElementById('scene');
-        const sidebarThumbnails = document.getElementById('sidebarThumbnails');
-        const gotoInput = document.getElementById('gotoInput');
-        const cataloguesList = document.getElementById('cataloguesList');
-        const otherList = document.getElementById('otherList');
-        const globalLoading = document.getElementById('globalLoading');
-        const sidebarNav = document.getElementById('sidebarNav');
-        const menuHamburger = document.getElementById('menuHamburger');
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
-            });
-        }
-
-        function unlockAudioEngine() {
-            transitionSound.play().then(() => {
-                transitionSound.pause();
-                transitionSound.currentTime = 0;
-            }).catch(e => {});
-            window.removeEventListener('click', unlockAudioEngine);
-            window.removeEventListener('touchstart', unlockAudioEngine);
-        }
-        window.addEventListener('click', unlockAudioEngine);
-        window.addEventListener('touchstart', unlockAudioEngine);
-
-        function playPaperSound() {
-            if (!isSoundOn) return;
-            try {
-                transitionSound.currentTime = 0;
-                transitionSound.play();
-            } catch (e) {}
-        }
-
-        function injectWatermark(context, width, height) {
-            context.save();
-            context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
-            context.fillStyle = "rgba(255, 255, 255, 0.05)";
-            context.textBaseline = "middle";
-            context.translate(width / 2, height / 2);
-            context.rotate(-Math.PI / 6);
-            context.fillText("© YATAŞ GROUP - ALL RIGHTS RESERVED", 0, 0);
-            context.restore();
-        }
-
-        function toggleMenu() { sidebarNav.classList.toggle('menu-open'); }
-        menuHamburger.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
-        document.addEventListener('click', (e) => {
-            if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
-                sidebarNav.classList.remove('menu-open');
-            }
-        });
-
-        document.querySelectorAll('.audioToggleBtnClass').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                isSoundOn = this.checked;
-                document.querySelectorAll('.audioToggleBtnClass').forEach(other => { other.checked = isSoundOn; });
-            });
-        });
-
-        function buildSidebarMenu() {
-            cataloguesList.innerHTML = ""; otherList.innerHTML = "";
-            let globalIdx = 0;
-
-            presentationData.catalogues.forEach((deck) => {
-                const currentIdx = globalIdx;
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = `deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
-                btn.innerText = deck.title;
-                btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
-                li.appendChild(btn); cataloguesList.appendChild(li); globalIdx++;
-            });
-
-            presentationData.otherPresentations.forEach((deck) => {
-                const currentIdx = globalIdx;
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = `deck-btn`;
-                btn.innerText = deck.title;
-                btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
-                li.appendChild(btn); otherList.appendChild(li); globalIdx++;
-            });
-        }
-
-        async function switchPresentation(index, targetSavedPage = 0) {
-            currentActivePresentationIndex = index;
-            localStorage.setItem('corporate_last_presentation', index);
-
-            document.querySelectorAll('.deck-btn').forEach(b => {
-                b.classList.toggle('active-deck', parseInt(b.getAttribute('data-index')) === index);
-            });
-
-            globalLoading.style.display = 'flex'; globalLoading.style.opacity = '1';
-            book.innerHTML = ''; sidebarThumbnails.innerHTML = '';
-            pages = []; thumbElements = [];
-            currentId = targetSavedPage;
-            resetZoom();
-            await loadPDF(presentations[index].url);
-        }
-
-        function resizeBookToFit(viewport) {
-            if (!viewport) return;
-            const sceneW = scene.clientWidth; const sceneH = scene.clientHeight;
-            if (!sceneW || !sceneH) return;
-
-            const pdfRatio = viewport.width / viewport.height;
-            const margin = 0.95; 
-            const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
-            let finalW, finalH;
-
-            if (maxAllowedW / maxAllowedH > pdfRatio) {
-                finalH = maxAllowedH; finalW = finalH * pdfRatio;
-            } else {
-                finalW = maxAllowedW; finalH = finalW / pdfRatio;
-            }
-            book.style.width = Math.floor(finalW) + 'px';
-            book.style.height = Math.floor(finalH) + 'px';
-
-            updateTransform();
-        }
-
-        async function renderHighQualityPage(pageNum, customScale = 1) {
-            if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
-
-            try {
-                const page = await pdfDoc.getPage(pageNum);
-                let pageDiv = pages[pageNum - 1];
-                
-                if (!pageDiv) {
-                    pageDiv = document.createElement('div'); 
-                    pageDiv.className = 'page';
-                    
-                    const container = document.createElement('div');
-                    container.className = 'canvas-container-layer';
-                    
-                    const canvas = document.createElement('canvas');
-                    canvas.className = 'base-lowres-canvas';
-                    
-                    container.appendChild(canvas);
-                    pageDiv.appendChild(container);
-                    book.appendChild(pageDiv); 
-                    pages[pageNum - 1] = pageDiv;
-                }
-
-                const canvas = pageDiv.querySelector('.base-lowres-canvas');
-                const context = canvas.getContext('2d');
-                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-
-                const dpr = window.devicePixelRatio || 1;
-                let targetScale = customScale * dpr;
-
-                const sampleViewport = page.getViewport({ scale: targetScale });
-                if (sampleViewport.width > 2048) {
-                    targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
-                }
-
-                const viewport = page.getViewport({ scale: targetScale });
-
-                const newWidth = Math.floor(viewport.width);
-                const newHeight = Math.floor(viewport.height);
-
-                const offscreenCanvas = document.createElement('canvas');
-                offscreenCanvas.width = newWidth;
-                offscreenCanvas.height = newHeight;
-                const offscreenContext = offscreenCanvas.getContext('2d');
-
-                await page.render({ 
-                    canvasContext: offscreenContext, 
-                    viewport: viewport 
-                }).promise;
-
-                injectWatermark(offscreenContext, newWidth, newHeight);
-
-                if (canvas.width !== newWidth || canvas.height !== newHeight) {
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                }
-                context.drawImage(offscreenCanvas, 0, 0);
-
-                if (pageNum - 1 === currentId) {
-                    resizeBookToFit(pageDiv.pdfViewport);
-                }
-            } catch (err) {
-                console.error("Render hatası:", err);
-            }
-        }
-
-        function triggerDynamicZoomRender() {
-            if (renderTimeout) clearTimeout(renderTimeout);
-            renderTimeout = setTimeout(() => {
-                renderHighQualityPage(currentId + 1, scale);
-            }, 300); 
-        }
-
-        function runPredictiveCachePipeline() {
-            const activeIdx = currentId + 1;
-            renderHighQualityPage(activeIdx, scale);
-            
-            const nextIdx = activeIdx + 1;
-            const prevIdx = activeIdx - 1;
-            if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
-            if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
-        }
-
-        function createSequentialThumbContainers(total) {
-            sidebarThumbnails.innerHTML = '';
-            for (let i = 1; i <= total; i++) {
-                const thumbBox = document.createElement('div');
-                thumbBox.className = 'thumb-box'; thumbBox.id = `thumb-box-${i}`;
-                const canvas = document.createElement('canvas'); thumbBox.appendChild(canvas);
-                const label = document.createElement('div'); label.className = 'thumb-label'; label.innerText = i;
-                thumbBox.appendChild(label); sidebarThumbnails.appendChild(thumbBox);
-                thumbElements[i - 1] = thumbBox;
-
-                thumbBox.addEventListener('click', () => {
-                    if (currentId === i - 1) return;
-                    playPaperSound(); currentId = i - 1;
-                    localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); renderHighQualityPage(i, 1); updateBookDisplay(); runPredictiveCachePipeline();
-                });
-            }
-        }
-
-        async function renderThumbnail(pageNum) {
-            try {
-                const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.2 }); 
-                const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
-                if (!thumbBox) return;
-                const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
-                canvas.height = viewport.height; canvas.width = viewport.width;
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
-            } catch (err) {}
-        }
-
-        async function loadPDF(url) {
-            try {
-                pdfDoc = await pdfjsLib.getDocument(url).promise;
-                const totalPages = pdfDoc.numPages;
-                pages = new Array(totalPages); thumbElements = new Array(totalPages);
-                createSequentialThumbContainers(totalPages);
-
-                const thumbPromises = [];
-                for (let pageNum = 1; pageNum <= totalPages; pageNum++) { thumbPromises.push(renderThumbnail(pageNum)); }
-                await Promise.all(thumbPromises);
-
-                await renderHighQualityPage(currentId + 1, 1);
-                globalLoading.style.opacity = '0'; setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
-                zoomContainer.style.display = 'flex';
-                updateBookDisplay(); runPredictiveCachePipeline();
-            } catch (error) { console.error(error); }
-        }
-
-        function updateBookDisplay() {
-            if (pages.length === 0) return;
-            pages.forEach((page, index) => {
-                if (!page) return;
-                if (index === currentId) {
-                    page.className = 'page active-page'; resizeBookToFit(page.pdfViewport);
-                } else if (index < currentId) { 
-                    page.className = 'page turn-next'; 
-                } else { 
-                    page.className = 'page turn-prev'; 
-                }
-            });
-
-            thumbElements.forEach((thumb, index) => {
-                if (!thumb) return;
-                if (index === currentId) {
-                    thumb.classList.add('active-thumb'); thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else { thumb.classList.remove('active-thumb'); }
-            });
-
-            document.getElementById('prevBtn').disabled = (currentId === 0);
-            document.getElementById('nextBtn').disabled = (currentId >= pages.length - 1);
-            gotoInput.value = currentId + 1;
-            document.getElementById('pageIndicator').innerText = `/ ${pages.length}`;
-        }
-
-        function flipNext() { 
-            if (currentId < pages.length - 1) { 
-                playPaperSound(); currentId++; localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
-            } 
-        }
-        function flipPrev() { 
-            if (currentId > 0) { 
-                playPaperSound(); currentId--; localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
-            } 
-        }
-        
-        // AKILLI GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU (APPLE PORTFOLIO STANDARDINDA)
-        function resetZoom() { 
-            scale = 1; 
-            posX = 0; 
-            posY = 0; 
-            updateTransform(); 
-        }
-
-        function updateTransform() { 
-            if (scale <= 1) {
-                scale = 1; posX = 0; posY = 0;
-                zoomContainer.style.transform = `translate3d(0px, 0px, 0px) scale(1)`;
-            } else {
-                // Taşıyıcı sınır hesaplaması (Viewport dışına taşmayı milimetrik engeller)
-                const boundW = (scale - 1) * scene.clientWidth / 2;
-                const boundH = (scale - 1) * scene.clientHeight / 2;
-                
-                posX = Math.max(-boundW * 1.5, Math.min(posX, boundW * 1.5));
-                posY = Math.max(-boundH * 1.5, Math.min(posY, boundH * 1.5));
-
-                zoomContainer.style.transform = `translate3d(${posX}px, ${posY}px, 0px) scale(${scale})`;
-            }
-        }
-
-        function zoomToPoint(clientX, clientY, zoomStep) {
-            const rect = scene.getBoundingClientRect();
-            
-            // Zoom merkez noktasını hesaplama
-            const targetX = clientX - rect.left - rect.width / 2;
-            const targetY = clientY - rect.top - rect.height / 2;
-
-            const oldScale = scale;
-            scale = Math.max(1, Math.min(scale + zoomStep, 5));
-
-            if (scale > 1) {
-                // İmlecin veya parmakların odaklandığı noktayı koruyarak pan koordinatlarını güncelle
-                posX = targetX - (targetX - posX) * (scale / oldScale);
-                posY = targetY - (targetY - posY) * (scale / oldScale);
-            } else {
-                posX = 0;
-                posY = 0;
-            }
-
-            updateTransform();
-            triggerDynamicZoomRender();
-        }
-
-        // MOUSE WHEEL ZOOM
-        scene.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const step = e.deltaY < 0 ? 0.4 : -0.4;
-            zoomToPoint(e.clientX, e.clientY, step);
-        }, { passive: false });
-
-        // MOUSE DRAG (PANNING)
-        scene.addEventListener('mousedown', (e) => {
-            if (scale === 1 || e.target.closest('.arrow-btn')) return;
-            isDragging = true; 
-            startX = e.clientX - posX; 
-            startY = e.clientY - posY;
-        });
-
-        window.addEventListener('mousemove', (e) => { 
-            if (!isDragging) return; 
-            posX = e.clientX - startX; 
-            posY = e.clientY - startY; 
-            updateTransform(); 
-        });
-
-        window.addEventListener('mouseup', () => { isDragging = false; });
-
-        // iOS VE MOBILE SAFARI İÇİN GELİŞTİRİLMİŞ ÇOKLU DOKUNMATİK (MULTI-TOUCH PINCH) MOTORU
-        scene.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                isPinching = true;
-                initialPinchDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                
-                touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
-            } else if (e.touches.length === 1) {
-                isPinching = false;
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                if (scale > 1) {
-                    isDragging = true;
-                    startX = e.touches[0].clientX - posX;
-                    startY = e.touches[0].clientY - posY;
-                }
-            }
-        }, { passive: true });
-
-        scene.addEventListener('touchmove', (e) => {
-            if (isPinching && e.touches.length === 2) {
-                e.preventDefault(); // Tarayıcı düzeyinde genel zoom'u ez
-                const currentDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                const currentMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
-                const factor = currentDist / initialPinchDist;
-                // Parmak hareket hassasiyetini ve ivmesini ayarlayan katman
-                const step = (factor - 1) * 1.8;
-
-                if (Math.abs(step) > 0.02) {
-                    zoomToPoint(currentMidX, currentMidY, step);
-                    initialPinchDist = currentDist; 
-                }
-            } else if (isDragging && e.touches.length === 1 && scale > 1) {
-                e.preventDefault();
-                posX = e.touches[0].clientX - startX;
-                posY = e.touches[0].clientY - startY;
-                updateTransform();
-            }
-        }, { passive: false });
-
-        scene.addEventListener('touchend', (e) => {
-            if (isPinching) {
-                if (e.touches.length < 2) {
-                    isPinching = false;
-                    isDragging = false;
-                }
-                return;
-            }
-            if (isDragging) { isDragging = false; return; }
-
-            // Eğer zoom yapılmamışsa, stabil sayfa geçişleri için yatay kaydırma (swipe) kontrolü
-            if (scale === 1 && e.changedTouches.length > 0) {
-                const touchEndX = e.changedTouches[0].clientX;
-                const touchEndY = e.changedTouches[0].clientY;
-                const diffX = touchStartX - touchEndX;
-                const diffY = touchStartY - touchEndY;
-
-                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-                    if (diffX > 0) flipNext(); else flipPrev();
-                }
-            }
-        }, { passive: true });
-
-        // BUTTON EVENTS
-        document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
-        document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
-        
-        document.getElementById('zoomInBtn').addEventListener('click', () => { 
-            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.6);
-        });
-        
-        document.getElementById('zoomOutBtn').addEventListener('click', () => { 
-            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, -0.6);
-        });
-
-        document.getElementById('nextBtn').addEventListener('click', flipNext);
-        document.getElementById('prevBtn').addEventListener('click', flipPrev);
-
-        gotoInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                let targetPage = parseInt(gotoInput.value);
-                if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
-                    playPaperSound(); currentId = targetPage - 1; localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); renderHighQualityPage(targetPage, 1); updateBookDisplay(); runPredictiveCachePipeline();
-                    gotoInput.blur();
-                } else { gotoInput.value = currentId + 1; }
-            }
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return; 
-            if (e.key === "ArrowRight" || e.key === " ") flipNext();
-            if (e.key === "ArrowLeft") flipPrev();
-        });
-
-        window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
-
-        window.onload = () => {
-            buildSidebarMenu();
-            const savedPresentation = localStorage.getItem('corporate_last_presentation');
-            const savedPage = localStorage.getItem('corporate_last_page');
-
-            if (savedPresentation !== null && presentations[savedPresentation]) {
-                const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
-                const toast = document.getElementById('resumeToast');
-                toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000);
-                switchPresentation(parseInt(savedPresentation), targetPageIdx);
-            } else { switchPresentation(0, 0); }
-        };
-    </script>
+
+
+<div class="premium-bg"></div>
+
+
+
+<!-- GLOBAL LOADING PULSE SCREEN -->
+
+<div id="globalLoading">
+
+<img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
+
+</div>
+
+
+
+<!-- UPPER LEFT CONTROL BUTTONS -->
+
+<div class="header-column">
+
+<button class="brand-logo-btn" onclick="toggleMenu()">
+
+<img src="yatas_grup_logo.png" alt="Yataş Group Logo">
+
+</button>
+
+<button class="hamburger-btn" id="menuHamburger">
+
+<span></span>
+
+<span></span>
+
+<span></span>
+
+</button>
+
+
+
+<!-- Dynamic Header Switch for Portrait Mobile -->
+
+<div class="header-sound-container" id="headerSoundContainer">
+
+<div class="ios-switch-container">
+
+<span class="switch-label">Sound</span>
+
+<label class="ios-switch">
+
+<input type="checkbox" class="audioToggleBtnClass" checked>
+
+<span class="ios-slider"></span>
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- RESUME LAST SESSION TOAST -->
+
+<div id="resumeToast">Welcome back! Restoring your last active session page.</div>
+
+
+<div class="portal-wrapper" id="portalWrapper">
+
+
+<!-- MAIN DRAWER NAVIGATION SIDEBAR -->
+
+<div class="sidebar-nav" id="sidebarNav">
+
+<div class="brand-subtitle">Corporate Deck Portal</div>
+
+
+<div class="menu-section-title">Catalogues</div>
+
+<ul class="deck-list" id="cataloguesList"></ul>
+
+
+
+<div class="menu-section-title">Other Presentations</div>
+
+<ul class="deck-list" id="otherList"></ul>
+
+</div>
+
+
+
+<div class="workspace" id="workspace">
+
+<div class="main-container" id="mainContainer">
+
+<div class="scene" id="scene">
+
+
+<div id="zoomContainer" class="pan-zoom-container">
+
+<div id="book" class="book"></div>
+
+</div>
+
+
+
+<!-- FLOATING ARROW OVERLAYS -->
+
+<div class="nav-overlay-zone left-zone" id="zoneLeft">
+
+<div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
+
+</div>
+
+
+
+<div class="nav-overlay-zone right-zone" id="zoneRight">
+
+<div class="arrow-btn" id="overlayNextBtn">&#10095;</div>
+
+</div>
+
+
+
+</div>
+
+
+
+<!-- SLIDABLE PREVIEW THUMBNAILS PANEL -->
+
+<div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
+
+</div>
+
+
+
+<!-- LOWER DOCK CONTROL SYSTEM -->
+
+<div class="bottom-bar-area" id="bottomBarArea">
+
+<div class="controls-wrapper">
+
+<div class="controls">
+
+<button id="prevBtn" disabled>◀ Prev</button>
+
+<div class="goto-container">
+
+<input type="text" id="gotoInput" class="goto-input" value="1">
+
+<span id="pageIndicator">/ 0</span>
+
+</div>
+
+<button id="nextBtn">Next ▶</button>
+
+<button id="zoomInBtn">🔍 +</button>
+
+<button id="zoomOutBtn">🔍 -</button>
+
+</div>
+
+
+
+<!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
+
+<div class="sound-corner" id="footerSoundContainer">
+
+<div class="ios-switch-container">
+
+<span class="switch-label">Sound FX</span>
+
+<label class="ios-switch">
+
+<input type="checkbox" class="audioToggleBtnClass" checked>
+
+<span class="ios-slider"></span>
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="hint">Scroll mouse or pinch screens to zoom. Swipe to change slides.</div>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+<script>
+
+const presentationData = {
+
+catalogues: [
+
+{ title: "Enza Home", url: "Enza Home.pdf" },
+
+{ title: "Yataş Bedding", url: "Yataş Bedding.pdf" },
+
+],
+
+otherPresentations: [
+
+{ title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" },
+
+{ title: "Yataş Projects", url: "Yataş Projects.pdf" },
+
+{ title: "Yataş Projects References", url: "Yataş Projects References.pdf" }
+
+]
+
+};
+
+
+
+const presentations = [...presentationData.catalogues, ...presentationData.otherPresentations];
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+
+
+let currentActivePresentationIndex = 0;
+
+let currentId = 0;
+
+let pages = [];
+
+let thumbElements = [];
+
+let pdfDoc = null;
+
+
+// ZOOM / PAN STATE CONTROL
+
+let scale = 1;
+
+let posX = 0;
+
+let posY = 0;
+
+let isDragging = false;
+
+let startX;
+
+let startY;
+
+
+// TOUCH ENGINE MULTI-TOUCH TRACKING
+
+let initialPinchDist = 0;
+
+let touchStartX = 0;
+
+let touchStartY = 0;
+
+let isPinching = false;
+
+
+
+let isSoundOn = true;
+
+let renderTimeout = null;
+
+
+
+const transitionSound = new Audio('glossy_magazine.mp3');
+
+
+
+// CACHED ELEMENTS
+
+const zoomContainer = document.getElementById('zoomContainer');
+
+const book = document.getElementById('book');
+
+const scene = document.getElementById('scene');
+
+const sidebarThumbnails = document.getElementById('sidebarThumbnails');
+
+const gotoInput = document.getElementById('gotoInput');
+
+const cataloguesList = document.getElementById('cataloguesList');
+
+const otherList = document.getElementById('otherList');
+
+const globalLoading = document.getElementById('globalLoading');
+
+const sidebarNav = document.getElementById('sidebarNav');
+
+const menuHamburger = document.getElementById('menuHamburger');
+
+
+
+if ('serviceWorker' in navigator) {
+
+window.addEventListener('load', () => {
+
+navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
+
+});
+
+}
+
+
+
+function unlockAudioEngine() {
+
+transitionSound.play().then(() => {
+
+transitionSound.pause();
+
+transitionSound.currentTime = 0;
+
+}).catch(e => {});
+
+window.removeEventListener('click', unlockAudioEngine);
+
+window.removeEventListener('touchstart', unlockAudioEngine);
+
+}
+
+window.addEventListener('click', unlockAudioEngine);
+
+window.addEventListener('touchstart', unlockAudioEngine);
+
+
+
+function playPaperSound() {
+
+if (!isSoundOn) return;
+
+try {
+
+transitionSound.currentTime = 0;
+
+transitionSound.play();
+
+} catch (e) {}
+
+}
+
+
+
+function injectWatermark(context, width, height) {
+
+context.save();
+
+context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
+
+context.fillStyle = "rgba(255, 255, 255, 0.05)";
+
+context.textBaseline = "middle";
+
+context.translate(width / 2, height / 2);
+
+context.rotate(-Math.PI / 6);
+
+context.fillText("© YATAŞ GROUP - ALL RIGHTS RESERVED", 0, 0);
+
+context.restore();
+
+}
+
+
+
+function toggleMenu() { sidebarNav.classList.toggle('menu-open'); }
+
+menuHamburger.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+
+document.addEventListener('click', (e) => {
+
+if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
+
+sidebarNav.classList.remove('menu-open');
+
+}
+
+});
+
+
+
+document.querySelectorAll('.audioToggleBtnClass').forEach(checkbox => {
+
+checkbox.addEventListener('change', function() {
+
+isSoundOn = this.checked;
+
+document.querySelectorAll('.audioToggleBtnClass').forEach(other => { other.checked = isSoundOn; });
+
+});
+
+});
+
+
+
+function buildSidebarMenu() {
+
+cataloguesList.innerHTML = ""; otherList.innerHTML = "";
+
+let globalIdx = 0;
+
+
+
+presentationData.catalogues.forEach((deck) => {
+
+const currentIdx = globalIdx;
+
+const li = document.createElement('li');
+
+const btn = document.createElement('button');
+
+btn.className = `deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
+
+btn.innerText = deck.title;
+
+btn.setAttribute('data-index', currentIdx);
+
+btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
+
+li.appendChild(btn); cataloguesList.appendChild(li); globalIdx++;
+
+});
+
+
+
+presentationData.otherPresentations.forEach((deck) => {
+
+const currentIdx = globalIdx;
+
+const li = document.createElement('li');
+
+const btn = document.createElement('button');
+
+btn.className = `deck-btn`;
+
+btn.innerText = deck.title;
+
+btn.setAttribute('data-index', currentIdx);
+
+btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
+
+li.appendChild(btn); otherList.appendChild(li); globalIdx++;
+
+});
+
+}
+
+
+
+async function switchPresentation(index, targetSavedPage = 0) {
+
+currentActivePresentationIndex = index;
+
+localStorage.setItem('corporate_last_presentation', index);
+
+
+
+document.querySelectorAll('.deck-btn').forEach(b => {
+
+b.classList.toggle('active-deck', parseInt(b.getAttribute('data-index')) === index);
+
+});
+
+
+
+globalLoading.style.display = 'flex'; globalLoading.style.opacity = '1';
+
+book.innerHTML = ''; sidebarThumbnails.innerHTML = '';
+
+pages = []; thumbElements = [];
+
+currentId = targetSavedPage;
+
+resetZoom();
+
+await loadPDF(presentations[index].url);
+
+}
+
+
+
+function resizeBookToFit(viewport) {
+
+if (!viewport) return;
+
+const sceneW = scene.clientWidth; const sceneH = scene.clientHeight;
+
+if (!sceneW || !sceneH) return;
+
+
+
+const pdfRatio = viewport.width / viewport.height;
+
+const margin = 0.95;
+
+const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
+
+let finalW, finalH;
+
+
+
+if (maxAllowedW / maxAllowedH > pdfRatio) {
+
+finalH = maxAllowedH; finalW = finalH * pdfRatio;
+
+} else {
+
+finalW = maxAllowedW; finalH = finalW / pdfRatio;
+
+}
+
+book.style.width = Math.floor(finalW) + 'px';
+
+book.style.height = Math.floor(finalH) + 'px';
+
+
+
+updateTransform();
+
+}
+
+
+
+// AKILLI SIFIR KIPRAŞMA / DOUBLE-BUFFER RENDER ENGINE
+
+async function renderHighQualityPage(pageNum, customScale = 1) {
+
+if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
+
+
+
+try {
+
+const page = await pdfDoc.getPage(pageNum);
+
+let pageDiv = pages[pageNum - 1];
+
+
+if (!pageDiv) {
+
+pageDiv = document.createElement('div');
+
+pageDiv.className = 'page';
+
+
+const container = document.createElement('div');
+
+container.className = 'canvas-container-layer';
+
+
+const canvas = document.createElement('canvas');
+
+canvas.className = 'base-lowres-canvas';
+
+
+container.appendChild(canvas);
+
+pageDiv.appendChild(container);
+
+book.appendChild(pageDiv);
+
+pages[pageNum - 1] = pageDiv;
+
+}
+
+
+
+const canvas = pageDiv.querySelector('.base-lowres-canvas');
+
+const context = canvas.getContext('2d');
+
+pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
+
+
+
+const dpr = window.devicePixelRatio || 1;
+
+let targetScale = customScale * dpr;
+
+
+
+const sampleViewport = page.getViewport({ scale: targetScale });
+
+if (sampleViewport.width > 2048) {
+
+targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
+
+}
+
+
+
+const viewport = page.getViewport({ scale: targetScale });
+
+
+
+// SESSİZ ARKA PLAN CANVAS (Çift katman çizimi başlatılıyor)
+
+const newWidth = Math.floor(viewport.width);
+
+const newHeight = Math.floor(viewport.height);
+
+
+
+const offscreenCanvas = document.createElement('canvas');
+
+offscreenCanvas.width = newWidth;
+
+offscreenCanvas.height = newHeight;
+
+const offscreenContext = offscreenCanvas.getContext('2d');
+
+
+
+// Görseli görünmeyen sanal tuvalde üret
+
+await page.render({
+
+canvasContext: offscreenContext,
+
+viewport: viewport
+
+}).promise;
+
+
+
+injectWatermark(offscreenContext, newWidth, newHeight);
+
+
+
+// ÇİZİM BİTTİĞİ SALİSE BOYUTU SET ET (Bembeyaz parlamayı engelleyen can alıcı nokta)
+
+if (canvas.width !== newWidth || canvas.height !== newHeight) {
+
+canvas.width = newWidth;
+
+canvas.height = newHeight;
+
+}
+
+context.drawImage(offscreenCanvas, 0, 0);
+
+
+
+if (pageNum - 1 === currentId) {
+
+resizeBookToFit(pageDiv.pdfViewport);
+
+}
+
+} catch (err) {
+
+console.error("Render hatası:", err);
+
+}
+
+}
+
+
+
+function triggerDynamicZoomRender() {
+
+if (renderTimeout) clearTimeout(renderTimeout);
+
+renderTimeout = setTimeout(() => {
+
+renderHighQualityPage(currentId + 1, scale);
+
+}, 300);
+
+}
+
+
+
+function runPredictiveCachePipeline() {
+
+const activeIdx = currentId + 1;
+
+renderHighQualityPage(activeIdx, scale);
+
+
+const nextIdx = activeIdx + 1;
+
+const prevIdx = activeIdx - 1;
+
+if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
+
+if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
+
+}
+
+
+
+function createSequentialThumbContainers(total) {
+
+sidebarThumbnails.innerHTML = '';
+
+for (let i = 1; i <= total; i++) {
+
+const thumbBox = document.createElement('div');
+
+thumbBox.className = 'thumb-box'; thumbBox.id = `thumb-box-${i}`;
+
+const canvas = document.createElement('canvas'); thumbBox.appendChild(canvas);
+
+const label = document.createElement('div'); label.className = 'thumb-label'; label.innerText = i;
+
+thumbBox.appendChild(label); sidebarThumbnails.appendChild(thumbBox);
+
+thumbElements[i - 1] = thumbBox;
+
+
+
+thumbBox.addEventListener('click', () => {
+
+if (currentId === i - 1) return;
+
+playPaperSound(); currentId = i - 1;
+
+localStorage.setItem('corporate_last_page', currentId);
+
+resetZoom(); renderHighQualityPage(i, 1); updateBookDisplay(); runPredictiveCachePipeline();
+
+});
+
+}
+
+}
+
+
+
+async function renderThumbnail(pageNum) {
+
+try {
+
+const page = await pdfDoc.getPage(pageNum);
+
+const viewport = page.getViewport({ scale: 0.2 });
+
+const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
+
+if (!thumbBox) return;
+
+const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
+
+canvas.height = viewport.height; canvas.width = viewport.width;
+
+await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+} catch (err) {}
+
+}
+
+
+
+async function loadPDF(url) {
+
+try {
+
+pdfDoc = await pdfjsLib.getDocument(url).promise;
+
+const totalPages = pdfDoc.numPages;
+
+pages = new Array(totalPages); thumbElements = new Array(totalPages);
+
+createSequentialThumbContainers(totalPages);
+
+
+
+const thumbPromises = [];
+
+for (let pageNum = 1; pageNum <= totalPages; pageNum++) { thumbPromises.push(renderThumbnail(pageNum)); }
+
+await Promise.all(thumbPromises);
+
+
+
+await renderHighQualityPage(currentId + 1, 1);
+
+globalLoading.style.opacity = '0'; setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
+
+zoomContainer.style.display = 'flex';
+
+updateBookDisplay(); runPredictiveCachePipeline();
+
+} catch (error) { console.error(error); }
+
+}
+
+
+
+function updateBookDisplay() {
+
+if (pages.length === 0) return;
+
+pages.forEach((page, index) => {
+
+if (!page) return;
+
+if (index === currentId) {
+
+page.className = 'page active-page'; resizeBookToFit(page.pdfViewport);
+
+} else if (index < currentId) {
+
+page.className = 'page turn-next';
+
+} else {
+
+page.className = 'page turn-prev';
+
+}
+
+});
+
+
+
+thumbElements.forEach((thumb, index) => {
+
+if (!thumb) return;
+
+if (index === currentId) {
+
+thumb.classList.add('active-thumb'); thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+} else { thumb.classList.remove('active-thumb'); }
+
+});
+
+
+
+document.getElementById('prevBtn').disabled = (currentId === 0);
+
+document.getElementById('nextBtn').disabled = (currentId >= pages.length - 1);
+
+gotoInput.value = currentId + 1;
+
+document.getElementById('pageIndicator').innerText = `/ ${pages.length}`;
+
+}
+
+
+
+function flipNext() {
+
+if (currentId < pages.length - 1) {
+
+playPaperSound(); currentId++; localStorage.setItem('corporate_last_page', currentId);
+
+resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
+
+}
+
+}
+
+function flipPrev() {
+
+if (currentId > 0) {
+
+playPaperSound(); currentId--; localStorage.setItem('corporate_last_page', currentId);
+
+resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
+
+}
+
+}
+
+
+// GEOMETRİK MERKEZLİ PAN & ZOOM MOTORU
+
+function resetZoom() {
+
+scale = 1;
+
+posX = 0;
+
+posY = 0;
+
+updateTransform();
+
+}
+
+
+
+function updateTransform() {
+
+if (scale <= 1) {
+
+scale = 1; posX = 0; posY = 0;
+
+zoomContainer.style.left = '0px';
+
+zoomContainer.style.top = '0px';
+
+zoomContainer.style.transform = `translate3d(0px, 0px, 0px) scale(1)`;
+
+} else {
+
+const maxPanX = (scale - 1) * scene.clientWidth / 2;
+
+const maxPanY = (scale - 1) * scene.clientHeight / 2;
+
+
+posX = Math.max(-maxPanX * 2, Math.min(posX, maxPanX * 0.5));
+
+posY = Math.max(-maxPanY * 2, Math.min(posY, maxPanY * 0.5));
+
+
+
+zoomContainer.style.transform = `translate3d(${posX}px, ${posY}px, 0px) scale(${scale})`;
+
+}
+
+}
+
+
+
+function zoomToPoint(clientX, clientY, zoomStep) {
+
+const rect = scene.getBoundingClientRect();
+
+
+const mouseX = clientX - rect.left;
+
+const mouseY = clientY - rect.top;
+
+
+
+const oldScale = scale;
+
+scale = Math.max(1, Math.min(scale + zoomStep, 5));
+
+
+
+if (scale > 1) {
+
+posX = mouseX - (mouseX - posX) * (scale / oldScale);
+
+posY = mouseY - (mouseY - posY) * (scale / oldScale);
+
+} else {
+
+posX = 0;
+
+posY = 0;
+
+}
+
+
+
+updateTransform();
+
+triggerDynamicZoomRender();
+
+}
+
+
+
+// MOUSE EVENTS
+
+scene.addEventListener('wheel', (e) => {
+
+e.preventDefault();
+
+const step = e.deltaY < 0 ? 0.3 : -0.3;
+
+zoomToPoint(e.clientX, e.clientY, step);
+
+}, { passive: false });
+
+
+
+scene.addEventListener('mousedown', (e) => {
+
+if (scale === 1 || e.target.closest('.arrow-btn')) return;
+
+isDragging = true;
+
+startX = e.clientX - posX;
+
+startY = e.clientY - posY;
+
+});
+
+
+
+window.addEventListener('mousemove', (e) => {
+
+if (!isDragging) return;
+
+posX = e.clientX - startX;
+
+posY = e.clientY - startY;
+
+updateTransform();
+
+});
+
+
+
+window.addEventListener('mouseup', () => { isDragging = false; });
+
+
+
+// TOUCH CONTROLS WITH DIRECT PINCH-CENTER POINT
+
+scene.addEventListener('touchstart', (e) => {
+
+if (e.touches.length === 2) {
+
+isPinching = true;
+
+initialPinchDist = Math.hypot(
+
+e.touches[0].clientX - e.touches[1].clientX,
+
+e.touches[0].clientY - e.touches[1].clientY
+
+);
+
+
+touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+
+touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+
+
+} else if (e.touches.length === 1) {
+
+isPinching = false;
+
+touchStartX = e.touches[0].clientX;
+
+touchStartY = e.touches[0].clientY;
+
+if (scale > 1) {
+
+isDragging = true;
+
+startX = e.touches[0].clientX - posX;
+
+startY = e.touches[0].clientY - posY;
+
+}
+
+}
+
+}, { passive: true });
+
+
+
+scene.addEventListener('touchmove', (e) => {
+
+if (isPinching && e.touches.length === 2) {
+
+e.preventDefault();
+
+const currentDist = Math.hypot(
+
+e.touches[0].clientX - e.touches[1].clientX,
+
+e.touches[0].clientY - e.touches[1].clientY
+
+);
+
+const currentMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+
+const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+
+
+const factor = currentDist / initialPinchDist;
+
+const step = factor > 1 ? 0.12 : -0.12;
+
+
+
+zoomToPoint(currentMidX, currentMidY, step);
+
+initialPinchDist = currentDist;
+
+
+
+} else if (isDragging && e.touches.length === 1 && scale > 1) {
+
+posX = e.touches[0].clientX - startX;
+
+posY = e.touches[0].clientY - startY;
+
+updateTransform();
+
+}
+
+}, { passive: false });
+
+
+
+scene.addEventListener('touchmove', (e) => {
+
+if (isPinching && e.touches.length === 2) {
+
+e.preventDefault();
+
+}
+
+}, { passive: false });
+
+
+
+scene.addEventListener('touchend', (e) => {
+
+if (isPinching) {
+
+if (e.touches.length < 2) isPinching = false;
+
+return;
+
+}
+
+if (isDragging) { isDragging = false; return; }
+
+
+
+if (scale === 1 && e.changedTouches.length > 0) {
+
+const touchEndX = e.changedTouches[0].clientX;
+
+const touchEndY = e.changedTouches[0].clientY;
+
+const diffX = touchStartX - touchEndX;
+
+const diffY = touchStartY - touchEndY;
+
+
+
+if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+
+if (diffX > 0) flipNext(); else flipPrev();
+
+}
+
+}
+
+}, { passive: true });
+
+
+
+// BUTTON EVENTS
+
+document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
+
+document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
+
+
+document.getElementById('zoomInBtn').addEventListener('click', () => {
+
+zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.5);
+
+});
+
+
+document.getElementById('zoomOutBtn').addEventListener('click', () => {
+
+zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, -0.5);
+
+});
+
+
+
+document.getElementById('nextBtn').addEventListener('click', flipNext);
+
+document.getElementById('prevBtn').addEventListener('click', flipPrev);
+
+
+
+gotoInput.addEventListener('keydown', (e) => {
+
+if (e.key === 'Enter') {
+
+let targetPage = parseInt(gotoInput.value);
+
+if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
+
+playPaperSound(); currentId = targetPage - 1; localStorage.setItem('corporate_last_page', currentId);
+
+resetZoom(); renderHighQualityPage(targetPage, 1); updateBookDisplay(); runPredictiveCachePipeline();
+
+gotoInput.blur();
+
+} else { gotoInput.value = currentId + 1; }
+
+}
+
+});
+
+
+
+window.addEventListener('keydown', (e) => {
+
+if (e.target.tagName === 'INPUT') return;
+
+if (e.key === "ArrowRight" || e.key === " ") flipNext();
+
+if (e.key === "ArrowLeft") flipPrev();
+
+});
+
+
+
+window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
+
+
+
+window.onload = () => {
+
+buildSidebarMenu();
+
+const savedPresentation = localStorage.getItem('corporate_last_presentation');
+
+const savedPage = localStorage.getItem('corporate_last_page');
+
+
+
+if (savedPresentation !== null && presentations[savedPresentation]) {
+
+const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
+
+const toast = document.getElementById('resumeToast');
+
+toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000);
+
+switchPresentation(parseInt(savedPresentation), targetPageIdx);
+
+} else { switchPresentation(0, 0); }
+
+};
+
+</script>
+
 </body>
-</html>
+
+</html> 
