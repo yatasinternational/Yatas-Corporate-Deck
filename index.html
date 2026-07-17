@@ -1,1696 +1,538 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Yataş Group - Premium Corporate Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yataş Group - Global Executive Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- PWA Infrastructure -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#020617">
-    <link rel="manifest" href="manifest.json" id="pwaManifest">
-
-    <!-- PDF.js Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-
     <style>
         :root {
-            --primary-blue: #002870;
+            --primary-dark: #020617;
             --neon-blue: #00d2ff;
-            --book-shadow: 0 25px 55px rgba(0,0,0,0.6);
-            --glass-bg: rgba(2, 6, 23, 0.88);
+            --accent-blue: #002870;
+            --glass-bg: rgba(10, 15, 30, 0.55);
             --glass-border: rgba(255, 255, 255, 0.08);
+            --card-blur: blur(16px);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        
+
         body {
-            background: #020617;
+            background-color: var(--primary-dark);
+            color: #ffffff;
+            min-height: 100vh;
             display: flex;
-            height: 100vh;
-            height: 100dvh;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden;
-            color: #fff;
-            touch-action: none;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* PREMIUM MESH GRADIENT BACKGROUND */
-        .premium-bg {
+        /* PREMIUM MESH DEGRADE ARKA PLAN */
+        .mesh-background {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
-            background: #020617;
             overflow: hidden;
+            pointer-events: none;
         }
-        .premium-bg::before {
+        .mesh-background::before {
             content: "";
             position: absolute;
-            top: -20%; left: -20%; width: 140%; height: 140%;
+            top: -30%; left: -20%; width: 140%; height: 140%;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 40, 112, 0.45) 0%, transparent 45%),
-                radial-gradient(circle at 90% 10%, rgba(0, 210, 255, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(0, 40, 112, 0.35) 0%, transparent 50%);
-            filter: blur(60px);
-            animation: elegantBgMotion 25s ease-in-out infinite alternate;
+                radial-gradient(circle at 15% 20%, rgba(0, 40, 112, 0.5) 0%, transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(0, 210, 255, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(0, 40, 112, 0.4) 0%, transparent 55%);
+            filter: blur(80px);
+            animation: meshMotion 20s ease-in-out infinite alternate;
         }
-        @keyframes elegantBgMotion {
+        @keyframes meshMotion {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(2%, -4%) scale(1.05); }
-            100% { transform: translate(-2%, 4%) scale(0.98); }
-        }
-        
-        /* PULSE LOADING SCREEN */
-        #globalLoading { 
-            position: fixed; 
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #002870; 
-            z-index: 10000; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            gap: 20px;
-            transition: opacity 0.5s ease;
+            100% { transform: translate(2%, -3%) scale(1.05); }
         }
 
-        .loading-pulse-logo {
-            width: 180px;
-            height: auto;
-            background: #ffffff;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            animation: yatasHeartbeat 1.4s ease-in-out infinite;
-        }
-
-        @keyframes yatasHeartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.08); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.13); }
-            70% { transform: scale(1); }
-            100% { transform: scale(1); }
-        }
-
-        /* PORTAL WRAPPER */
-        .portal-wrapper {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
+        /* MAIN WRAPPER */
+        .portal-container {
             position: relative;
-            z-index: 2;
-        }
-
-        /* HEADER LEFT COLUMN CONTROL PANEL */
-        .header-column {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-            z-index: 1001;
-        }
-
-        .brand-logo-btn {
-            background: #ffffff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .brand-logo-btn:hover {
-            transform: translateY(-2px);
-        }
-        .brand-logo-btn img {
-            height: 24px;
-            width: auto;
-        }
-
-        .hamburger-btn {
-            width: 46px;
-            height: 46px;
-            background: rgba(0, 40, 112, 0.85);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 5px;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .hamburger-btn:hover {
-            background: rgba(255,255,255,0.15);
-            transform: scale(1.05);
-        }
-        .hamburger-btn span {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #ffffff;
-            transition: 0.3s;
-        }
-
-        /* SIDEBAR NAVIGATION Drawer */
-        .sidebar-nav {
-            position: fixed;
-            left: -340px;
-            top: 0;
-            height: 100vh;
-            height: 100dvh;
-            width: 320px;
-            background: var(--glass-bg); 
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            padding: 150px 24px 24px 24px;
-            box-shadow: 25px 0 50px rgba(0,0,0,0.6);
-            z-index: 1000;
-            overflow-y: auto;
-            backdrop-filter: blur(30px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .sidebar-nav.menu-open {
-            left: 0;
-        }
-
-        .sidebar-nav::-webkit-scrollbar { width: 4px; }
-        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
-
-        .brand-subtitle {
-            font-size: 11px;
-            color: #a4c2f4;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .menu-section-title {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 20px;
-            margin-bottom: 12px;
-            padding-left: 5px;
-            border-left: 3px solid var(--neon-blue);
-        }
-
-        .deck-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .deck-btn {
+            z-index: 5;
             width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            color: #ffffff;
-            text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 30px 24px;
             display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex: 1;
+        }
+
+        /* HEADER AREA */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 20px;
         }
-        .deck-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
+
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
-        .deck-btn.active-deck {
-            background: #ffffff;
-            border-color: #ffffff;
-            color: #002870; 
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+
+        .brand-logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ffffff, #a4c2f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .deck-btn::before {
-            content: "•";
+
+        .brand-sub {
+            font-size: 0.75rem;
+            font-weight: 600;
             color: var(--neon-blue);
-            font-size: 14px;
-        }
-        .deck-btn.active-deck::before {
-            color: #002870;
-        }
-
-        /* WORKSPACE AREA */
-        .workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-            z-index: 5;
-        }
-
-        /* CONTAINER GRID RESTRICTING OVERFLOWS */
-        .main-container {
-            display: flex;
-            width: 100%;
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            gap: 20px;
-            padding: 20px;
-        }
-        
-        /* SCENE ZONE */
-        .scene {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            height: 100%;
-            min-height: 0;
-            perspective: 1200px;
-            background: transparent;
-            touch-action: none;
-        }
-
-        /* DYNAMIC SCALING WRAPPER */
-        .pan-zoom-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            cursor: grab;
-            transform-origin: center center;
-            will-change: transform;
-            z-index: 10;
-            touch-action: none;
-        }
-        .pan-zoom-container:active { cursor: grabbing; }
-        
-        /* 3D COVERFLOW ENGINE CONTAINER */
-        .book {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            will-change: transform;
-        }
-        
-        /* STANDARD (ANDROID & DESKTOP) 3D PAGE SETUP */
-        .page {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            margin: auto;
-            width: 100%; height: 100%;
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s, z-index 0.5s;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .page.active-page {
-            opacity: 1;
-            pointer-events: auto;
-            z-index: 10;
-            transform: translate3d(0, 0, 10px) scale(1);
-        }
-        
-        .page.turn-next {
-            opacity: 0.35;
-            z-index: 5;
-            transform: translate3d(-40%, 0, 0) rotateY(45deg) scale(0.82);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        
-        .page.turn-prev {
-            opacity: 0.35;
-            z-index: 5;
-            transform: translate3d(40%, 0, 0) rotateY(-45deg) scale(0.82);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-
-        .page.hidden-page {
-            display: none;
-            opacity: 0;
-            z-index: 1;
-        }
-
-        /* ==========================================================================
-           iOS SAFARI LITE SYSTEM - ANIMATIONLESS & OPTIMIZED FOR ZOOM & STABILITY
-           ========================================================================== */
-        body.is-ios-lite .page {
-            transition: none !important; 
-            transform: none !important;  
-            backface-visibility: visible !important;
-            -webkit-backface-visibility: visible !important;
-        }
-
-        body.is-ios-lite .page.active-page {
-            opacity: 1 !important;
-            display: block !important;
-            pointer-events: auto !important;
-            z-index: 100 !important;
-            transform: translate3d(0,0,0) scale(1) !important;
-        }
-
-        body.is-ios-lite .page.turn-next,
-        body.is-ios-lite .page.turn-prev,
-        body.is-ios-lite .page.hidden-page {
-            display: none !important; 
-            opacity: 0 !important;
-            pointer-events: none !important;
-            z-index: 1 !important;
-        }
-
-        /* CONTAINER FOR RENDER PIECE */
-        .canvas-container-layer {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            box-shadow: var(--book-shadow);
-            border-radius: 12px;
-            overflow: hidden;
-            background: #020617; 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .base-lowres-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100% !important;
-            height: 100% !important;
-            z-index: 1;
-            display: block;
-            will-change: transform, opacity;
-            transition: opacity 0.15s ease-in-out;
-        }
-
-        /* FLOATING ARROW OVERLAYS */
-        .nav-overlay-zone {
-            position: absolute;
-            top: 0; height: 100%; width: 100px;
-            z-index: 99;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none;
-        }
-        .nav-overlay-zone.left-zone { left: 0; }
-        .nav-overlay-zone.right-zone { right: 0; }
-
-        .arrow-btn {
-            width: 54px; height: 54px;
-            background: rgba(0, 40, 112, 0.5);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; cursor: pointer;
-            opacity: 0.65;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(8px);
-            user-select: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            pointer-events: auto;
-        }
-        .arrow-btn:hover {
-            opacity: 1; 
-            transform: scale(1.15);
-            background: #ffffff; 
-            color: #002870;
-            border-color: #ffffff;
-            box-shadow: 0 10px 25px rgba(255,255,255,0.25);
-        }
-        
-        /* DESKTOP SIDEBAR THUMBNAILS */
-        .sidebar-thumbnails {
-            width: 180px;
-            background: rgba(0, 40, 112, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 8px;
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            transition: all 0.5s ease;
-            flex-shrink: 0;
-        }
-        .sidebar-thumbnails::-webkit-scrollbar { width: 4px; }
-        .sidebar-thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
-
-        .thumb-box {
-            position: relative; width: 94%; cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
-            overflow: hidden; transition: all 0.3s ease; opacity: 0.5;
-            background: rgba(255, 255, 255, 0.02); flex-shrink: 0;
-        }
-        .thumb-box:hover { opacity: 0.85; border-color: rgba(255,255,255,0.3); }
-        .thumb-box.active-thumb { border-color: var(--neon-blue); opacity: 1; box-shadow: 0 0 12px rgba(0, 210, 255, 0.3); }
-        .thumb-box canvas { width: 100% !important; height: auto !important; display: block; }
-
-        .thumb-label {
-            position: absolute; bottom: 4px; right: 6px;
-            background: rgba(0,0,0,0.8); color: var(--neon-blue); font-size: 9px;
-            font-weight: bold; padding: 1px 5px; border-radius: 3px;
-        }
-        
-        /* BOTTOM DOCK SYSTEM */
-        .bottom-bar-area {
-            width: 100%; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px;
-            padding: 15px 0; 
-            flex-shrink: 0; 
-            z-index: 101;
-            position: relative;
-            background: rgba(2, 6, 23, 0.85);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .controls-wrapper {
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .controls {
-            display: flex; align-items: center; gap: 12px; 
-            background: rgba(0, 40, 112, 0.85); padding: 10px 24px; border-radius: 50px;
-            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-        
-        .bottom-bar-area button {
-            padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
-            background: #fff; color: #002870; border: none; border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-        .bottom-bar-area button:hover { background: #e5e5e5; transform: scale(1.05); }
-        .bottom-bar-area button:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
-        
-        .goto-container { display: flex; align-items: center; gap: 4px; font-size: 12px; }
-        .goto-input {
-            width: 40px; padding: 3px 5px; border-radius: 5px;
-            border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
-            color: #fff; text-align: center; font-weight: bold;
-        }
-        #pageIndicator { color: #ffffff; }
-
-        /* SOUND CONTROLLER WRAPPER */
-        .sound-corner {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 105;
-        }
-
-        /* HEADER INTEGRATED SOUND TOGGLE */
-        .header-sound-container {
-            display: none;
-            align-items: center;
-            z-index: 1001;
-        }
-
-        .ios-switch-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 40, 112, 0.85);
-            padding: 8px 12px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-        }
-
-        .switch-label {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.8);
-            user-select: none;
-        }
-
-        .ios-switch {
-            position: relative;
-            display: inline-block;
-            width: 42px;
-            height: 24px;
-        }
-
-        .ios-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .ios-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 34px;
-        }
-
-        .ios-slider:before {
-            position: absolute;
-            content: "🔊";
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        input:checked + .ios-slider {
-            background-color: var(--neon-blue);
-        }
-
-        input:checked + .ios-slider:before {
-            transform: translateX(18px);
-            content: "🔊";
-        }
-
-        input:not(:checked) + .ios-slider:before {
-            content: "🔇";
-            background-color: #f3f4f6;
-        }
-        
-        .hint { 
-            font-size: 11px; 
-            color: rgba(255,255,255,0.4) !important; 
-            font-weight: 500;
-        }
-
-        /* AUTO RESUME SESSION TOAST */
-        #resumeToast {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: rgba(0, 40, 112, 0.95);
-            border-left: 4px solid var(--neon-blue);
-            padding: 15px 25px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 10005;
-            display: none;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #resumeToast.show {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* ==========================================================================
-           STRATEGIC PORTAL MAIN HUB - SYMMETRICAL ONE-PAGER DESIGN
-           ========================================================================== */
-        .portal-home-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            z-index: 200;
-            opacity: 1;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
-            overflow-y: auto;
-        }
-        .portal-home-screen.hidden-home {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.97);
-        }
-
-        .hub-container {
-            width: 100%;
-            max-width: 1120px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
-
-        .hub-header {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .hub-logo {
-            height: 48px;
-            width: auto;
-            background: #fff;
-            padding: 8px 20px;
-            border-radius: 6px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .hub-title {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #ffffff;
-            margin-top: 10px;
-        }
-        .hub-subtitle {
-            font-size: 13px;
-            color: #a4c2f4;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        /* Grid System: High Symmetry */
-        .hub-grid {
+        /* ANNOUNCEMENT BANNER */
+        .announcement-container {
+            width: 100%;
+            max-width: 650px;
+            margin: 0;
+        }
+
+        .announcement-banner {
+            position: relative;
+            height: 40px;
+            background: rgba(10, 15, 30, 0.4);
+            backdrop-filter: var(--card-blur);
+            -webkit-backdrop-filter: var(--card-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .announcement-item {
+            position: absolute;
+            width: 90%;
+            text-align: center;
+            color: #e0e6ed;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease-in-out;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .announcement-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .announcement-item.exit {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+
+        /* GRID SYSTEM - BILATERAL SYMMETRY */
+        .grid-layout {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
+            margin-top: 10px;
         }
 
-        .hub-card {
-            background: rgba(0, 40, 112, 0.25);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 24px;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        /* LIQUID GLASS CARD */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--card-blur);
+            -webkit-backdrop-filter: var(--card-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-        }
-        .hub-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 210, 255, 0.4);
-            box-shadow: 0 12px 35px rgba(0, 210, 255, 0.15);
-            background: rgba(0, 40, 112, 0.35);
+            justify-content: space-between;
+            gap: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .hub-card-header {
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px rgba(0, 210, 255, 0.05);
+        }
+
+        .card-header {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1.5px solid rgba(255,255,255,0.1);
-            padding-bottom: 12px;
+            justify-content: space-between;
+            align-items: flex-start;
         }
-        .hub-card-icon {
-            font-size: 20px;
+
+        .card-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-category {
+            font-size: 0.7rem;
+            font-weight: 700;
             color: var(--neon-blue);
-        }
-        .hub-card-title {
-            font-size: 14px;
-            font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .card-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #a4c2f4;
+        }
+
+        /* MOCK KPI ROW (DAX Dashboard Feel) */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 16px 0;
+        }
+
+        .kpi-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .kpi-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-value {
+            font-size: 1.1rem;
+            font-weight: 700;
             color: #ffffff;
         }
 
-        .hub-deck-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .kpi-trend {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #10b981; /* Success Green */
         }
 
-        .hub-deck-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 13px;
+        /* LIQUID GLASS BUTTONS */
+        .btn-liquid-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-size: 0.85rem;
             font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: all 0.25s ease;
-        }
-        .hub-deck-btn:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: var(--neon-blue);
-            transform: scale(1.01);
-        }
-        .hub-deck-arrow {
-            color: var(--neon-blue);
-            font-size: 14px;
-            transition: transform 0.2s ease;
-        }
-        .hub-deck-btn:hover .hub-deck-arrow {
-            transform: translateX(3px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: fit-content;
+            text-decoration: none;
+            letter-spacing: 0.2px;
         }
 
-        /* Responsive Main Hub Overrides */
-        @media (max-width: 900px) {
-            .hub-grid {
+        .btn-liquid-glass:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 210, 255, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 210, 255, 0.15),
+                        inset 0 0 10px rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-liquid-glass svg {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-liquid-glass:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* STATUS DOT */
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--neon-blue);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--neon-blue);
+        }
+
+        /* FOOTER BRANDING */
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+        }
+
+        /* RESPONSIVITY */
+        @media (max-width: 960px) {
+            .grid-layout {
                 grid-template-columns: 1fr;
-                gap: 16px;
             }
-            .portal-home-screen {
-                padding: 20px;
-                padding-top: 100px;
-            }
-            .hub-title {
-                font-size: 20px;
-            }
-        }
-
-        /* ==========================================================================
-           RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
-           ========================================================================== */
-
-        @media (max-width: 1024px) and (orientation: portrait) {
-            .workspace {
-                height: 100%;
-                padding-top: 90px;
-            }
-            .main-container {
+            .header-section {
                 flex-direction: column;
-                padding: 10px;
-                gap: 10px;
-                height: calc(100% - 130px);
+                gap: 16px;
+                align-items: flex-start;
             }
-            .scene {
-                flex: 1;
-                width: 100%;
-                height: 0;
-                min-height: 0;
-            }
-            .sidebar-thumbnails {
-                width: 100% !important;
-                height: 65px !important;
-                flex-direction: row !important;
-                padding: 4px 8px !important;
-                gap: 6px !important;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                border-radius: 8px;
-                flex-shrink: 0;
-            }
-            .thumb-box {
-                width: 70px !important; 
-                height: 48px !important;
-            }
-            .arrow-btn {
-                width: 44px; height: 44px;
-                opacity: 0.7;
-            }
-            .nav-overlay-zone {
-                width: 50px;
-            }
-            .sound-corner {
-                display: none !important;
-            }
-            .header-sound-container {
-                display: flex;
-            }
-            .bottom-bar-area {
-                padding: 10px 0;
-            }
-            .controls {
-                padding: 8px 18px;
-                gap: 8px;
-            }
-        }
-
-        @media (max-width: 1024px) and (orientation: landscape) {
-            .workspace {
-                height: 100%;
-                padding-top: 0;
-            }
-            .main-container {
-                flex-direction: row;
-                padding: 10px;
-                gap: 10px;
-                height: calc(100% - 70px);
-            }
-            .scene {
-                flex: 1;
-                height: 100%;
-                width: 0;
-                min-width: 0;
-            }
-            .sidebar-thumbnails {
-                width: 90px !important;
-                height: 100% !important;
-                flex-direction: column !important;
-                padding: 6px 4px !important;
-                gap: 8px !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                background: rgba(0, 40, 112, 0.3) !important;
-                border-radius: 8px;
-                flex-shrink: 0;
-            }
-            .thumb-box {
-                width: 100% !important; 
-                height: 50px !important;
-            }
-            .arrow-btn {
-                width: 38px; height: 38px;
-                font-size: 14px;
-            }
-            .nav-overlay-zone {
-                width: 40px;
-            }
-            .bottom-bar-area {
-                padding: 8px 0;
-                height: 60px;
-            }
-            .controls {
-                padding: 6px 15px;
-                gap: 10px;
-            }
-            .hint {
-                display: none;
-            }
-            .sound-corner {
-                display: flex !important;
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .header-sound-container {
-                display: none !important;
+            .announcement-container {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="premium-bg"></div>
+    <div class="mesh-background"></div>
 
-    <!-- GLOBAL LOADING PULSE SCREEN -->
-    <div id="globalLoading">
-        <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
-    </div>
-
-    <!-- UPPER LEFT CONTROL BUTTONS -->
-    <div class="header-column">
-        <!-- Logo acts as HOME button to return to hub -->
-        <button class="brand-logo-btn" onclick="returnToHome()">
-            <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
-        </button>
-        <button class="hamburger-btn" id="menuHamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <!-- Dynamic Header Switch for Portrait Mobile -->
-        <div class="header-sound-container" id="headerSoundContainer">
-            <div class="ios-switch-container">
-                <span class="switch-label">Sound</span>
-                <label class="ios-switch">
-                    <input type="checkbox" class="audioToggleBtnClass" checked>
-                    <span class="ios-slider"></span>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- RESUME LAST SESSION TOAST -->
-    <div id="resumeToast">Welcome back! Restoring your last active session page.</div>
-    
-    <div class="portal-wrapper" id="portalWrapper">
+    <div class="portal-container">
         
-        <!-- MAIN DRAWER NAVIGATION SIDEBAR -->
-        <div class="sidebar-nav" id="sidebarNav">
-            <div class="brand-subtitle">Corporate Deck Portal</div>
+        <!-- HEADER -->
+        <header class="header-section">
+            <div class="brand-block">
+                <div class="brand-logo">Yataş Group</div>
+                <div class="brand-sub">Global Business Hub</div>
+            </div>
+
+            <!-- ANNOUNCEMENT BANNER -->
+            <div class="announcement-container">
+                <div class="announcement-banner">
+                    <div class="announcement-item active">📢 &nbsp; 2026 Sezonu Renk ve Kumaş Trendleri Güncellendi.</div>
+                    <div class="announcement-item">🌍 &nbsp; Yataş Group Global Bayi Ağına Yeni Ülkeler Eklendi.</div>
+                    <div class="announcement-item">📈 &nbsp; Yeni Enza Home Export Kataloğu Portalda Yayında!</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SYMMETRICAL 2X2 GRID -->
+        <main class="grid-layout">
             
-            <!-- Home Link -->
-            <button class="deck-btn" onclick="returnToHome()" style="margin-bottom: 15px; background: rgba(0, 210, 255, 0.1); border-color: rgba(0, 210, 255, 0.2);">🏠 Portal Home</button>
-
-            <div class="menu-section-title">Catalogues</div>
-            <ul class="deck-list" id="cataloguesList"></ul>
-
-            <div class="menu-section-title">Other Presentations</div>
-            <ul class="deck-list" id="otherList"></ul>
-        </div>
-
-        <div class="workspace" id="workspace">
-
-            <!-- ================= HOME SCREEN HUB LAYER ================= -->
-            <div class="portal-home-screen" id="portalHomeScreen">
-                <div class="hub-container">
-                    <div class="hub-header">
-                        <img src="yatas_grup_logo.png" alt="Yataş Group" class="hub-logo">
-                        <h1 class="hub-title">Corporate Portal</h1>
-                        <p class="hub-subtitle">Interactive Deck Presentation System</p>
+            <!-- CARD 1: ENZA HOME -->
+            <section class="glass-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="card-category">Brand Catalogues</span>
+                        <h2 class="card-title">Enza Home</h2>
                     </div>
-
-                    <div class="hub-grid">
-                        <!-- Left Block: Catalogues -->
-                        <div class="hub-card">
-                            <div class="hub-card-header">
-                                <span class="hub-card-icon">📖</span>
-                                <h2 class="hub-card-title">Brand Catalogues</h2>
-                            </div>
-                            <div class="hub-deck-grid" id="hubCataloguesList">
-                                <!-- Populated dynamically -->
-                            </div>
-                        </div>
-
-                        <!-- Right Block: Other Presentations -->
-                        <div class="hub-card">
-                            <div class="hub-card-header">
-                                <span class="hub-card-icon">📊</span>
-                                <h2 class="hub-card-title">Corporate & Project Decks</h2>
-                            </div>
-                            <div class="hub-deck-grid" id="hubOtherList">
-                                <!-- Populated dynamically -->
-                            </div>
-                        </div>
+                    <span class="card-badge">v2.1 Active</span>
+                </div>
+                
+                <!-- KPI Dashboard Feel -->
+                <div class="kpi-row">
+                    <div class="kpi-block">
+                        <span class="kpi-label">Active Pages</span>
+                        <span class="kpi-value">312 Pgs</span>
+                    </div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">DPR Render</span>
+                        <span class="kpi-value">Retina</span>
+                    </div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">Global Status</span>
+                        <span class="kpi-trend"><span class="status-dot"></span> Online</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="main-container" id="mainContainer" style="display: none;">
-                <div class="scene" id="scene">
-                    
-                    <div id="zoomContainer" class="pan-zoom-container">
-                        <div id="book" class="book"></div>
+                <a href="#" class="btn-liquid-glass">
+                    <span>Explore Catalogue</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.33334 8H12.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 3.33331L12.6667 7.99998L8 12.6666" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </section>
+
+            <!-- CARD 2: YATAŞ BEDDING -->
+            <section class="glass-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="card-category">Brand Catalogues</span>
+                        <h2 class="card-title">Yataş Bedding</h2>
                     </div>
-
-                    <!-- FLOATING ARROW OVERLAYS -->
-                    <div class="nav-overlay-zone left-zone" id="zoneLeft">
-                        <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
+                    <span class="card-badge">v1.8 Active</span>
+                </div>
+                
+                <div class="kpi-row">
+                    <div class="kpi-block">
+                        <span class="kpi-label">Active Pages</span>
+                        <span class="kpi-value">184 Pgs</span>
                     </div>
-
-                    <div class="nav-overlay-zone right-zone" id="zoneRight">
-                        <div class="arrow-btn" id="overlayNextBtn">&#10095;</div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">DPR Render</span>
+                        <span class="kpi-value">Retina</span>
                     </div>
-
+                    <div class="kpi-block">
+                        <span class="kpi-label">Global Status</span>
+                        <span class="kpi-trend"><span class="status-dot"></span> Online</span>
+                    </div>
                 </div>
 
-                <!-- SLIDABLE PREVIEW THUMBNAILS PANEL -->
-                <div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
-            </div>
+                <a href="#" class="btn-liquid-glass">
+                    <span>Explore Catalogue</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.33334 8H12.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 3.33331L12.6667 7.99998L8 12.6666" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </section>
 
-            <!-- LOWER DOCK CONTROL SYSTEM -->
-            <div class="bottom-bar-area" id="bottomBarArea" style="display: none;">
-                <div class="controls-wrapper">
-                    <div class="controls">
-                        <button id="prevBtn" disabled>◀ Prev</button>
-                        <div class="goto-container">
-                            <input type="text" id="gotoInput" class="goto-input" value="1">
-                            <span id="pageIndicator">/ 0</span>
-                        </div>
-                        <button id="nextBtn">Next ▶</button>
-                        <button id="zoomInBtn">🔍 +</button>
-                        <button id="zoomOutBtn">🔍 -</button>
+            <!-- CARD 3: FRANCHISEE HANDBOOK -->
+            <section class="glass-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="card-category">Development Decks</span>
+                        <h2 class="card-title">Franchisee Handbook</h2>
                     </div>
-
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
-                    <div class="sound-corner" id="footerSoundContainer">
-                        <div class="ios-switch-container">
-                            <span class="switch-label">Sound FX</span>
-                            <label class="ios-switch">
-                                <input type="checkbox" class="audioToggleBtnClass" checked>
-                                <span class="ios-slider"></span>
-                            </label>
-                        </div>
+                    <span class="card-badge">2026 Edition</span>
+                </div>
+                
+                <div class="kpi-row">
+                    <div class="kpi-block">
+                        <span class="kpi-label">Target Countries</span>
+                        <span class="kpi-value">51 Regions</span>
+                    </div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">Format</span>
+                        <span class="kpi-value">Interactive</span>
+                    </div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">Access Level</span>
+                        <span class="kpi-trend" style="color: #60a5fa;"><span class="status-dot" style="background-color: #60a5fa; box-shadow: 0 0 8px #60a5fa;"></span> Partner</span>
                     </div>
                 </div>
-                <div class="hint">Scroll mouse or pinch screens to zoom. Swipe to change slides.</div>
-            </div>
-        </div>
+
+                <a href="#" class="btn-liquid-glass">
+                    <span>Review Guidelines</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.33334 8H12.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 3.33331L12.6667 7.99998L8 12.6666" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </section>
+
+            <!-- CARD 4: EXPORT PROJECTS -->
+            <section class="glass-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="card-category">Development Decks</span>
+                        <h2 class="card-title">Yataş Projects & Ref</h2>
+                    </div>
+                    <span class="card-badge">Commercial Q3</span>
+                </div>
+                
+                <div class="kpi-row">
+                    <div class="kpi-block">
+                        <span class="kpi-label">Verified Leads</span>
+                        <span class="kpi-value">203 Global</span>
+                    </div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">Sync Pipeline</span>
+                        <span class="kpi-value">Real-Time</span>
+                    </div>
+                    <div class="kpi-block">
+                        <span class="kpi-label">Data Engine</span>
+                        <span class="kpi-trend" style="color: #a855f7;"><span class="status-dot" style="background-color: #a855f7; box-shadow: 0 0 8px #a855f7;"></span> REST API</span>
+                    </div>
+                </div>
+
+                <a href="#" class="btn-liquid-glass">
+                    <span>Open Project Deck</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.33334 8H12.6667" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 3.33331L12.6667 7.99998L8 12.6666" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer-section">
+            <div>© 2026 Yataş Group. Internal Corporate System.</div>
+            <div>Secure Connection (SSL-256)</div>
+        </footer>
 
     </div>
 
+    <!-- JAVASCRIPT FOR ANNOUNCEMENT CYCLING -->
     <script>
-        // Tarayıcının iOS (iPhone, iPad, iPod veya Apple WebKit tabanlı Safari) olup olmadığını kontrol et
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        
-        if (isIOS) {
-            document.body.classList.add('is-ios-lite');
-            console.log("iOS LITE Engine Activated - High Quality Rendering Enabled without 3D Transformations");
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const items = document.querySelectorAll(".announcement-item");
+            let currentIndex = 0;
 
-        const presentationData = {
-            catalogues: [
-                { title: "Enza Home", url: "Enza Home.pdf" },
-                { title: "Yataş Bedding", url: "Yataş Bedding.pdf" },
-            ],
-            otherPresentations: [
-                { title: "Franchisee Introduction Handbook", url: "Franchisee Introduction Handbook.pdf" },
-                { title: "Yataş Projects", url: "Yataş Projects.pdf" },
-                { title: "Yataş Projects References", url: "Yataş Projects References.pdf" }
-            ]
-        };
-
-        const presentations = [...presentationData.catalogues, ...presentationData.otherPresentations];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-        let currentActivePresentationIndex = -1; // -1 means HOME PAGE active
-        let currentId = 0; 
-        let pages = [];
-        let thumbElements = [];
-        let pdfDoc = null;
-        
-        // ZOOM / PAN STATE CONTROL
-        let scale = 1; 
-        let posX = 0; 
-        let posY = 0;
-        let isDragging = false; 
-        let startX; 
-        let startY;
-        
-        // TOUCH ENGINE MULTI-TOUCH TRACKING
-        let initialPinchDist = 0;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isPinching = false;
-
-        let isSoundOn = true;
-        let renderTimeout = null;
-
-        const transitionSound = new Audio('glossy_magazine.mp3');
-
-        // CACHED ELEMENTS
-        const zoomContainer = document.getElementById('zoomContainer');
-        const book = document.getElementById('book');
-        const scene = document.getElementById('scene');
-        const sidebarThumbnails = document.getElementById('sidebarThumbnails');
-        const gotoInput = document.getElementById('gotoInput');
-        const cataloguesList = document.getElementById('cataloguesList');
-        const otherList = document.getElementById('otherList');
-        const globalLoading = document.getElementById('globalLoading');
-        const sidebarNav = document.getElementById('sidebarNav');
-        const menuHamburger = document.getElementById('menuHamburger');
-        
-        // HOME SCREEN ELEMENTS
-        const portalHomeScreen = document.getElementById('portalHomeScreen');
-        const mainContainer = document.getElementById('mainContainer');
-        const bottomBarArea = document.getElementById('bottomBarArea');
-        const hubCataloguesList = document.getElementById('hubCataloguesList');
-        const hubOtherList = document.getElementById('hubOtherList');
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
-            });
-        }
-
-        function unlockAudioEngine() {
-            transitionSound.play().then(() => {
-                transitionSound.pause();
-                transitionSound.currentTime = 0;
-            }).catch(e => {});
-            window.removeEventListener('click', unlockAudioEngine);
-            window.removeEventListener('touchstart', unlockAudioEngine);
-        }
-        window.addEventListener('click', unlockAudioEngine);
-        window.addEventListener('touchstart', unlockAudioEngine);
-
-        function playPaperSound() {
-            if (!isSoundOn) return;
-            try {
-                transitionSound.currentTime = 0;
-                transitionSound.play();
-            } catch (e) {}
-        }
-
-        function injectWatermark(context, width, height) {
-            context.save();
-            context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
-            context.fillStyle = "rgba(255, 255, 255, 0.05)";
-            context.textBaseline = "middle";
-            context.translate(width / 2, height / 2);
-            context.rotate(-Math.PI / 6);
-            context.fillText("© YATAŞ GROUP - ALL RIGHTS RESERVED", 0, 0);
-            context.restore();
-        }
-
-        function toggleMenu() { sidebarNav.classList.toggle('menu-open'); }
-        menuHamburger.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
-        document.addEventListener('click', (e) => {
-            if (!sidebarNav.contains(e.target) && !e.target.closest('.header-column')) {
-                sidebarNav.classList.remove('menu-open');
-            }
-        });
-
-        document.querySelectorAll('.audioToggleBtnClass').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                isSoundOn = this.checked;
-                document.querySelectorAll('.audioToggleBtnClass').forEach(other => { other.checked = isSoundOn; });
-            });
-        });
-
-        function buildSidebarMenu() {
-            cataloguesList.innerHTML = ""; otherList.innerHTML = "";
-            hubCataloguesList.innerHTML = ""; hubOtherList.innerHTML = "";
-            let globalIdx = 0;
-
-            presentationData.catalogues.forEach((deck) => {
-                const currentIdx = globalIdx;
+            function showNextAnnouncement() {
+                if(items.length <= 1) return;
                 
-                // Sidebar List
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = `deck-btn`;
-                btn.innerText = deck.title;
-                btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
-                li.appendChild(btn); cataloguesList.appendChild(li);
-
-                // Hub Grid Button
-                const hubBtn = document.createElement('button');
-                hubBtn.className = 'hub-deck-btn';
-                hubBtn.innerHTML = `<span>${deck.title}</span><span class="hub-deck-arrow">➔</span>`;
-                hubBtn.addEventListener('click', () => { switchPresentation(currentIdx); });
-                hubCataloguesList.appendChild(hubBtn);
-
-                globalIdx++;
-            });
-
-            presentationData.otherPresentations.forEach((deck) => {
-                const currentIdx = globalIdx;
+                const currentItem = items[currentIndex];
                 
-                // Sidebar List
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = `deck-btn`;
-                btn.innerText = deck.title;
-                btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
-                li.appendChild(btn); otherList.appendChild(li);
+                currentItem.classList.remove("active");
+                currentItem.classList.add("exit");
 
-                // Hub Grid Button
-                const hubBtn = document.createElement('button');
-                hubBtn.className = 'hub-deck-btn';
-                hubBtn.innerHTML = `<span>${deck.title}</span><span class="hub-deck-arrow">➔</span>`;
-                hubBtn.addEventListener('click', () => { switchPresentation(currentIdx); });
-                hubOtherList.appendChild(hubBtn);
+                currentIndex = (currentIndex + 1) % items.length;
+                const nextItem = items[currentIndex];
 
-                globalIdx++;
-            });
-        }
+                nextItem.classList.remove("exit");
+                nextItem.classList.add("active");
 
-        function returnToHome() {
-            currentActivePresentationIndex = -1;
-            localStorage.removeItem('corporate_last_presentation');
-            localStorage.removeItem('corporate_last_page');
-
-            document.querySelectorAll('.deck-btn').forEach(b => b.classList.remove('active-deck'));
-
-            // Show Hub, Hide PDF Workspace
-            portalHomeScreen.classList.remove('hidden-home');
-            mainContainer.style.display = 'none';
-            bottomBarArea.style.display = 'none';
-            sidebarNav.classList.remove('menu-open');
-        }
-
-        async function switchPresentation(index, targetSavedPage = 0) {
-            currentActivePresentationIndex = index;
-            localStorage.setItem('corporate_last_presentation', index);
-
-            document.querySelectorAll('.deck-btn').forEach(b => {
-                b.classList.toggle('active-deck', parseInt(b.getAttribute('data-index')) === index);
-            });
-
-            globalLoading.style.display = 'flex'; globalLoading.style.opacity = '1';
-            book.innerHTML = ''; sidebarThumbnails.innerHTML = '';
-            pages = []; thumbElements = [];
-            currentId = targetSavedPage;
-            resetZoom();
-
-            // Hide Hub, Display Canvas Workspace
-            portalHomeScreen.classList.add('hidden-home');
-            mainContainer.style.display = 'flex';
-            bottomBarArea.style.display = 'flex';
-
-            await loadPDF(presentations[index].url);
-        }
-
-        function resizeBookToFit(viewport) {
-            if (!viewport) return;
-            const sceneW = scene.clientWidth; const sceneH = scene.clientHeight;
-            if (!sceneW || !sceneH) return;
-
-            const pdfRatio = viewport.width / viewport.height;
-            const margin = isIOS ? 0.95 : 0.90; 
-            const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
-            let finalW, finalH;
-
-            if (maxAllowedW / maxAllowedH > pdfRatio) {
-                finalH = maxAllowedH; finalW = finalH * pdfRatio;
-            } else {
-                finalW = maxAllowedW; finalH = finalW / pdfRatio;
-            }
-            book.style.width = Math.floor(finalW) + 'px';
-            book.style.height = Math.floor(finalH) + 'px';
-
-            updateTransform();
-        }
-
-        async function renderHighQualityPage(pageNum, customScale = 1) {
-            if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
-
-            try {
-                const page = await pdfDoc.getPage(pageNum);
-                let pageDiv = pages[pageNum - 1];
-                
-                if (!pageDiv) {
-                    pageDiv = document.createElement('div'); 
-                    pageDiv.className = 'page';
-                    
-                    const container = document.createElement('div');
-                    container.className = 'canvas-container-layer';
-                    
-                    const canvas = document.createElement('canvas');
-                    canvas.className = 'base-lowres-canvas';
-                    
-                    container.appendChild(canvas);
-                    pageDiv.appendChild(container);
-                    book.appendChild(pageDiv); 
-                    pages[pageNum - 1] = pageDiv;
-                }
-
-                const canvas = pageDiv.querySelector('.base-lowres-canvas');
-                const context = canvas.getContext('2d');
-                pageDiv.pdfViewport = page.getViewport({ scale: 1.0 });
-
-                const dpr = window.devicePixelRatio || 1;
-                let targetScale = customScale * dpr;
-
-                const sampleViewport = page.getViewport({ scale: targetScale });
-                if (sampleViewport.width > 2048) {
-                    targetScale = 2048 / page.getViewport({ scale: 1.0 }).width;
-                }
-
-                const viewport = page.getViewport({ scale: targetScale });
-
-                const newWidth = Math.floor(viewport.width);
-                const newHeight = Math.floor(viewport.height);
-
-                const offscreenCanvas = document.createElement('canvas');
-                offscreenCanvas.width = newWidth;
-                offscreenCanvas.height = newHeight;
-                const offscreenContext = offscreenCanvas.getContext('2d');
-
-                await page.render({ 
-                    canvasContext: offscreenContext, 
-                    viewport: viewport 
-                }).promise;
-
-                injectWatermark(offscreenContext, newWidth, newHeight);
-
-                if (canvas.width !== newWidth || canvas.height !== newHeight) {
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                }
-                context.drawImage(offscreenCanvas, 0, 0);
-
-                if (pageNum - 1 === currentId) {
-                    resizeBookToFit(pageDiv.pdfViewport);
-                }
-            } catch (err) {
-                console.error("Render error:", err);
-            }
-        }
-
-        function triggerDynamicZoomRender() {
-            if (renderTimeout) clearTimeout(renderTimeout);
-            renderTimeout = setTimeout(() => {
-                renderHighQualityPage(currentId + 1, scale);
-            }, 300); 
-        }
-
-        function runPredictiveCachePipeline() {
-            const activeIdx = currentId + 1;
-            renderHighQualityPage(activeIdx, scale);
-            
-            if (!isIOS) {
-                const nextIdx = activeIdx + 1;
-                const prevIdx = activeIdx - 1;
-                if (nextIdx <= pdfDoc.numPages) renderHighQualityPage(nextIdx, 1);
-                if (prevIdx >= 1) renderHighQualityPage(prevIdx, 1);
-            }
-        }
-
-        function createSequentialThumbContainers(total) {
-            sidebarThumbnails.innerHTML = '';
-            for (let i = 1; i <= total; i++) {
-                const thumbBox = document.createElement('div');
-                thumbBox.className = 'thumb-box'; thumbBox.id = `thumb-box-${i}`;
-                const canvas = document.createElement('canvas'); thumbBox.appendChild(canvas);
-                const label = document.createElement('div'); label.className = 'thumb-label'; label.innerText = i;
-                thumbBox.appendChild(label); sidebarThumbnails.appendChild(thumbBox);
-                thumbElements[i - 1] = thumbBox;
-
-                thumbBox.addEventListener('click', () => {
-                    if (currentId === i - 1) return;
-                    playPaperSound(); currentId = i - 1;
-                    localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); renderHighQualityPage(i, 1); updateBookDisplay(); runPredictiveCachePipeline();
-                });
-            }
-        }
-
-        async function renderThumbnail(pageNum) {
-            try {
-                const page = await pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.2 }); 
-                const thumbBox = document.getElementById(`thumb-box-${pageNum}`);
-                if (!thumbBox) return;
-                const canvas = thumbBox.querySelector('canvas'); const context = canvas.getContext('2d');
-                canvas.height = viewport.height; canvas.width = viewport.width;
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
-            } catch (err) {}
-        }
-
-        async function loadPDF(url) {
-            try {
-                pdfDoc = await pdfjsLib.getDocument(url).promise;
-                const totalPages = pdfDoc.numPages;
-                pages = new Array(totalPages); thumbElements = new Array(totalPages);
-                createSequentialThumbContainers(totalPages);
-
-                const thumbPromises = [];
-                for (let pageNum = 1; pageNum <= totalPages; pageNum++) { thumbPromises.push(renderThumbnail(pageNum)); }
-                await Promise.all(thumbPromises);
-
-                await renderHighQualityPage(currentId + 1, 1);
-                globalLoading.style.opacity = '0'; setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
-                zoomContainer.style.display = 'flex';
-                updateBookDisplay(); runPredictiveCachePipeline();
-            } catch (error) { console.error(error); }
-        }
-
-        function updateBookDisplay() {
-            if (pages.length === 0) return;
-            
-            pages.forEach((page, index) => {
-                if (!page) return;
-                
-                if (index === currentId) {
-                    page.style.display = 'block';
-                    page.offsetHeight; 
-                    page.className = 'page active-page'; 
-                    resizeBookToFit(page.pdfViewport);
-                } else if (!isIOS && index === currentId - 1) {
-                    page.style.display = 'block';
-                    page.className = 'page turn-next'; 
-                } else if (!isIOS && index === currentId + 1) {
-                    page.style.display = 'block';
-                    page.className = 'page turn-prev'; 
-                } else {
-                    page.className = 'page hidden-page';
-                    if (isIOS) {
-                        page.style.display = 'none'; 
-                    } else {
-                        setTimeout(() => {
-                            if (page.classList.contains('hidden-page')) {
-                                page.style.display = 'none';
-                            }
-                        }, 500);
-                    }
-                }
-            });
-
-            thumbElements.forEach((thumb, index) => {
-                if (!thumb) return;
-                if (index === currentId) {
-                    thumb.classList.add('active-thumb'); thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else { thumb.classList.remove('active-thumb'); }
-            });
-
-            document.getElementById('prevBtn').disabled = (currentId === 0);
-            document.getElementById('nextBtn').disabled = (currentId >= pages.length - 1);
-            gotoInput.value = currentId + 1;
-            document.getElementById('pageIndicator').innerText = `/ ${pages.length}`;
-        }
-
-        function flipNext() { 
-            if (currentActivePresentationIndex === -1) return;
-            if (currentId < pages.length - 1) { 
-                playPaperSound(); currentId++; localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
-            } 
-        }
-        function flipPrev() { 
-            if (currentActivePresentationIndex === -1) return;
-            if (currentId > 0) { 
-                playPaperSound(); currentId--; localStorage.setItem('corporate_last_page', currentId);
-                resetZoom(); renderHighQualityPage(currentId + 1, 1); updateBookDisplay(); runPredictiveCachePipeline();
-            } 
-        }
-        
-        function resetZoom() { 
-            scale = 1; 
-            posX = 0; 
-            posY = 0; 
-            updateTransform(); 
-        }
-
-        function updateTransform() { 
-            if (scale <= 1) {
-                scale = 1; posX = 0; posY = 0;
-                zoomContainer.style.transform = `translate3d(0px, 0px, 0px) scale(1)`;
-            } else {
-                const boundW = (scale - 1) * scene.clientWidth / 2;
-                const boundH = (scale - 1) * scene.clientHeight / 2;
-                
-                posX = Math.max(-boundW * 1.5, Math.min(posX, boundW * 1.5));
-                posY = Math.max(-boundH * 1.5, Math.min(posY, boundH * 1.5));
-
-                zoomContainer.style.transform = `translate3d(${posX}px, ${posY}px, 0px) scale(${scale})`;
-            }
-        }
-
-        function zoomToPoint(clientX, clientY, zoomStep) {
-            const rect = scene.getBoundingClientRect();
-            
-            const targetX = clientX - rect.left - rect.width / 2;
-            const targetY = clientY - rect.top - rect.height / 2;
-
-            const oldScale = scale;
-            scale = Math.max(1, Math.min(scale + zoomStep, 5));
-
-            if (scale > 1) {
-                posX = targetX - (targetX - posX) * (scale / oldScale);
-                posY = targetY - (targetY - posY) * (scale / oldScale);
-            } else {
-                posX = 0;
-                posY = 0;
+                setTimeout(() => {
+                    currentItem.classList.remove("exit");
+                }, 600);
             }
 
-            updateTransform();
-            triggerDynamicZoomRender();
-        }
-
-        // MOUSE WHEEL ZOOM
-        scene.addEventListener('wheel', (e) => {
-            if (currentActivePresentationIndex === -1) return;
-            e.preventDefault();
-            const step = e.deltaY < 0 ? 0.4 : -0.4;
-            zoomToPoint(e.clientX, e.clientY, step);
-        }, { passive: false });
-
-        // MOUSE DRAG (PANNING)
-        scene.addEventListener('mousedown', (e) => {
-            if (currentActivePresentationIndex === -1) return;
-            if (scale === 1 || e.target.closest('.arrow-btn')) return;
-            isDragging = true; 
-            startX = e.clientX - posX; 
-            startY = e.clientY - posY;
+            setInterval(showNextAnnouncement, 4500);
         });
-
-        window.addEventListener('mousemove', (e) => { 
-            if (!isDragging) return; 
-            posX = e.clientX - startX; 
-            posY = e.clientY - startY; 
-            updateTransform(); 
-        });
-
-        window.addEventListener('mouseup', () => { isDragging = false; });
-
-        // PINCH TO ZOOM ENGINE
-        scene.addEventListener('touchstart', (e) => {
-            if (currentActivePresentationIndex === -1) return;
-            if (e.touches.length === 2) {
-                isPinching = true;
-                initialPinchDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                
-                touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
-            } else if (e.touches.length === 1) {
-                isPinching = false;
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                if (scale > 1) {
-                    isDragging = true;
-                    startX = e.touches[0].clientX - posX;
-                    startY = e.touches[0].clientY - posY;
-                }
-            }
-        }, { passive: true });
-
-        scene.addEventListener('touchmove', (e) => {
-            if (currentActivePresentationIndex === -1) return;
-            if (isPinching && e.touches.length === 2) {
-                e.preventDefault(); 
-                const currentDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                const currentMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
-                const factor = currentDist / initialPinchDist;
-                const step = (factor - 1) * 1.8;
-
-                if (Math.abs(step) > 0.02) {
-                    zoomToPoint(currentMidX, currentMidY, step);
-                    initialPinchDist = currentDist; 
-                }
-            } else if (isDragging && e.touches.length === 1 && scale > 1) {
-                e.preventDefault();
-                posX = e.touches[0].clientX - startX;
-                posY = e.touches[0].clientY - startY;
-                updateTransform();
-            }
-        }, { passive: false });
-
-        scene.addEventListener('touchend', (e) => {
-            if (currentActivePresentationIndex === -1) return;
-            if (isPinching) {
-                if (e.touches.length < 2) {
-                    isPinching = false;
-                    isDragging = false;
-                }
-                return;
-            }
-            if (isDragging) { isDragging = false; return; }
-
-            if (scale === 1 && e.changedTouches.length > 0) {
-                const touchEndX = e.changedTouches[0].clientX;
-                const touchEndY = e.changedTouches[0].clientY;
-                const diffX = touchStartX - touchEndX;
-                const diffY = touchStartY - touchEndY;
-
-                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-                    if (diffX > 0) flipNext(); else flipPrev();
-                }
-            }
-        }, { passive: true });
-
-        // BUTTON EVENTS
-        document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
-        document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
-        
-        document.getElementById('zoomInBtn').addEventListener('click', () => { 
-            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, 0.6);
-        });
-        
-        document.getElementById('zoomOutBtn').addEventListener('click', () => { 
-            zoomToPoint(scene.clientWidth / 2, scene.clientHeight / 2, -0.6);
-        });
-
-        document.getElementById('nextBtn').addEventListener('click', flipNext);
-        document.getElementById('prevBtn').addEventListener('click', flipPrev);
-
-        gotoInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                let targetPage = parseInt(gotoInput.value);
-                if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= pages.length) {
-                    playPaperSound(); currentId = targetPage - 1; localStorage.setItem('corporate_last_page', currentId);
-                    resetZoom(); renderHighQualityPage(targetPage, 1); updateBookDisplay(); runPredictiveCachePipeline();
-                    gotoInput.blur();
-                } else { gotoInput.value = currentId + 1; }
-            }
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return; 
-            if (e.key === "ArrowRight" || e.key === " ") flipNext();
-            if (e.key === "ArrowLeft") flipPrev();
-        });
-
-        window.addEventListener('resize', () => { if (pages[currentId]) updateBookDisplay(); });
-
-        window.onload = () => {
-            buildSidebarMenu();
-            const savedPresentation = localStorage.getItem('corporate_last_presentation');
-            const savedPage = localStorage.getItem('corporate_last_page');
-
-            if (savedPresentation !== null && presentations[savedPresentation]) {
-                const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
-                const toast = document.getElementById('resumeToast');
-                toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000);
-                switchPresentation(parseInt(savedPresentation), targetPageIdx);
-            } else { 
-                // Hide loading layer and display the elegant symmetry of Home Screen Hub
-                globalLoading.style.opacity = '0'; 
-                setTimeout(() => { globalLoading.style.display = 'none'; }, 500);
-                returnToHome(); 
-            }
-        };
     </script>
 </body>
 </html>
