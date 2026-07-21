@@ -39,9 +39,8 @@
         body {
             background: #020617;
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100vh;
+            height: 100dvh;
             font-family: var(--main-font);
             overflow: hidden;
             color: #fff;
@@ -109,9 +108,9 @@
         /* PORTAL WRAPPER */
         .portal-wrapper {
             display: flex;
-            flex: 1;
             width: 100vw;
-            height: 100%;
+            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             position: relative;
             z-index: 2;
@@ -369,10 +368,39 @@
             border: none;
         }
 
+        /* WELCOME SCREEN FOOTER CREDITS */
+        .welcome-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 12;
+            pointer-events: none;
+        }
+
+        .welcome-footer-left,
+        .welcome-footer-right {
+            font-family: var(--main-font);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.65);
+            transition: color 0.3s ease, opacity 0.3s ease;
+            pointer-events: auto;
+            user-select: none;
+        }
+
+        .welcome-footer-left:hover,
+        .welcome-footer-right:hover {
+            color: rgba(255, 255, 255, 1);
+        }
+
         /* SLOT MACHINE TICKER ANNOUNCEMENTS */
         .ticker-wrapper {
             position: fixed;
-            bottom: 60px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
@@ -815,48 +843,6 @@
             opacity: 1;
         }
 
-        /* --- INTEGRATED FOOTER STYLES --- */
-        .yatas-custom-footer {
-            width: 100%;
-            position: relative;
-            z-index: 200;
-            background-color: rgba(2, 6, 23, 0.95);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(15px);
-            flex-shrink: 0;
-        }
-
-        .yatas-footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .yatas-copyright,
-        .yatas-credit {
-            color: rgba(255, 255, 255, 0.55);
-            font-size: 10.5px;
-            line-height: 1.4;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            transition: color 0.3s ease;
-            user-select: none;
-        }
-
-        .yatas-credit .team-highlight {
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-        }
-
-        .yatas-copyright:hover,
-        .yatas-credit:hover {
-            color: #ffffff;
-        }
-
         /* RESPONSIVE MOBILE BREAKPOINTS */
         @media (max-width: 1024px) and (orientation: portrait) {
             .workspace {
@@ -912,14 +898,12 @@
                 gap: 8px;
             }
             .ticker-wrapper {
-                bottom: 50px;
+                bottom: 15px;
                 height: 38px;
             }
-            .yatas-footer-container {
-                flex-direction: column;
-                gap: 6px;
-                text-align: center;
-                padding: 10px 16px;
+            .welcome-footer {
+                padding: 0 15px;
+                bottom: 10px;
             }
         }
 
@@ -1049,6 +1033,11 @@
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/NyRLkBs9EDw?rel=0&amp;controls=1&amp;autoplay=0" title="Yataş Group Corporate Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
+
+            <div class="welcome-footer">
+                <div class="welcome-footer-left">Copyright © 2026 Yataş International</div>
+                <div class="welcome-footer-right">Crafted with pride by Yataş International Sales Development Team</div>
+            </div>
         </div>
 
         <!-- SLOT MACHINE TICKER ANNOUNCEMENTS -->
@@ -1113,22 +1102,7 @@
 
     </div>
 
-    <!-- ENTEGRE FOOTER (SOL COPYRIGHT / SAĞ CRAFTED BİLGİSİ) -->
-    <footer class="yatas-custom-footer">
-        <div class="yatas-footer-container">
-            <div class="yatas-copyright">
-                Copyright © <span id="yatas-current-year">2026</span> Yataş International Sales
-            </div>
-            <div class="yatas-credit">
-                Crafted with pride by <span class="team-highlight">Yataş International Sales Development Team</span>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // Dinamik Yıl Güncelleme
-        document.getElementById('yatas-current-year').textContent = new Date().getFullYear();
-
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         
