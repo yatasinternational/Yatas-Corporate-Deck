@@ -11,6 +11,11 @@
     <meta name="theme-color" content="#020617">
     <link rel="manifest" href="manifest.json" id="pwaManifest">
 
+    <!-- GOOGLE FONTS (Plus Jakarta Sans - Kurumsal Sunum Stili) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <!-- PDF.js Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
@@ -18,9 +23,11 @@
         :root {
             --primary-blue: #002870;
             --neon-blue: #00d2ff;
+            --gold-accent: #facc15;
             --book-shadow: 0 25px 55px rgba(0,0,0,0.6);
             --glass-bg: rgba(2, 6, 23, 0.88);
             --glass-border: rgba(255, 255, 255, 0.08);
+            --main-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         * { 
@@ -34,7 +41,7 @@
             display: flex;
             height: 100vh;
             height: 100dvh;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: var(--main-font);
             overflow: hidden;
             color: #fff;
             touch-action: none;
@@ -136,11 +143,12 @@
             background: rgba(0, 40, 112, 0.85);
             border: 1px solid var(--glass-border);
             color: #ffffff;
-            padding: 10px 22px;
+            padding: 10px 24px;
             border-radius: 30px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            font-family: var(--main-font);
+            letter-spacing: 0.8px;
             cursor: pointer;
             backdrop-filter: blur(15px);
             transition: all 0.3s ease;
@@ -270,6 +278,7 @@
             text-align: left;
             font-size: 13px;
             font-weight: 600;
+            font-family: var(--main-font);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
@@ -296,7 +305,7 @@
             color: #002870;
         }
 
-        /* WELCOME PORTAL HOME SCREEN */
+        /* WELCOME PORTAL HOME SCREEN - GÖRSELDEKİ SUNUM STİLİNE UYARLANDI */
         .welcome-screen {
             position: absolute;
             top: 0; left: 0;
@@ -320,25 +329,29 @@
 
         .welcome-header {
             text-align: center;
-            max-width: 800px;
+            max-width: 900px;
             margin-bottom: 25px;
         }
 
         .welcome-title {
-            font-size: clamp(26px, 4vw, 44px);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 30%, #a4c2f4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: clamp(26px, 3.8vw, 42px);
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            color: #ffffff;
             margin-bottom: 10px;
+            line-height: 1.25;
+        }
+
+        .welcome-title .gold-text {
+            color: var(--gold-accent);
+            font-weight: 700;
         }
 
         .welcome-subtitle {
-            font-size: clamp(13px, 1.8vw, 18px);
-            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(13px, 1.6vw, 17px);
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 400;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .video-container {
@@ -359,7 +372,7 @@
             border: none;
         }
 
-        /* SLOT MACHINE VERTICAL TICKER ANNOUNCEMENTS */
+        /* CLEAN SLOT MACHINE VERTICAL TICKER ANNOUNCEMENTS (NEWS ROZETİ KALDIRILDI) */
         .ticker-wrapper {
             position: fixed;
             bottom: 25px;
@@ -367,30 +380,17 @@
             transform: translateX(-50%);
             z-index: 100;
             width: 90%;
-            max-width: 620px;
+            max-width: 580px;
             height: 44px;
-            background: rgba(2, 6, 23, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(2, 6, 23, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
             backdrop-filter: blur(20px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 24px;
             overflow: hidden;
-        }
-
-        .ticker-badge {
-            background: var(--neon-blue);
-            color: #002870;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-right: 15px;
-            flex-shrink: 0;
         }
 
         .slot-viewport {
@@ -407,6 +407,7 @@
             height: 100%;
             display: flex;
             align-items: center;
+            justify-content: center;
             transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
             transform-style: preserve-3d;
         }
@@ -414,9 +415,10 @@
         .slot-item {
             position: absolute;
             width: 100%;
-            font-size: 13px;
+            text-align: center;
+            font-size: 13.5px;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -691,7 +693,7 @@
         }
         
         .bottom-bar-area button {
-            padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer;
+            padding: 6px 14px; font-size: 11px; font-weight: bold; font-family: var(--main-font); cursor: pointer;
             background: #fff; color: #002870; border: none; border-radius: 20px;
             transition: all 0.3s ease;
         }
@@ -702,7 +704,7 @@
         .goto-input {
             width: 40px; padding: 3px 5px; border-radius: 5px;
             border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4);
-            color: #fff; text-align: center; font-weight: bold;
+            color: #fff; text-align: center; font-weight: bold; font-family: var(--main-font);
         }
         #pageIndicator { color: #ffffff; }
 
@@ -1008,19 +1010,18 @@
         <!-- WELCOME LANDING SCREEN MODAL / OVERLAY -->
         <div class="welcome-screen" id="welcomeScreen">
             <div class="welcome-header">
-                <h1 class="welcome-title">Welcome to Yataş Corporate Deck</h1>
+                <h1 class="welcome-title">Welcome to Yataş Corporate <span class="gold-text">Deck</span></h1>
                 <p class="welcome-subtitle">Shaping the Future of Sleep & Living Spaces</p>
             </div>
 
             <div class="video-container">
-                <!-- YouTube Video Embed (You can replace VIDEO_ID with your YouTube video ID) -->
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;controls=1&amp;autoplay=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- YouTube Video Embed (Kendi video ID'nizi ekleyebilirsiniz) -->
+                <iframe src="https://www.youtube.com/embed/NyRLkBs9EDw?rel=0&amp;controls=1&amp;autoplay=0" title="Yataş Group Corporate Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- SLOT MACHINE TICKER ANNOUNCEMENTS -->
+        <!-- SLOT MACHINE TICKER ANNOUNCEMENTS (TEMİZLENDİ) -->
         <div class="ticker-wrapper">
-            <div class="ticker-badge">News</div>
             <div class="slot-viewport">
                 <div class="slot-container" id="slotContainer">
                     <div class="slot-item active">Our first Enza Home in Burkina Faso is opened 🚀</div>
@@ -1215,7 +1216,7 @@
 
         function injectWatermark(context, width, height) {
             context.save();
-            context.font = "bold " + Math.floor(width / 24) + "px 'Segoe UI', Arial, sans-serif";
+            context.font = "bold " + Math.floor(width / 24) + "px 'Plus Jakarta Sans', sans-serif";
             context.fillStyle = "rgba(255, 255, 255, 0.05)";
             context.textBaseline = "middle";
             context.translate(width / 2, height / 2);
