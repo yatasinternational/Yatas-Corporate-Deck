@@ -109,7 +109,7 @@
             z-index: 2;
         }
 
-        /* HEADER LEFT COLUMN CONTROL PANEL */
+        /* HEADER CONTROL PANEL */
         .header-column {
             position: absolute;
             top: 20px;
@@ -119,6 +119,40 @@
             align-items: flex-start;
             gap: 12px;
             z-index: 1001;
+        }
+
+        /* RIGHT HEADER BAR (CONTACT BUTTON) */
+        .header-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-btn {
+            background: rgba(0, 40, 112, 0.85);
+            border: 1px solid var(--glass-border);
+            color: #ffffff;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+        }
+
+        .contact-btn:hover {
+            background: #ffffff;
+            color: #002870;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.25);
         }
 
         .brand-logo-btn {
@@ -262,6 +296,146 @@
             color: #002870;
         }
 
+        /* WELCOME PORTAL HOME SCREEN */
+        .welcome-screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 80px 20px 100px 20px;
+            overflow-y: auto;
+            touch-action: pan-y;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .welcome-header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 25px;
+        }
+
+        .welcome-title {
+            font-size: clamp(26px, 4vw, 44px);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 30%, #a4c2f4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(13px, 1.8vw, 18px);
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* SLOT MACHINE VERTICAL TICKER ANNOUNCEMENTS */
+        .ticker-wrapper {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: 90%;
+            max-width: 620px;
+            height: 44px;
+            background: rgba(2, 6, 23, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+
+        .ticker-badge {
+            background: var(--neon-blue);
+            color: #002870;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .slot-viewport {
+            height: 100%;
+            flex: 1;
+            position: relative;
+            perspective: 400px;
+            overflow: hidden;
+        }
+
+        .slot-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+            transform-style: preserve-3d;
+        }
+
+        .slot-item {
+            position: absolute;
+            width: 100%;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            backface-visibility: hidden;
+            opacity: 0;
+            transform: rotateX(-90deg) translateZ(22px);
+            transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .slot-item.active {
+            opacity: 1;
+            transform: rotateX(0deg) translateZ(22px);
+        }
+
+        .slot-item.exit {
+            opacity: 0;
+            transform: rotateX(90deg) translateZ(22px);
+        }
+
         /* WORKSPACE AREA */
         .workspace {
             flex: 1;
@@ -326,7 +500,7 @@
             will-change: transform;
         }
         
-        /* STANDARD (ANDROID & DESKTOP) 3D PAGE SETUP */
+        /* STANDARD 3D PAGE SETUP */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -366,12 +540,10 @@
             z-index: 1;
         }
 
-        /* ==========================================================================
-           iOS SAFARI LITE SYSTEM - ANIMATIONLESS & OPTIMIZED FOR ZOOM & STABILITY
-           ========================================================================== */
+        /* iOS SAFARI LITE SYSTEM */
         body.is-ios-lite .page {
-            transition: none !important; /* Animasyonları kapatarak gecikmeyi sıfırlıyoruz */
-            transform: none !important;  /* 3D döndürmeleri iptal ediyoruz */
+            transition: none !important;
+            transform: none !important;
             backface-visibility: visible !important;
             -webkit-backface-visibility: visible !important;
         }
@@ -387,7 +559,7 @@
         body.is-ios-lite .page.turn-next,
         body.is-ios-lite .page.turn-prev,
         body.is-ios-lite .page.hidden-page {
-            display: none !important; /* Tamamen gizleyerek VRAM tüketimini sıfırlıyoruz */
+            display: none !important;
             opacity: 0 !important;
             pointer-events: none !important;
             z-index: 1 !important;
@@ -500,6 +672,7 @@
             position: relative;
             background: rgba(2, 6, 23, 0.85);
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+            transition: opacity 0.4s ease;
         }
 
         .controls-wrapper {
@@ -545,7 +718,6 @@
             z-index: 105;
         }
 
-        /* HEADER INTEGRATED SOUND TOGGLE */
         .header-sound-container {
             display: none;
             align-items: center;
@@ -632,10 +804,9 @@
             font-weight: 500;
         }
 
-        /* AUTO RESUME SESSION TOAST */
         #resumeToast {
             position: fixed;
-            bottom: 30px;
+            bottom: 80px;
             left: 30px;
             background: rgba(0, 40, 112, 0.95);
             border-left: 4px solid var(--neon-blue);
@@ -656,10 +827,7 @@
             opacity: 1;
         }
 
-        /* ==========================================================================
-           RESPONSIVE MOBILE BREAKPOINTS & LAYOUTS 
-           ========================================================================== */
-
+        /* RESPONSIVE MOBILE BREAKPOINTS */
         @media (max-width: 1024px) and (orientation: portrait) {
             .workspace {
                 height: 100%;
@@ -712,6 +880,10 @@
             .controls {
                 padding: 8px 18px;
                 gap: 8px;
+            }
+            .ticker-wrapper {
+                bottom: 15px;
+                height: 38px;
             }
         }
 
@@ -784,13 +956,14 @@
     <div class="premium-bg"></div>
 
     <!-- GLOBAL LOADING PULSE SCREEN -->
-    <div id="globalLoading">
+    <div id="globalLoading" style="display: none; opacity: 0;">
         <img src="yatas_grup_logo.png" alt="Yataş Group" class="loading-pulse-logo">
     </div>
 
     <!-- UPPER LEFT CONTROL BUTTONS -->
     <div class="header-column">
-        <button class="brand-logo-btn" onclick="toggleMenu()">
+        <!-- LOGO CLICK SHOWS HOME / WELCOME SCREEN -->
+        <button class="brand-logo-btn" onclick="showWelcomeScreen()">
             <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
         </button>
         <button class="hamburger-btn" id="menuHamburger">
@@ -811,6 +984,11 @@
         </div>
     </div>
 
+    <!-- UPPER RIGHT CONTACT BUTTON -->
+    <div class="header-right">
+        <button class="contact-btn" onclick="openContact()">Contact</button>
+    </div>
+
     <!-- RESUME LAST SESSION TOAST -->
     <div id="resumeToast">Welcome back! Restoring your last active session page.</div>
     
@@ -827,7 +1005,33 @@
             <ul class="deck-list" id="otherList"></ul>
         </div>
 
-        <div class="workspace" id="workspace">
+        <!-- WELCOME LANDING SCREEN MODAL / OVERLAY -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-header">
+                <h1 class="welcome-title">Welcome to Yataş Corporate Deck</h1>
+                <p class="welcome-subtitle">Shaping the Future of Sleep & Living Spaces</p>
+            </div>
+
+            <div class="video-container">
+                <!-- YouTube Video Embed (You can replace VIDEO_ID with your YouTube video ID) -->
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;controls=1&amp;autoplay=0" title="Yataş Group Corporate Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- SLOT MACHINE TICKER ANNOUNCEMENTS -->
+        <div class="ticker-wrapper">
+            <div class="ticker-badge">News</div>
+            <div class="slot-viewport">
+                <div class="slot-container" id="slotContainer">
+                    <div class="slot-item active">Our first Enza Home in Burkina Faso is opened 🚀</div>
+                    <div class="slot-item">Total store number has reached 105 worldwide 📍</div>
+                    <div class="slot-item">New 2026 Collection is now ready in the catalog ✨</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WORKSPACE AREA FOR PDF CATALOG VIEWER -->
+        <div class="workspace" id="workspace" style="display: none;">
             <div class="main-container" id="mainContainer">
                 <div class="scene" id="scene">
                     
@@ -864,7 +1068,7 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE (Desktop & Landscape) -->
+                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE -->
                     <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
@@ -882,13 +1086,12 @@
     </div>
 
     <script>
-        // Tarayıcının iOS (iPhone, iPad, iPod veya Apple WebKit tabanlı Safari) olup olmadığını kontrol et
+        // Tarayıcının iOS olup olmadığını kontrol et
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         
         if (isIOS) {
             document.body.classList.add('is-ios-lite');
-            console.log("iOS LITE Engine Activated - High Quality Rendering Enabled without 3D Transformations");
         }
 
         const presentationData = {
@@ -944,12 +1147,52 @@
         const globalLoading = document.getElementById('globalLoading');
         const sidebarNav = document.getElementById('sidebarNav');
         const menuHamburger = document.getElementById('menuHamburger');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const workspace = document.getElementById('workspace');
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js').catch(err => console.log(err));
             });
         }
+
+        // WELCOME SCREEN CONTROLLERS
+        function showWelcomeScreen() {
+            welcomeScreen.classList.remove('hidden');
+            workspace.style.display = 'none';
+            document.querySelectorAll('.deck-btn').forEach(b => b.classList.remove('active-deck'));
+            sidebarNav.classList.remove('menu-open');
+        }
+
+        function hideWelcomeScreen() {
+            welcomeScreen.classList.add('hidden');
+            workspace.style.display = 'flex';
+        }
+
+        function openContact() {
+            alert("Contact section will be configured soon.");
+        }
+
+        // SLOT MACHINE VERTICAL TICKER ENGINE
+        let currentSlotIdx = 0;
+        const slotItems = document.querySelectorAll('.slot-item');
+
+        function rotateSlotTicker() {
+            if (slotItems.length === 0) return;
+            const prevIdx = currentSlotIdx;
+            currentSlotIdx = (currentSlotIdx + 1) % slotItems.length;
+
+            slotItems[prevIdx].classList.remove('active');
+            slotItems[prevIdx].classList.add('exit');
+
+            setTimeout(() => {
+                slotItems[prevIdx].classList.remove('exit');
+            }, 600);
+
+            slotItems[currentSlotIdx].classList.add('active');
+        }
+
+        setInterval(rotateSlotTicker, 4000);
 
         function unlockAudioEngine() {
             transitionSound.play().then(() => {
@@ -1004,10 +1247,14 @@
                 const currentIdx = globalIdx;
                 const li = document.createElement('li');
                 const btn = document.createElement('button');
-                btn.className = `deck-btn ${currentIdx === 0 ? 'active-deck' : ''}`;
+                btn.className = `deck-btn`;
                 btn.innerText = deck.title;
                 btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
+                btn.addEventListener('click', () => { 
+                    hideWelcomeScreen();
+                    switchPresentation(currentIdx); 
+                    sidebarNav.classList.remove('menu-open'); 
+                });
                 li.appendChild(btn); cataloguesList.appendChild(li); globalIdx++;
             });
 
@@ -1018,7 +1265,11 @@
                 btn.className = `deck-btn`;
                 btn.innerText = deck.title;
                 btn.setAttribute('data-index', currentIdx);
-                btn.addEventListener('click', () => { switchPresentation(currentIdx); sidebarNav.classList.remove('menu-open'); });
+                btn.addEventListener('click', () => { 
+                    hideWelcomeScreen();
+                    switchPresentation(currentIdx); 
+                    sidebarNav.classList.remove('menu-open'); 
+                });
                 li.appendChild(btn); otherList.appendChild(li); globalIdx++;
             });
         }
@@ -1045,7 +1296,7 @@
             if (!sceneW || !sceneH) return;
 
             const pdfRatio = viewport.width / viewport.height;
-            const margin = isIOS ? 0.95 : 0.90; // iOS LITE modunda alanı biraz daha geniş tutuyoruz
+            const margin = isIOS ? 0.95 : 0.90;
             const maxAllowedW = sceneW * margin; const maxAllowedH = sceneH * margin;
             let finalW, finalH;
 
@@ -1137,7 +1388,6 @@
             const activeIdx = currentId + 1;
             renderHighQualityPage(activeIdx, scale);
             
-            // iOS değilse pre-render çalışsın (iOS LITE modunda ram tasarrufu için önbelleğe almayı sınırlıyoruz)
             if (!isIOS) {
                 const nextIdx = activeIdx + 1;
                 const prevIdx = activeIdx - 1;
@@ -1195,7 +1445,6 @@
             } catch (error) { console.error(error); }
         }
 
-        // DİNAMİK ARAYÜZ GÜNCELLEME (COVERFLOW vs iOS LITE)
         function updateBookDisplay() {
             if (pages.length === 0) return;
             
@@ -1204,7 +1453,7 @@
                 
                 if (index === currentId) {
                     page.style.display = 'block';
-                    page.offsetHeight; // Force Layout Reflow
+                    page.offsetHeight;
                     page.className = 'page active-page'; 
                     resizeBookToFit(page.pdfViewport);
                 } else if (!isIOS && index === currentId - 1) {
@@ -1216,7 +1465,7 @@
                 } else {
                     page.className = 'page hidden-page';
                     if (isIOS) {
-                        page.style.display = 'none'; // iOS'ta aktif olmayanları anında sakla (CPU/RAM dostu)
+                        page.style.display = 'none';
                     } else {
                         setTimeout(() => {
                             if (page.classList.contains('hidden-page')) {
@@ -1253,7 +1502,6 @@
             } 
         }
         
-        // PAN & ZOOM MOTORU
         function resetZoom() { 
             scale = 1; 
             posX = 0; 
@@ -1297,14 +1545,12 @@
             triggerDynamicZoomRender();
         }
 
-        // MOUSE WHEEL ZOOM
         scene.addEventListener('wheel', (e) => {
             e.preventDefault();
             const step = e.deltaY < 0 ? 0.4 : -0.4;
             zoomToPoint(e.clientX, e.clientY, step);
         }, { passive: false });
 
-        // MOUSE DRAG (PANNING)
         scene.addEventListener('mousedown', (e) => {
             if (scale === 1 || e.target.closest('.arrow-btn')) return;
             isDragging = true; 
@@ -1321,7 +1567,6 @@
 
         window.addEventListener('mouseup', () => { isDragging = false; });
 
-        // PINCH TO ZOOM ENGINE
         scene.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isPinching = true;
@@ -1392,7 +1637,6 @@
             }
         }, { passive: true });
 
-        // BUTTON EVENTS
         document.getElementById('overlayPrevBtn').addEventListener('click', flipPrev);
         document.getElementById('overlayNextBtn').addEventListener('click', flipNext);
         
@@ -1428,15 +1672,7 @@
 
         window.onload = () => {
             buildSidebarMenu();
-            const savedPresentation = localStorage.getItem('corporate_last_presentation');
-            const savedPage = localStorage.getItem('corporate_last_page');
-
-            if (savedPresentation !== null && presentations[savedPresentation]) {
-                const targetPageIdx = savedPage !== null ? parseInt(savedPage) : 0;
-                const toast = document.getElementById('resumeToast');
-                toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000);
-                switchPresentation(parseInt(savedPresentation), targetPageIdx);
-            } else { switchPresentation(0, 0); }
+            showWelcomeScreen();
         };
     </script>
 </body>
