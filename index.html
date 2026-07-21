@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#020617">
     <link rel="manifest" href="manifest.json" id="pwaManifest">
 
-    <!-- GOOGLE FONTS (Plus Jakarta Sans - Kurumsal Sunum Stili) -->
+    <!-- GOOGLE FONTS (Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -163,12 +163,13 @@
             box-shadow: 0 8px 20px rgba(255,255,255,0.25);
         }
 
-	.brand-logo-btn {
+        /* BÜYÜTÜLMÜŞ LOGO BUTONU */
+        .brand-logo-btn {
             background: #ffffff;
-            padding: 8px 18px; /* Yanlardan bir tık genişletildi */
+            padding: 8px 18px;
             border-radius: 8px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            height: 54px; /* Yükseklik 46px'den 54px'e çıkarıldı */
+            height: 54px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -179,8 +180,8 @@
         .brand-logo-btn:hover {
             transform: translateY(-2px);
         }
-	.brand-logo-btn img {
-            height: 32px; /* Logo görsel yüksekliği 24px'den 32px'e büyütüldü */
+        .brand-logo-btn img {
+            height: 32px;
             width: auto;
         }
 
@@ -305,7 +306,7 @@
             color: #002870;
         }
 
-        /* WELCOME PORTAL HOME SCREEN - GÖRSELDEKİ SUNUM STİLİNE UYARLANDI */
+        /* WELCOME PORTAL HOME SCREEN */
         .welcome-screen {
             position: absolute;
             top: 0; left: 0;
@@ -337,15 +338,9 @@
             font-size: clamp(26px, 3.8vw, 42px);
             font-weight: 700;
             letter-spacing: -0.2px;
-            color: var(--gold-accent); /* Başlığın tamamını altın sarısı yapar */
+            color: var(--gold-accent);
             margin-bottom: 10px;
             line-height: 1.25;
-}
-        }
-
-        .welcome-title .gold-text {
-            color: var(--gold-accent);
-            font-weight: 700;
         }
 
         .welcome-subtitle {
@@ -373,7 +368,7 @@
             border: none;
         }
 
-        /* CLEAN SLOT MACHINE VERTICAL TICKER ANNOUNCEMENTS (NEWS ROZETİ KALDIRILDI) */
+        /* SLOT MACHINE TICKER ANNOUNCEMENTS */
         .ticker-wrapper {
             position: fixed;
             bottom: 25px;
@@ -450,7 +445,6 @@
             z-index: 5;
         }
 
-        /* CONTAINER GRID RESTRICTING OVERFLOWS */
         .main-container {
             display: flex;
             width: 100%;
@@ -461,7 +455,6 @@
             padding: 20px;
         }
         
-        /* SCENE ZONE */
         .scene {
             flex: 1;
             display: flex;
@@ -476,7 +469,6 @@
             touch-action: none;
         }
 
-        /* DYNAMIC SCALING WRAPPER */
         .pan-zoom-container {
             position: absolute;
             width: 100%;
@@ -492,7 +484,6 @@
         }
         .pan-zoom-container:active { cursor: grabbing; }
         
-        /* 3D COVERFLOW ENGINE CONTAINER */
         .book {
             position: relative;
             display: flex;
@@ -503,7 +494,6 @@
             will-change: transform;
         }
         
-        /* STANDARD 3D PAGE SETUP */
         .page {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -543,7 +533,6 @@
             z-index: 1;
         }
 
-        /* iOS SAFARI LITE SYSTEM */
         body.is-ios-lite .page {
             transition: none !important;
             transform: none !important;
@@ -568,7 +557,6 @@
             z-index: 1 !important;
         }
 
-        /* CONTAINER FOR RENDER PIECE */
         .canvas-container-layer {
             position: relative;
             width: 100%;
@@ -591,7 +579,6 @@
             transition: opacity 0.15s ease-in-out;
         }
 
-        /* FLOATING ARROW OVERLAYS */
         .nav-overlay-zone {
             position: absolute;
             top: 0; height: 100%; width: 100px;
@@ -625,7 +612,6 @@
             box-shadow: 0 10px 25px rgba(255,255,255,0.25);
         }
         
-        /* DESKTOP SIDEBAR THUMBNAILS */
         .sidebar-thumbnails {
             width: 180px;
             background: rgba(0, 40, 112, 0.15);
@@ -661,7 +647,6 @@
             font-weight: bold; padding: 1px 5px; border-radius: 3px;
         }
         
-        /* BOTTOM DOCK SYSTEM */
         .bottom-bar-area {
             width: 100%; 
             display: flex; 
@@ -709,7 +694,6 @@
         }
         #pageIndicator { color: #ffffff; }
 
-        /* SOUND CONTROLLER WRAPPER */
         .sound-corner {
             position: absolute;
             right: 25px;
@@ -965,7 +949,6 @@
 
     <!-- UPPER LEFT CONTROL BUTTONS -->
     <div class="header-column">
-        <!-- LOGO CLICK SHOWS HOME / WELCOME SCREEN -->
         <button class="brand-logo-btn" onclick="showWelcomeScreen()">
             <img src="yatas_grup_logo.png" alt="Yataş Group Logo">
         </button>
@@ -975,7 +958,6 @@
             <span></span>
         </button>
 
-        <!-- Dynamic Header Switch for Portrait Mobile -->
         <div class="header-sound-container" id="headerSoundContainer">
             <div class="ios-switch-container">
                 <span class="switch-label">Sound</span>
@@ -987,7 +969,7 @@
         </div>
     </div>
 
-    <!-- UPPER RIGHT CONTACT BUTTON -->
+    <!-- UPPER RIGHT CONTACT BUTTON (DIRECT MAIL LINK) -->
     <div class="header-right">
         <button class="contact-btn" onclick="openContact()">Contact</button>
     </div>
@@ -1008,21 +990,20 @@
             <ul class="deck-list" id="otherList"></ul>
         </div>
 
-        <!-- WELCOME LANDING SCREEN MODAL / OVERLAY -->
+        <!-- WELCOME LANDING SCREEN -->
         <div class="welcome-screen" id="welcomeScreen">
             <div class="welcome-header">
-                <h1 class="welcome-title">Welcome to Yataş Corporate <span class="gold-text">Deck</span></h1>
+                <h1 class="welcome-title">Welcome to Yataş Corporate Deck</h1>
                 <p class="welcome-subtitle">Shaping the Future of Sleep & Living Spaces</p>
             </div>
 
             <div class="video-container">
-                <!-- YouTube Video Embed (Kendi video ID'nizi ekleyebilirsiniz) -->
                 <iframe src="https://www.youtube.com/embed/NyRLkBs9EDw?rel=0&amp;controls=1&amp;autoplay=0" title="Yataş Group Corporate Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- SLOT MACHINE TICKER ANNOUNCEMENTS (TEMİZLENDİ) -->
-        <div class="ticker-wrapper">
+        <!-- SLOT MACHINE TICKER ANNOUNCEMENTS -->
+        <div class="ticker-wrapper" id="mainTicker">
             <div class="slot-viewport">
                 <div class="slot-container" id="slotContainer">
                     <div class="slot-item active">Our first Enza Home in Burkina Faso is opened 🚀</div>
@@ -1041,7 +1022,6 @@
                         <div id="book" class="book"></div>
                     </div>
 
-                    <!-- FLOATING ARROW OVERLAYS -->
                     <div class="nav-overlay-zone left-zone" id="zoneLeft">
                         <div class="arrow-btn" id="overlayPrevBtn">&#10094;</div>
                     </div>
@@ -1052,11 +1032,9 @@
 
                 </div>
 
-                <!-- SLIDABLE PREVIEW THUMBNAILS PANEL -->
                 <div class="sidebar-thumbnails" id="sidebarThumbnails"></div>
             </div>
 
-            <!-- LOWER DOCK CONTROL SYSTEM -->
             <div class="bottom-bar-area" id="bottomBarArea">
                 <div class="controls-wrapper">
                     <div class="controls">
@@ -1070,7 +1048,6 @@
                         <button id="zoomOutBtn">🔍 -</button>
                     </div>
 
-                    <!-- ACCESSIBLE SYSTEM AUDIO TOGGLE -->
                     <div class="sound-corner" id="footerSoundContainer">
                         <div class="ios-switch-container">
                             <span class="switch-label">Sound FX</span>
@@ -1088,7 +1065,6 @@
     </div>
 
     <script>
-        // Tarayıcının iOS olup olmadığını kontrol et
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         
@@ -1119,7 +1095,6 @@
         let thumbElements = [];
         let pdfDoc = null;
         
-        // ZOOM / PAN STATE CONTROL
         let scale = 1; 
         let posX = 0; 
         let posY = 0;
@@ -1127,7 +1102,6 @@
         let startX; 
         let startY;
         
-        // TOUCH ENGINE MULTI-TOUCH TRACKING
         let initialPinchDist = 0;
         let touchStartX = 0;
         let touchStartY = 0;
@@ -1138,7 +1112,6 @@
 
         const transitionSound = new Audio('glossy_magazine.mp3');
 
-        // CACHED ELEMENTS
         const zoomContainer = document.getElementById('zoomContainer');
         const book = document.getElementById('book');
         const scene = document.getElementById('scene');
@@ -1158,10 +1131,14 @@
             });
         }
 
-        // WELCOME SCREEN CONTROLLERS
+        // WELCOME SCREEN & DUYURU BANDI KONTROLLERİ
         function showWelcomeScreen() {
             welcomeScreen.classList.remove('hidden');
             workspace.style.display = 'none';
+            
+            const ticker = document.getElementById('mainTicker');
+            if (ticker) ticker.style.display = 'flex';
+
             document.querySelectorAll('.deck-btn').forEach(b => b.classList.remove('active-deck'));
             sidebarNav.classList.remove('menu-open');
         }
@@ -1169,13 +1146,16 @@
         function hideWelcomeScreen() {
             welcomeScreen.classList.add('hidden');
             workspace.style.display = 'flex';
+
+            const ticker = document.getElementById('mainTicker');
+            if (ticker) ticker.style.display = 'none';
         }
 
         function openContact() {
-            window.location.href = "mailto:export@yatas.com.tr";
+            window.location.href = "mailto:export@yatas.com.tr?subject=Yataş%20Corporate%20Deck%20Inquiry";
         }
 
-        // SLOT MACHINE VERTICAL TICKER ENGINE
+        // SLOT MACHINE TICKER
         let currentSlotIdx = 0;
         const slotItems = document.querySelectorAll('.slot-item');
 
@@ -1375,7 +1355,7 @@
                     resizeBookToFit(pageDiv.pdfViewport);
                 }
             } catch (err) {
-                console.error("Render hatası:", err);
+                console.error("Render error:", err);
             }
         }
 
